@@ -16,9 +16,16 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         alignItems: 'center', 
         minHeight: '50vh', 
         margin: 'auto', 
-        marginTop: '10vh',
+        marginTop: '5vh',
       }}
     >
+      <Box sx={{mb: 2,width: '30%', display: 'flex',justifyContent: 'center',}}>
+        <img
+          src="/images/logo.png"
+          alt="Logo"
+          style={{ maxWidth: '100%', height: 'auto' }} // Ajusta el tamaño de la imagen
+        />
+      </Box>
       {children}
     </Box>
   );
