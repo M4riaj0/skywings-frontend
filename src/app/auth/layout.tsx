@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import Image from 'next/image';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,10 +21,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       }}
     >
       <Box sx={{mb: 2,width: '30%', display: 'flex',justifyContent: 'center',}}>
-        <img
+        <Image
           src="/images/logo.png"
           alt="Logo"
-          style={{ maxWidth: '100%', height: 'auto' }} // Ajusta el tamaño de la imagen
+          layout="responsive"
+          width={100}
+          height={100}
         />
       </Box>
       {children}
