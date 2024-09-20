@@ -3,13 +3,14 @@ import localFont from "next/font/local";
 import Navbar from "@/components/navbar";
 
 // Styles
+import Navbar from "@/components/navbar";
+
+// Styles
 import "./globals.css";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import customTheme from "@/theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Container } from "@mui/material";
-import { FormProvider } from "@/context/useFormContext";
-import { Inter } from "next/font/google";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -44,11 +45,7 @@ export default function RootLayout({
           <ThemeProvider theme={customTheme}>
             <CssBaseline/>
             <Navbar />
-            <Container>
-              <FormProvider>
-                {children}
-              </FormProvider>
-            </Container>
+            <Container>{children}</Container>
           </ThemeProvider>
         </AppRouterCacheProvider>
         
