@@ -7,13 +7,13 @@ import { createTheme } from "@mui/material/styles";
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: '#011B3D', // Color para los botones principales
+      main: '#011B3D', 
     },
     secondary: {
       main: '#A6B0EB', // Color para otros botones
     },
     background: {
-      default: '#E5E9FF', // Color de fondo
+      default: '#F0F3FF', // Color de fondo
       paper: '#ffffff', // Color casi blanco para contenedores o el fondo general
     },
   },
