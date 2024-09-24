@@ -1,26 +1,40 @@
+"use client";
 import Link from 'next/link';
 import Image from 'next/image';
-
-// backgroundColor: '#E5E9FF'
+import { useTheme } from '@mui/material/styles';
+import { usePathname } from 'next/navigation'; // Cambia aquí
 
 function Navbar() {
+  const theme = useTheme();
+  const pathname = usePathname(); // Usar usePathname para obtener la ruta actual
+
+  // Verifica si la ruta actual es "/auth/login" o "/auth/register"
+  const isAuthPage = pathname === "/auth/login" || pathname === "/auth/register";
+
   return (
-    <nav className='text-lg font-bold p-4 shadow-xs bg-slate-100' style={{ color: '#011B3D' }}>
-      <ul className='flex justify-between'>
+    <nav className='p-0 shadow-md' style={{ backgroundColor: theme.palette.primary.main }}>
+      <ul className='flex justify-between items-center'>
         <li>
-          <Link href="/" className='flex items-center'  >
-            <Image src="/images/logo.png" alt="Logo" width={50} height={50}/>
-            Inicio
+          <Link href="/" className='flex items-center'>
+            <Image src="/images/logo.png" alt="Logo" width={70} height={70} />
+            <span className='font-bold py-1 ml-2 text-xl' style={{ color: theme.palette.background.paper }}>SkyWings</span>
           </Link>
         </li>
-        <li className='my-auto'>
-          <Link href="/auth/login">
-            Iniciar sesión
-          </Link>
-        </li>
+        {!isAuthPage && (
+          <li className='my-auto'>
+            <Link href="/auth/login">
+              <button 
+                className='font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white' 
+                style={{ backgroundColor: theme.palette.background.paper, color: theme.palette.primary.main, marginRight: '2rem' }}
+              >
+                Iniciar sesión
+              </button>
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
