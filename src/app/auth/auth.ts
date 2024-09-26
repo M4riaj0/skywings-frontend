@@ -1,5 +1,3 @@
-import { useRouter } from "next/navigation";
-
 interface RegisterData {
   username: string;
   password: string;

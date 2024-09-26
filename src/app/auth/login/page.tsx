@@ -31,6 +31,7 @@ export default function Login() {
         console.log(token);
         if (token)
             localStorage && localStorage.setItem('token', token);
+            localStorage && localStorage.setItem('role', role);
         if (role == 'ROOT')
             router.push('/home/admins');
         else
