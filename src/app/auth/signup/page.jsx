@@ -1,59 +1,40 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { Button, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import Stepper from "@/components/Stepper";
-import MainForm from "@/forms/userInfo";
-import NamesForm from "@/forms/namesInfo";
-import AdditionalInfo from "@/forms/additionalInfo";
+import MultiStepForm from "@/forms/multiStepForm";
 
-const steps = ["Paso 1", "Paso 2", "Paso 3"];
+const steps = ["Usuario", "Nombres", "Datos Personales"];
 
 const Signup = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const methods = useForm();
+  const [step, setStep] = useState(0);
 
-  const handleNext = () => {
-    setCurrentStep((prev) => prev + 1);
+  // Funciones para manejar el avance y retroceso entre los pasos
+  const nextStep = () => {
+    if (step < steps.length - 1) {
+      setStep((prev) => prev + 1);
+    }
   };
 
-  const handleBack = () => {
-    setCurrentStep((prev) => prev - 1);
-  };
-
-  const onSubmit = async (data) => {
-    console.log("Datos registrados:", data);
-    // Aquí manejarías el envío de datos al backend
+  const prevStep = () => {
+    if (step > 0) {
+      setStep((prev) => prev - 1);
+    }
   };
 
   return (
-    <FormProvider {...methods}>
-      <Stack spacing={2} className="w-full max-w-md">
-        <Typography variant="h4" component="h1" align="center">
-          Registro
-        </Typography>
-        <Stepper steps={steps} currentStep={currentStep + 1} />
+    <Stack spacing={2} className="w-full max-w-md">
+      <Typography variant="h4" component="h1" align="center">
+        Registro
+      </Typography>
 
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
-          {currentStep === 0 && <MainForm onNext={handleNext} />}
-          {currentStep === 1 && <NamesForm onNext={handleNext} onBack={handleBack} />}
-          {currentStep === 2 && <AdditionalInfo onBack={handleBack} />}
-          
-          {/* Botón de "Registrarse" visible solo en el último paso */}
-          {currentStep === 2 && (
-            <Stack direction="row" spacing={2} justifyContent="space-between" mt={2}>
-              <Button variant="outlined" onClick={handleBack}>
-                Atrás
-              </Button>
-              <Button type="submit" variant="contained">
-                Registrarse
-              </Button>
-            </Stack>
-          )}
-        </form>
-      </Stack>
-    </FormProvider>
+      {/* Stepper visual */}
+      <Stepper steps={steps} currentStep={step + 1} />
+
+      {/* MultiStepForm pasa el control de los pasos y el manejo de datos */}
+      <MultiStepForm step={step} nextStep={nextStep} prevStep={prevStep} />
+    </Stack>
   );
 };
 
