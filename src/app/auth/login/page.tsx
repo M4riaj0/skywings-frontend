@@ -1,8 +1,11 @@
-"use client";
+'use client';
+
 import { useState } from 'react';
 import { Button, Link, Stack, TextField, Typography } from "@mui/material";
 import NextLink from "next/link";
 import ResetPassword from "@/components/resetPassword";
+import { handleLogin } from "@/app/auth/auth";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -17,29 +20,21 @@ export default function Login() {
         setOpen(false);
     };
 
+    const router = useRouter();
+
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault(); // Evita el comportamiento por defecto de enviar el formulario
         const data = { username, password };
-        
-        console.log("Inicio de sesión:", data);
-        try {
-            const response = await fetch('', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (response.ok) {
-                console.log("Inicio de sesión exitoso");
-                // Redirigir o manejar el éxito
-            } else {
-                console.error("Error al iniciar sesión");
-            }
-        } catch (error) {
-            console.error("Error de red:", error);
-        }
+        const res = await handleLogin(data);
+        const token = res?.access_token;
+        const role = res?.role;
+        console.log(token);
+        if (token)
+            localStorage && localStorage.setItem('token', token);
+        if (role == 'ROOT')
+            router.push('/home/admins');
+        else
+            router.push('/home/profile');
     };
 
     return (
