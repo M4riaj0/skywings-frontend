@@ -22,7 +22,7 @@ const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
         ) : (
           admins.map((admin, index) => (
             <div key={`${admin.id}-${numAdmin}-${index}`} className="border rounded p-4 mb-4 bg-white shadow">
-              <p><strong>ID:</strong> {admin.id}</p>
+              <p><strong>DNI:</strong> {admin.id}</p>
               <p><strong>Nombre de Usuario:</strong> {admin.username}</p>
               <p><strong>Email:</strong> {admin.email}</p>
               <div className="flex justify-center mt-4">
@@ -42,7 +42,7 @@ const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
       <table className="hidden md:min-w-full md:bg-white md:border md:border-gray-300 md:table">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 border-b-2 text-left text-sm font-semibold text-gray-600">ID</th>
+            <th className="px-6 py-3 border-b-2 text-left text-sm font-semibold text-gray-600">DNI</th>
             <th className="px-6 py-3 border-b-2 text-left text-sm font-semibold text-gray-600">Nombre de Usuario</th>
             <th className="px-6 py-3 border-b-2 text-left text-sm font-semibold text-gray-600">Email</th>
             <th className="px-6 py-3 border-b-2 text-left text-sm font-semibold text-gray-600">Acciones</th>

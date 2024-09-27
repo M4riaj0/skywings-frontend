@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { handleRegister } from "@/app/auth/auth";
+import { useRouter } from "next/navigation";
 
 interface MultiStepFormProps {
   step: number;
@@ -19,11 +20,13 @@ interface MultiStepFormProps {
   prevStep: () => void;
 }
 
+
 const MultiStepForm: React.FC<MultiStepFormProps> = ({
   step,
   nextStep,
   prevStep,
 }) => {
+  const router = useRouter();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [token, setToken] = useState(null);
   interface Country {
@@ -326,8 +329,10 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
         birthDate: new Date(formData.birthDate),
       };
       const res = await handleRegister(formDataToSend);
-      if (res === "Usuario registrado")
+      if (res === "Usuario registrado"){
         alert("Usuario registrado exitosamente");
+        router.push("/auth/login");
+      }
       else alert("Error al registrar el usuario");
     }
   };

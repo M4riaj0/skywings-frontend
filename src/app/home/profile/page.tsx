@@ -1,26 +1,12 @@
 'use client';
-
-import { Button } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
 function Profile() {
-  const router = useRouter();
-
-  const handleEditProfile = () => {
-    router.push('/edit-profile');
-  };
-
-  const handleChangePassword = () => {
-    router.push('/change-password');
-  };
-
   return (
-    <div className="profile-page">
-      <h1 className='text-4xl font-bold p-5'>Profile</h1>
-      <div className="profile-options mx-5 flex justify-around">
-        <Button variant='contained' onClick={handleEditProfile}>Edit Profile</Button>
-        <Button variant='contained' onClick={handleChangePassword}>Change Password</Button>
-      </div>
+    <div className="mt-20 flex flex-col justify-center items-center">
+      <h1 className="text-4xl font-bold">Bienvenido</h1>
+      <Image src="/images/logo.png" alt="Logo" width={200} height={200}/>
+      <h3>Más funcionalidades estarán disponibles próximamente</h3>
     </div>
   );
 }
