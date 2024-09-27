@@ -24,7 +24,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     prevStep,
 }) => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
+    const [token, setToken] = useState(""); // Estado para almacenar el token
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -44,6 +44,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
             state: "",
             city: "",
             street: "",
+            numberStreet: "",
             number: "",
         },
         birthplace: {
@@ -55,16 +56,46 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
         gender: "",
     });
 
+    // Función para obtener el token
+    const fetchToken = async () => {
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "api-token":
+                    "VZRqSoUfPdoEnzyMgPW1tVrHuhwNYcX0CZfoksSE61-79Tb0r-YgSF-oQDSAXJwwRSA",
+                "user-email": "correopruebas086@gmail.com", 
+            },
+        };
+
+        try {
+            const response = await fetch(
+                "https://www.universal-tutorial.com/api/getaccesstoken",
+                requestOptions
+            );
+            const result = await response.json();
+            setToken(result.auth_token); // Almacena el token en el estado
+        } catch (error) {
+            console.error("Error fetching token:", error);
+        }
+    };
+
+    // Obtener el token cuando se monte el componente
+    useEffect(() => {
+        fetchToken();
+    }, []);
+
     useEffect(() => {
         const fetchCountries = async () => {
+            if (!token) return; // Asegurarse de que el token esté disponible antes de hacer la solicitud
+
             const requestOptions = {
                 method: "GET",
                 headers: {
-                    Authorization:
-                        "Bearer VZRqSoUfPdoEnzyMgPW1tVrHuhwNYcX0CZfoksSE61-79Tb0r-YgSF-oQDSAXJwwRSA",
+                    Authorization: `Bearer ${token}`,
                     Accept: "application/json",
                 },
-            }; 
+            };
 
             try {
                 const response = await fetch(
@@ -79,14 +110,15 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
         };
 
         fetchCountries();
-    }, []);
+    }, [token]);
 
     const fetchStates = async (country) => {
+        if (!token) return;
+
         const requestOptions = {
             method: "GET",
             headers: {
-                Authorization:
-                    "Bearer VZRqSoUfPdoEnzyMgPW1tVrHuhwNYcX0CZfoksSE61-79Tb0r-YgSF-oQDSAXJwwRSA",
+                Authorization: `Bearer ${token}`,
                 Accept: "application/json",
             },
         };
@@ -104,11 +136,12 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     };
 
     const fetchCities = async (state) => {
+        if (!token) return;
+
         const requestOptions = {
             method: "GET",
             headers: {
-                Authorization:
-                    "Bearer VZRqSoUfPdoEnzyMgPW1tVrHuhwNYcX0CZfoksSE61-79Tb0r-YgSF-oQDSAXJwwRSA",
+                Authorization: `Bearer ${token}`,
                 Accept: "application/json",
             },
         };
@@ -239,7 +272,13 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validateStep()) {
-            console.log("Datos enviados:", formData);
+            // Concatenar los datos de address y birthplace como un solo string
+            const formDataToSend = {
+                ...formData,
+                address: `${formData.address.street} ${formData.address.numberStreet} #${formData.address.number}, ${formData.address.city}, ${formData.address.state}, ${formData.address.country}`,
+                birthplace: `${formData.birthplace.city}, ${formData.birthplace.state}, ${formData.birthplace.country}`,
+            };
+            console.log("Datos enviados:", formDataToSend);
         }
     };
 
@@ -439,6 +478,17 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             <MenuItem value="Calle">Calle</MenuItem>
                             <MenuItem value="Carrera">Carrera</MenuItem>
                         </TextField>
+                        <TextField
+                            label="Número vía"
+                            name="numberStreet"
+                            variant="outlined"
+                            value={formData.address.numberStreet}
+                            onChange={handleAddressChange}
+                            required
+                        />
+                        <Typography variant="subtitle1" component="h5" align="left">
+                            #
+                        </Typography>
                         <TextField
                             label="Número"
                             name="number"
