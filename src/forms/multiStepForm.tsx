@@ -25,15 +25,28 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
 }) => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [token, setToken] = useState(null);
-    const [countries, setCountries] = useState([]);
+    interface Country {
+        country_name: string;
+        country_short_name: string;
+    }
+    
+    const [countries, setCountries] = useState<Country[]>([]);
     
     // Estados separados para dirección
-    const [addressStates, setAddressStates] = useState([]);
-    const [addressCities, setAddressCities] = useState([]);
+    interface State {
+        state_name: string;
+    }
+
+    interface City {
+        city_name: string;
+    }
+
+    const [addressStates, setAddressStates] = useState<State[]>([]);
+    const [addressCities, setAddressCities] = useState<City[]>([]);
 
     // Estados separados para lugar de nacimiento
-    const [birthplaceStates, setBirthplaceStates] = useState([]);
-    const [birthplaceCities, setBirthplaceCities] = useState([]);
+    const [birthplaceStates, setBirthplaceStates] = useState<State[]>([]);
+    const [birthplaceCities, setBirthplaceCities] = useState<City[]>([]);
 
     const [formData, setFormData] = useState({
         username: "",
@@ -82,7 +95,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     };
 
     // Reutilizable para obtener países, estados y ciudades
-    const fetchLocationData = async (url, setter) => {
+    const fetchLocationData = async (url: string, setter: React.Dispatch<React.SetStateAction<any[]>>) => {
         if (!token) return;
         const requestOptions = {
             method: "GET",
@@ -104,7 +117,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     const fetchCountries = () => fetchLocationData("https://www.universal-tutorial.com/api/countries", setCountries);
 
     // Obtener estados de un país
-    const fetchStates = (country, isAddress) => {
+    const fetchStates = (country: string, isAddress: boolean) => {
         const url = `https://www.universal-tutorial.com/api/states/${country}`;
         if (isAddress) {
             fetchLocationData(url, setAddressStates);
@@ -114,7 +127,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     };
 
     // Obtener ciudades de un estado
-    const fetchCities = (state, isAddress) => {
+    const fetchCities = (state: string, isAddress: boolean) => {
         const url = `https://www.universal-tutorial.com/api/cities/${state}`;
         if (isAddress) {
             fetchLocationData(url, setAddressCities);
@@ -124,7 +137,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     };
 
     // Manejar cambios en la dirección
-    const handleAddressChange = (e) => {
+    const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
         setFormData((prev) => ({
@@ -151,7 +164,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     };
 
     // Manejar cambios en el lugar de nacimiento
-    const handleBirthPlaceChange = (e) => {
+    const handleBirthPlaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
         setFormData((prev) => ({
@@ -210,9 +223,16 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
         if (step === 0) {
             if (!formData.username) {
                 newErrors.username = "Se requiere un nombre de usuario";
+            } else if (formData.username.length < 3) {
+                newErrors.username = "El nombre de usuario debe tener al menos 3 caracteres";
             }
             if (!formData.email) {
                 newErrors.email = "Se requiere un email";
+            }else {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    newErrors.email = "El formato del email es incorrecto";
+                }
             }
             if (formData.password.length < 6) {
                 newErrors.password =
@@ -227,8 +247,18 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
         if (step === 1) {
             if (!formData.name1) {
                 newErrors.name1 = "Se requiere el primer nombre";
+            }else if (formData.name1.length < 3) {
+                newErrors.name1 = "El nombre debe tener al menos 3 caracteres";
             }
-            // Se pueden agregar más validaciones según sea necesario
+            if(formData.name2 && formData.name2.length < 3){
+                newErrors.name2 = "El nombre debe tener al menos 3 caracteres";
+            }
+            if(formData.surname1 && formData.surname1.length < 3){
+                newErrors.surname1 = "El apellido debe tener al menos 3 caracteres";
+            }
+            if(formData.surname2 && formData.surname2.length < 3){
+                newErrors.surname2 = "El apellido debe tener al menos 3 caracteres";
+            }
         }
 
         // Validaciones para el tercer paso
@@ -242,15 +272,26 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
             if (!formData.birthplace) {
                 newErrors.birthplace = "Se requiere el lugar de nacimiento";
             }
-            if (
-                formData.birthDate &&
-                new Date(formData.birthDate) > new Date()
-            ) {
-                newErrors.birthDate =
-                    "La fecha de nacimiento no puede estar en el futuro";
-            }
-            if (!formData.gender) {
-                newErrors.gender = "Se requiere seleccionar un género";
+            
+        }
+        if (step == 3){
+            if (formData.birthDate) {
+                const birthDate = new Date(formData.birthDate);
+                const today = new Date();
+                
+                // Calcula la fecha de 18 años atrás desde hoy
+                const eighteenYearsAgo = new Date(
+                    today.getFullYear() - 18, 
+                    today.getMonth(), 
+                    today.getDate()
+                );
+            
+                // Verificar si la fecha de nacimiento es mayor que la de 18 años atrás
+                if (birthDate > eighteenYearsAgo) {
+                    newErrors.birthDate = "Debes ser mayor de 18 años";
+                } else if (birthDate > today) {
+                    newErrors.birthDate = "La fecha de nacimiento no puede estar en el futuro";
+                }
             }
         }
 
@@ -350,6 +391,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             variant="outlined"
                             value={formData.name2}
                             onChange={handleChange}
+                            error={!!errors.name2}
                             fullWidth
                         />
                         <TextField
@@ -358,6 +400,8 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             variant="outlined"
                             value={formData.surname1}
                             onChange={handleChange}
+                            error={!!errors.surname1}
+                            required
                             fullWidth
                         />
                         <TextField
@@ -366,16 +410,14 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             variant="outlined"
                             value={formData.surname2}
                             onChange={handleChange}
+                            error={!!errors.surname2}
+                            required
                             fullWidth
                         />
-                    </>
-                )}
-
-                {step === 2 && (
-                    <>
                         <TextField
                             label="DNI"
                             name="dni"
+                            type="number"
                             variant="outlined"
                             value={formData.dni}
                             onChange={handleChange}
@@ -384,10 +426,28 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             error={!!errors.dni}
                             helperText={errors.dni}
                         />
-                        {/* Dirección */}
-                        <Typography variant="h6" component="h4" align="left">
-                            Dirección
-                        </Typography>
+                        <FormControl fullWidth error={!!errors.gender}>
+                            <InputLabel id="gender-label">Género</InputLabel>
+                            <Select
+                                labelId="gender-label"
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleSelectChange}
+                            >
+                                <MenuItem value="">
+                                    <em>Seleccionar</em>
+                                </MenuItem>
+                                <MenuItem value="male">Masculino</MenuItem>
+                                <MenuItem value="female">Femenino</MenuItem>
+                                <MenuItem value="other">Otro</MenuItem>
+                            </Select>
+                            {errors.gender && <span>{errors.gender}</span>}
+                        </FormControl>
+                    </>
+                )}
+
+                {step === 2 && (
+                    <>
                         <TextField
                             select
                             label="País"
@@ -419,6 +479,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             value={formData.address.state}
                             onChange={handleAddressChange}
                             required
+                            disabled={!formData.address.country}
                         >
                             {addressStates.length > 0 ? (
                                 addressStates.map((state) => (
@@ -443,6 +504,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             variant="outlined"
                             value={formData.address.city}
                             onChange={handleAddressChange}
+                            disabled={!formData.address.state}
                             required
                         >
                             {addressCities.length > 0 ? (
@@ -467,40 +529,46 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             variant="outlined"
                             value={formData.address.street}
                             onChange={handleAddressChange}
+                            disabled={!formData.address.city}
                             required
                             fullWidth
                         >
                             <MenuItem value="Calle">Calle</MenuItem>
                             <MenuItem value="Carrera">Carrera</MenuItem>
                         </TextField>
-                        <TextField
-                            label="Número vía"
-                            name="numberStreet"
-                            variant="outlined"
-                            value={formData.address.numberStreet}
-                            onChange={handleAddressChange}
-                            required
-                        />
-                        <Typography
-                            variant="subtitle1"
-                            component="h5"
-                            align="left"
-                        >
-                            #
-                        </Typography>
-                        <TextField
-                            label="Número"
-                            name="number"
-                            variant="outlined"
-                            value={formData.address.number}
-                            onChange={handleAddressChange}
-                            required
-                        />
-
-                        {/* Lugar de Nacimiento */}
-                        <Typography variant="h6" component="h4" align="left">
-                            Lugar de Nacimiento
-                        </Typography>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                            <TextField
+                                label="Número vía"
+                                name="numberStreet"
+                                type="number"
+                                variant="outlined"
+                                value={formData.address.numberStreet}
+                                onChange={handleAddressChange}
+                                disabled={!formData.address.street}
+                                required
+                            />
+                            <Typography
+                                variant="subtitle1"
+                                component="h5"
+                                align="left"
+                            >
+                                #
+                            </Typography>
+                            <TextField
+                                label="Número"
+                                name="number"
+                                type="number"
+                                variant="outlined"
+                                value={formData.address.number}
+                                onChange={handleAddressChange}
+                                disabled={!formData.address.numberStreet}
+                                required
+                            />
+                        </Stack>
+                    </>
+                )}
+                {step === 3 && (
+                    <>
                         <TextField
                             select
                             label="País"
@@ -531,6 +599,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             variant="outlined"
                             value={formData.birthplace.state}
                             onChange={handleBirthPlaceChange}
+                            disabled={!formData.birthplace.country}
                             required
                         >
                             {birthplaceStates.length > 0 ? (
@@ -556,6 +625,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             variant="outlined"
                             value={formData.birthplace.city}
                             onChange={handleBirthPlaceChange}
+                            disabled={!formData.birthplace.state}
                             required
                         >
                             {birthplaceCities.length > 0 ? (
@@ -584,31 +654,14 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             InputLabelProps={{ shrink: true }}
                             error={!!errors.birthDate}
                             helperText={errors.birthDate}
+                            required
                         />
-                        <FormControl fullWidth error={!!errors.gender}>
-                            <InputLabel id="gender-label">Género</InputLabel>
-                            <Select
-                                labelId="gender-label"
-                                name="gender"
-                                value={formData.gender}
-                                onChange={handleSelectChange}
-                                required
-                            >
-                                <MenuItem value="">
-                                    <em>Seleccionar</em>
-                                </MenuItem>
-                                <MenuItem value="male">Masculino</MenuItem>
-                                <MenuItem value="female">Femenino</MenuItem>
-                                <MenuItem value="other">Otro</MenuItem>
-                            </Select>
-                            {errors.gender && <span>{errors.gender}</span>}
-                        </FormControl>
                     </>
                 )}
 
                 <div>
                     {step > 0 && <Button onClick={prevStep}>Atrás</Button>}
-                    {step < 2 ? (
+                    {step < 3 ? (
                         <Button onClick={handleNext}>Siguiente</Button>
                     ) : (
                         <Button type="submit">Enviar</Button>
