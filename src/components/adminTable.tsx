@@ -1,18 +1,4 @@
-import { useState } from 'react';
-
-interface Admin {
-  id: number;
-  username: string;
-  email: string;
-}
-
-interface AdminTableProps {
-  admins: Admin[];
-  onDeleteAdmin: (username: string) => void;
-}
-
-const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
-import { useState } from 'react';
+// import { useState } from 'react';
 
 interface Admin {
   id: number;
@@ -63,29 +49,6 @@ const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
           </tr>
         </thead>
         <tbody>
-          {admins.length === 0 ? (
-            <tr>
-              <td colSpan={4} className="text-center text-gray-500 py-4">
-                No hay administradores disponibles.
-              </td>
-            </tr>
-          ) : (
-            admins.map((admin, index) => (
-              <tr key={`${admin.id}-${numAdmin}-${index}`} className="hover:bg-gray-100">
-                <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.id}</td>
-                <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.username}</td>
-                <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.email}</td>
-                <td className="px-6 py-4 border-b text-sm flex space-x-2">
-                  <button 
-                    className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-700 transition duration-200"
-                    onClick={() => onDeleteAdmin(admin.username)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
           {admins.length === 0 ? (
             <tr>
               <td colSpan={4} className="text-center text-gray-500 py-4">

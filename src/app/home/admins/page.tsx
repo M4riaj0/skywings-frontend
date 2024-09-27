@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddAdminDialog from "@/components/addAdminDialog";
 import AdminTable from "@/components/adminTable";
 import { getAdmins, addAdmin, deleteAdmin } from "./admins";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +28,7 @@ const AdminManager = () => {
   }, []);
 
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleClickOpen = () => {
     setOpen(true);
