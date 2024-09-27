@@ -3,8 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "@mui/material/styles";
-import { usePathname } from "next/navigation"; // Cambia aquí
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 function Navbar() {
   const theme = useTheme();
@@ -43,7 +42,7 @@ function Navbar() {
           </Link>
         </li>
         {!searchToken &&  !isAuthPage && (
-          <li className="my-auto">
+          <li>
             <Link href="/auth/login">
               <button
                 className="font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white"
@@ -58,8 +57,7 @@ function Navbar() {
             </Link>
           </li>
         )}
-        {
-          searchToken && !isAuthPage && (role != 'ROOT') && (
+        {searchToken && !isAuthPage && (role != 'ROOT') && (
             <li>
               <Link href="/home/profile">
                 <button
@@ -74,8 +72,7 @@ function Navbar() {
                 </button>
               </Link>
             </li>
-          )
-        }
+          )}
         {
           // Verifica si el token existe y no es una página de autenticación
           searchToken && !isAuthPage && (

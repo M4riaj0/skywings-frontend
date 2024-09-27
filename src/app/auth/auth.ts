@@ -1,7 +1,6 @@
 interface RegisterData {
   username: string;
   password: string;
-  role: string;
   dni: string;
   name1: string;
   name2: string;
@@ -12,7 +11,7 @@ interface RegisterData {
   address: string;
   birthPlace: string;
   birthDate: Date;
-  user_image: string;
+  user_image?: string;
 }
 
 interface LoginData {

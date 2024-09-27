@@ -26,6 +26,7 @@ interface AdminTableProps {
 }
 
 const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
+  const numAdmin = admins.length;
   return (
     <div className="overflow-x-auto md:overflow-visible">
       {/* Vista en tarjetas para pantallas pequeñas */}
@@ -33,8 +34,8 @@ const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
         {admins.length === 0 ? (
           <p className="text-center text-gray-500">No hay administradores disponibles.</p>
         ) : (
-          admins.map(admin => (
-            <div key={admin.id} className="border rounded p-4 mb-4 bg-white shadow">
+          admins.map((admin, index) => (
+            <div key={`${admin.id}-${numAdmin}-${index}`} className="border rounded p-4 mb-4 bg-white shadow">
               <p><strong>ID:</strong> {admin.id}</p>
               <p><strong>Nombre de Usuario:</strong> {admin.username}</p>
               <p><strong>Email:</strong> {admin.email}</p>
@@ -69,8 +70,8 @@ const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
               </td>
             </tr>
           ) : (
-            admins.map((admin) => (
-              <tr key={admin.id} className="hover:bg-gray-100">
+            admins.map((admin, index) => (
+              <tr key={`${admin.id}-${numAdmin}-${index}`} className="hover:bg-gray-100">
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.id}</td>
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.username}</td>
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.email}</td>
@@ -92,8 +93,8 @@ const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
               </td>
             </tr>
           ) : (
-            admins.map((admin) => (
-              <tr key={admin.id} className="hover:bg-gray-100">
+            admins.map((admin, index) => (
+              <tr key={`${admin.id}-${numAdmin}-${index}`} className="hover:bg-gray-100">
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.id}</td>
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.username}</td>
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{admin.email}</td>

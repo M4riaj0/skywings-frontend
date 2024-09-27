@@ -20,6 +20,7 @@
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.11",
     "nodemailer": "^6.9.15",
