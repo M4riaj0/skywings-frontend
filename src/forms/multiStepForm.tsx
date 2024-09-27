@@ -24,10 +24,16 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
     prevStep,
 }) => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [token, setToken] = useState(""); // Estado para almacenar el token
+    const [token, setToken] = useState(null);
     const [countries, setCountries] = useState([]);
-    const [states, setStates] = useState([]);
-    const [cities, setCities] = useState([]);
+    
+    // Estados separados para dirección
+    const [addressStates, setAddressStates] = useState([]);
+    const [addressCities, setAddressCities] = useState([]);
+
+    // Estados separados para lugar de nacimiento
+    const [birthplaceStates, setBirthplaceStates] = useState([]);
+    const [birthplaceCities, setBirthplaceCities] = useState([]);
 
     const [formData, setFormData] = useState({
         username: "",
@@ -62,102 +68,128 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
             method: "GET",
             headers: {
                 Accept: "application/json",
-                "api-token":
-                    "VZRqSoUfPdoEnzyMgPW1tVrHuhwNYcX0CZfoksSE61-79Tb0r-YgSF-oQDSAXJwwRSA",
-                "user-email": "correopruebas086@gmail.com", 
+                "api-token": "VZRqSoUfPdoEnzyMgPW1tVrHuhwNYcX0CZfoksSE61-79Tb0r-YgSF-oQDSAXJwwRSA",
+                "user-email": "correopruebas086@gmail.com",
             },
         };
-
         try {
-            const response = await fetch(
-                "https://www.universal-tutorial.com/api/getaccesstoken",
-                requestOptions
-            );
+            const response = await fetch("https://www.universal-tutorial.com/api/getaccesstoken", requestOptions);
             const result = await response.json();
-            setToken(result.auth_token); // Almacena el token en el estado
+            setToken(result.auth_token);
         } catch (error) {
             console.error("Error fetching token:", error);
         }
     };
 
-    // Obtener el token cuando se monte el componente
+    // Reutilizable para obtener países, estados y ciudades
+    const fetchLocationData = async (url, setter) => {
+        if (!token) return;
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        };
+        try {
+            const response = await fetch(url, requestOptions);
+            const result = await response.json();
+            setter(result);
+        } catch (error) {
+            console.error(`Error fetching from ${url}:`, error);
+        }
+    };
+
+    // Obtener países
+    const fetchCountries = () => fetchLocationData("https://www.universal-tutorial.com/api/countries", setCountries);
+
+    // Obtener estados de un país
+    const fetchStates = (country, isAddress) => {
+        const url = `https://www.universal-tutorial.com/api/states/${country}`;
+        if (isAddress) {
+            fetchLocationData(url, setAddressStates);
+        } else {
+            fetchLocationData(url, setBirthplaceStates);
+        }
+    };
+
+    // Obtener ciudades de un estado
+    const fetchCities = (state, isAddress) => {
+        const url = `https://www.universal-tutorial.com/api/cities/${state}`;
+        if (isAddress) {
+            fetchLocationData(url, setAddressCities);
+        } else {
+            fetchLocationData(url, setBirthplaceCities);
+        }
+    };
+
+    // Manejar cambios en la dirección
+    const handleAddressChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            address: {
+                ...prev.address,
+                [name]: value,
+            },
+        }));
+
+        if (name === "country") {
+            fetchStates(value, true); // true para dirección
+            setFormData((prev) => ({
+                ...prev,
+                address: { ...prev.address, state: "", city: "" }, // Resetea estado y ciudad
+            }));
+        } else if (name === "state") {
+            fetchCities(value, true); // true para dirección
+            setFormData((prev) => ({
+                ...prev,
+                address: { ...prev.address, city: "" }, // Resetea ciudad
+            }));
+        }
+    };
+
+    // Manejar cambios en el lugar de nacimiento
+    const handleBirthPlaceChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            birthplace: {
+                ...prev.birthplace,
+                [name]: value,
+            },
+        }));
+
+        if (name === "country") {
+            fetchStates(value, false); // false para lugar de nacimiento
+            setFormData((prev) => ({
+                ...prev,
+                birthplace: { ...prev.birthplace, state: "", city: "" }, // Resetea estado y ciudad
+            }));
+        } else if (name === "state") {
+            fetchCities(value, false); // false para lugar de nacimiento
+            setFormData((prev) => ({
+                ...prev,
+                birthplace: { ...prev.birthplace, city: "" }, // Resetea ciudad
+            }));
+        }
+    };
+
+    // Llamar la función para obtener países cuando se cargue el componente
     useEffect(() => {
         fetchToken();
     }, []);
 
     useEffect(() => {
-        const fetchCountries = async () => {
-            if (!token) return; // Asegurarse de que el token esté disponible antes de hacer la solicitud
-
-            const requestOptions = {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                },
-            };
-
-            try {
-                const response = await fetch(
-                    "https://www.universal-tutorial.com/api/countries",
-                    requestOptions
-                );
-                const result = await response.json();
-                setCountries(result);
-            } catch (error) {
-                console.error("Error fetching countries:", error);
-            }
-        };
-
-        fetchCountries();
+        if (token) {
+            fetchCountries();
+        }
     }, [token]);
 
-    const fetchStates = async (country) => {
-        if (!token) return;
-
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/json",
-            },
-        };
-
-        try {
-            const response = await fetch(
-                `https://www.universal-tutorial.com/api/states/${country}`,
-                requestOptions
-            );
-            const result = await response.json();
-            setStates(result);
-        } catch (error) {
-            console.error("Error fetching states:", error);
-        }
-    };
-
-    const fetchCities = async (state) => {
-        if (!token) return;
-
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/json",
-            },
-        };
-
-        try {
-            const response = await fetch(
-                `https://www.universal-tutorial.com/api/cities/${state}`,
-                requestOptions
-            );
-            const result = await response.json();
-            setCities(result);
-        } catch (error) {
-            console.error("Error fetching cities:", error);
-        }
-    };
-
+ 
+    //-----------------------
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -170,43 +202,6 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
         setErrors((prev) => ({ ...prev, [name]: "" })); // Limpiar el error al cambiar el valor
     };
 
-    const handleAddressChange = (e) => {
-        const { name, value } = e.target;
-
-        setFormData((prevData) => ({
-            ...prevData,
-            address: {
-                ...prevData.address,
-                [name]: value,
-            },
-        }));
-
-        if (name === "country") {
-            fetchStates(value);
-            setCities([]); // Limpiar ciudades cuando se selecciona un nuevo país
-        } else if (name === "state") {
-            fetchCities(value);
-        }
-    };
-
-    const handleBirthplaceChange = (e) => {
-        const { name, value } = e.target;
-
-        setFormData((prevData) => ({
-            ...prevData,
-            birthplace: {
-                ...prevData.birthplace,
-                [name]: value,
-            },
-        }));
-
-        if (name === "country") {
-            fetchStates(value);
-            setCities([]); // Limpiar ciudades cuando se selecciona un nuevo país
-        } else if (name === "state") {
-            fetchCities(value);
-        }
-    };
 
     const validateStep = () => {
         const newErrors: { [key: string]: string } = {};
@@ -425,8 +420,8 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             onChange={handleAddressChange}
                             required
                         >
-                            {states.length > 0 ? (
-                                states.map((state) => (
+                            {addressStates.length > 0 ? (
+                                addressStates.map((state) => (
                                     <MenuItem
                                         key={state.state_name}
                                         value={state.state_name}
@@ -450,8 +445,8 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             onChange={handleAddressChange}
                             required
                         >
-                            {cities.length > 0 ? (
-                                cities.map((city) => (
+                            {addressCities.length > 0 ? (
+                                addressCities.map((city) => (
                                     <MenuItem
                                         key={city.city_name}
                                         value={city.city_name}
@@ -486,7 +481,11 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             onChange={handleAddressChange}
                             required
                         />
-                        <Typography variant="subtitle1" component="h5" align="left">
+                        <Typography
+                            variant="subtitle1"
+                            component="h5"
+                            align="left"
+                        >
                             #
                         </Typography>
                         <TextField
@@ -508,7 +507,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             name="country"
                             variant="outlined"
                             value={formData.birthplace.country}
-                            onChange={handleBirthplaceChange}
+                            onChange={handleBirthPlaceChange}
                             required
                         >
                             {countries.length > 0 ? (
@@ -531,11 +530,11 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             name="state"
                             variant="outlined"
                             value={formData.birthplace.state}
-                            onChange={handleBirthplaceChange}
+                            onChange={handleBirthPlaceChange}
                             required
                         >
-                            {states.length > 0 ? (
-                                states.map((state) => (
+                            {birthplaceStates.length > 0 ? (
+                                birthplaceStates.map((state) => (
                                     <MenuItem
                                         key={state.state_name}
                                         value={state.state_name}
@@ -556,11 +555,11 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({
                             name="city"
                             variant="outlined"
                             value={formData.birthplace.city}
-                            onChange={handleBirthplaceChange}
+                            onChange={handleBirthPlaceChange}
                             required
                         >
-                            {cities.length > 0 ? (
-                                cities.map((city) => (
+                            {birthplaceCities.length > 0 ? (
+                                birthplaceCities.map((city) => (
                                     <MenuItem
                                         key={city.city_name}
                                         value={city.city_name}
