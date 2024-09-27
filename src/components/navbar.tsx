@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+
+import { Logout, AccountCircle, Login } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import { usePathname } from "next/navigation"; // Cambia aquí
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 function Navbar() {
   const theme = useTheme();
@@ -20,9 +21,11 @@ function Navbar() {
   const searchToken = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const handleLogout = () => {
+    document.cookie = "token=; path=/;";
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     router.push("/");
+    router.refresh();
   };
 
   return (
@@ -31,7 +34,7 @@ function Navbar() {
       style={{ backgroundColor: theme.palette.primary.main }}
     >
       <ul className="flex justify-between items-center">
-        <li>
+        <li id="navHome">
           <Link href="/" className="flex items-center">
             <Image src="/images/logo.png" alt="Logo" width={70} height={70} />
             <span
@@ -43,24 +46,22 @@ function Navbar() {
           </Link>
         </li>
         {!searchToken &&  !isAuthPage && (
-          <li className="my-auto">
+          <li id="navLogIn">
             <Link href="/auth/login">
               <button
-                className="font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white"
+                className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
                 style={{
-                  backgroundColor: theme.palette.background.paper,
-                  color: theme.palette.primary.main,
+                  color: theme.palette.background.paper,
                   marginRight: "2rem",
                 }}
               >
-                Iniciar sesión
+                Iniciar sesión <Login />
               </button>
             </Link>
           </li>
         )}
-        {
-          searchToken && !isAuthPage && (role != 'ROOT') && (
-            <li>
+        {/* {searchToken && !isAuthPage && (role != 'ROOT') && (
+            <li id="navMainPage">
               <Link href="/home/profile">
                 <button
                   className="font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white"
@@ -74,18 +75,17 @@ function Navbar() {
                 </button>
               </Link>
             </li>
-          )
-        }
+          )} */}
         {
           // Verifica si el token existe y no es una página de autenticación
           searchToken && !isAuthPage && (
-            <li>
+            <li id="navEdit" className="hidden md:block">
               <Link href="/home/profile/edit">
                 <button
-                  className="font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white"
+                  className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
                   style={{
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.primary.main,
+                    // backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.background.paper,
                     marginRight: "2rem",
                   }}
                 >
@@ -97,14 +97,14 @@ function Navbar() {
         }
         {
           searchToken && !isAuthPage && (role === 'ROOT') && (
-            <li>
+            <li id="navAdmins" className="hidden md:block">
               <Link href="/home/admins">
                 <button
-                  className="font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white"
+                  className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
                   style={{
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.primary.main,
-                    marginRight: "2rem",
+                  // backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.background.paper,
+                  marginRight: "2rem",
                   }}
                 >
                   Gestionar Administradores
@@ -116,17 +116,17 @@ function Navbar() {
         {
           // Verifica si el token existe y no es una página de autenticación
           searchToken && !isAuthPage && (
-            <li>
+            <li id="navLogOut">
               <button
                 onClick={handleLogout}
-                className="font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white"
+                className="font-bold p-3 rounded-full hover:border hover:border-gray-50"
                 style={{
-                  backgroundColor: theme.palette.background.paper,
-                  color: theme.palette.primary.main,
+                  // backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.background.paper,
                   marginRight: "2rem",
                 }}
               >
-                Cerrar sesión
+                <Logout />
               </button>
             </li>
           )

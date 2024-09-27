@@ -1,19 +1,34 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import { Typography, Button, IconButton } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import AddAdminDialog from '@/components/addAdminDialog';
-import AdminTable from '@/components/adminTable';
+import AddIcon from "@mui/icons-material/Add";
+import AddAdminDialog from "@/components/addAdminDialog";
+import AdminTable from "@/components/adminTable";
+import { getAdmins, addAdmin, deleteAdmin } from "./admins";
+// import { useRouter } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 const AdminManager = () => {
+
   // Mantener la lista de administradores en el estado
   const [admins, setAdmins] = useState([
-    { id: 1, username: 'juan.lopez', email: 'juan.lopez@example.com' },
-    { id: 2, username: 'maria.medina', email: 'maria.medina@example.com' },
-    { id: 3, username: 'andres.palacio', email: 'andres.palacio@example.com' },
+    // { id: 1, username: "juan.lopez", email: "juan.lopez@example.com" },
+    // { id: 2, username: "maria.medina", email: "maria.medina@example.com" },
+    // { id: 3, username: "andres.palacio", email: "andres.palacio@example.com" },
   ]);
 
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      const adminsList = await getAdmins();
+      setAdmins(adminsList);
+    };
+
+    fetchAdmins();
+  }, []);
+
   const [open, setOpen] = useState(false);
+  // const router = useRouter();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -28,23 +43,22 @@ const AdminManager = () => {
     email: string;
     password: string;
   }
-  
+
   //Cambiar al conectar con el back
-  const handleAddAdmin = (newAdmin: Admin) => {
-
-
-    setAdmins((prevAdmins) => [
-      ...prevAdmins, 
-      { ...newAdmin, id: prevAdmins.length ? prevAdmins[prevAdmins.length - 1].id + 1 : 1 }
-    ]);
-    console.log("Nuevo administrador creado:", newAdmin); 
+  const handleAddAdmin = async (newAdmin: Admin) => {
+    const res = await addAdmin(newAdmin);
+    alert(`Nuevo administrador creado: ${res.username}`);
+    setAdmins(await getAdmins());
+    // router.refresh()
     handleClose();
   };
 
-  // Función para eliminar un administrador
-  const handleDeleteAdmin = (username: string) => {
-    setAdmins((prevAdmins) => prevAdmins.filter(admin => admin.username !== username));
-    console.log("Administrador eliminado:", username); // Imprimir en consola el username del admin eliminado
+  const handleDeleteAdmin = async (username: string) => {
+    console.log(username);
+    const res = await deleteAdmin(username);
+    alert(`Administrador eliminado: ${res.username}`); // Imprimir en consola el username del admin eliminado
+    // router.refresh()
+    setAdmins(await getAdmins());
   };
 
   return (
@@ -84,7 +98,11 @@ const AdminManager = () => {
       {/* Pasar la lista de administradores y la función de eliminar */}
       <AdminTable admins={admins} onDeleteAdmin={handleDeleteAdmin} />
 
-      <AddAdminDialog open={open} onClose={handleClose} onAddAdmin={handleAddAdmin} />
+      <AddAdminDialog
+        open={open}
+        onClose={handleClose}
+        onAddAdmin={handleAddAdmin}
+      />
     </div>
   );
 };

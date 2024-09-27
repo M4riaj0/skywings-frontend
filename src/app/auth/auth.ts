@@ -1,7 +1,6 @@
 interface RegisterData {
   username: string;
   password: string;
-  role: string;
   dni: string;
   name1: string;
   name2: string;
@@ -12,7 +11,7 @@ interface RegisterData {
   address: string;
   birthPlace: string;
   birthDate: Date;
-  user_image: string;
+  user_image?: string;
 }
 
 interface LoginData {
@@ -23,7 +22,7 @@ interface LoginData {
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
 
 export async function handleLogin(data: LoginData) {
-  console.log("Inicio de sesión:", data);
+  // console.log("Inicio de sesión:", data);
   try {
     const response = await fetch(`${BACKEND_URL}/auth/login`, {
       method: "POST",
@@ -44,7 +43,7 @@ export async function handleLogin(data: LoginData) {
 }
 
 export async function handleRegister(data: RegisterData) {
-  console.log("Registro:", data);
+  // console.log("Registro:", data);
   try {
     const response = await fetch(`${BACKEND_URL}/auth/signup`, {
       method: "POST",

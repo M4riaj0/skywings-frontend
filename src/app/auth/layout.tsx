@@ -5,7 +5,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <Box
       sx={{
-        maxWidth: '400px', 
+        maxWidth: '450px', 
         width: '100%', 
         padding: [2, 4], 
         borderRadius: 2,

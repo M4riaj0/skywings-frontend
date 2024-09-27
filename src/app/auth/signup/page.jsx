@@ -5,7 +5,7 @@ import { Stack, Typography } from "@mui/material";
 import Stepper from "@/components/Stepper";
 import MultiStepForm from "@/forms/multiStepForm";
 
-const steps = ["Usuario", "Nombres", "Datos Personales"];
+const steps = ["Usuario", "Personal", "Dirección", "Nacimiento"];
 
 const Signup = () => {
   const [step, setStep] = useState(0);
