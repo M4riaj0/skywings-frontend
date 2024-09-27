@@ -53,7 +53,6 @@ const AdminManager = () => {
     handleClose();
   };
 
-  // Función para eliminar un administrador
   const handleDeleteAdmin = async (username: string) => {
     console.log(username);
     const res = await deleteAdmin(username);

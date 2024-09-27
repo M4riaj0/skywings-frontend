@@ -1,6 +1,5 @@
-"use client";
-
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
 import { Button, Link, Stack, TextField, Typography } from "@mui/material";
 import NextLink from "next/link";
 import ResetPassword from "@/components/resetPassword";

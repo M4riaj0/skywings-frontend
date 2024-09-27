@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+
 import { Logout, AccountCircle, Login } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter, usePathname } from "next/navigation";
@@ -127,7 +128,6 @@ function Navbar() {
               >
                 <Logout />
               </button>
-              
             </li>
           )
         }

@@ -15,11 +15,10 @@ import { handleRegister } from "@/app/auth/auth";
 import { useRouter } from "next/navigation";
 
 interface MultiStepFormProps {
-  step: number;
-  nextStep: () => void;
-  prevStep: () => void;
+    step: number;
+    nextStep: () => void;
+    prevStep: () => void;
 }
-
 
 const MultiStepForm: React.FC<MultiStepFormProps> = ({
   step,
