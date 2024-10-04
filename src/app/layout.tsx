@@ -4,11 +4,11 @@ import Navbar from "@/components/navbar";
 
 // Styles
 import "./globals.css";
-import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
+// import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import customTheme from "@/theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Container } from "@mui/material";
-import { FormProvider } from "@/context/useFormContext";
+// import { FormProvider } from "@/context/useFormContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,17 +39,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppRouterCacheProvider>
+        {/* <AppRouterCacheProvider> */}
           <ThemeProvider theme={customTheme}>
             <CssBaseline/>
             <Navbar />
             <Container>
-              <FormProvider>
+              {/* <FormProvider> */}
                 {children}
-              </FormProvider>
+              {/* </FormProvider> */}
             </Container>
           </ThemeProvider>
-        </AppRouterCacheProvider>
+        {/* </AppRouterCacheProvider> */}
         
         
       </body>

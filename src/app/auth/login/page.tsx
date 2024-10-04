@@ -1,9 +1,10 @@
 'use client';
+
 import { useState } from 'react';
 import { Button, Link, Stack, TextField, Typography } from "@mui/material";
 import NextLink from "next/link";
 import ResetPassword from "@/components/resetPassword";
-import { handleLogin } from "@/app/auth/auth";
+import { handleLogin } from "@/app/services/auth";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
@@ -33,8 +34,8 @@ export default function Login() {
       localStorage && localStorage.setItem("token", token);
       localStorage && localStorage.setItem("role", role);
     }
-    if (role == "ROOT") router.push("/home/admins");
-    else router.push("/home/profile");
+    if (role == "ROOT") router.push("/admins");
+    else router.push("/profile");
   };
 
   return (

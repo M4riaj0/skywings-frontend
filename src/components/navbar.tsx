@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { Logout, AccountCircle, Login } from "@mui/icons-material";
+import { Logout, Login } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -60,27 +60,11 @@ function Navbar() {
             </Link>
           </li>
         )}
-        {/* {searchToken && !isAuthPage && (role != 'ROOT') && (
-            <li id="navMainPage">
-              <Link href="/home/profile">
-                <button
-                  className="font-bold py-1 px-3 rounded  hover:bg-blue-300 hover:text-white"
-                  style={{
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.primary.main,
-                    marginRight: "2rem",
-                  }}
-                >
-                  Inicio
-                </button>
-              </Link>
-            </li>
-          )} */}
         {
           // Verifica si el token existe y no es una página de autenticación
           searchToken && !isAuthPage && (
             <li id="navEdit" className="hidden md:block">
-              <Link href="/home/profile/edit">
+              <Link href="/profile/edit">
                 <button
                   className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
                   style={{
@@ -98,7 +82,7 @@ function Navbar() {
         {
           searchToken && !isAuthPage && (role === 'ROOT') && (
             <li id="navAdmins" className="hidden md:block">
-              <Link href="/home/admins">
+              <Link href="/admins">
                 <button
                   className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
                   style={{
