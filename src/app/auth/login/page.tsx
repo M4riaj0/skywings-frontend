@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, Link, Stack, TextField, Typography } from "@mui/material";
 import NextLink from "next/link";
 import ResetPassword from "@/components/resetPassword";
-import { handleLogin } from "@/app/services/auth";
+import { handleLogin } from "@/services/auth";
 import { useRouter } from "next/navigation";
 
 export default function Login() {

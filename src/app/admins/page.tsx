@@ -4,7 +4,7 @@ import { Typography, Button, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AddAdminDialog from "@/components/admins/addAdminDialog";
 import AdminTable from "@/components/admins/adminTable";
-import { getAdmins, addAdmin, deleteAdmin } from "@/app/services/admins";
+import { getAdmins, addAdmin, deleteAdmin } from "@/services/admins";
 // import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
