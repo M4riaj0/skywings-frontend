@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 
-import {Button,Stack,TextField,FormControl,InputLabel,Select,MenuItem,SelectChangeEvent,Typography} from "@mui/material";
+import {
+  Button,
+  Stack,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import { handleRegister } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import {fetchToken,fetchCountries,fetchStates,fetchCities} from '@/services/location'
@@ -14,11 +24,12 @@ interface MultiStepFormProps {
 const MultiStepForm: React.FC<MultiStepFormProps> = ({step,nextStep,prevStep}) => {
   const router = useRouter();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [token, setToken] = useState<string | null>(null);
-
-  interface Country {country_name: string; country_short_name: string; }
-  interface State {state_name: string;}
-  interface City {city_name: string;}
+  //Token para la API de paises
+  const [token, setToken] = useState(null);
+  interface Country {
+    country_name: string;
+    country_short_name: string;
+  }
 
   const [countries, setCountries] = useState<Country[]>([]);
   const [addressStates, setAddressStates] = useState<State[]>([]);
@@ -26,6 +37,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({step,nextStep,prevStep}) =
   const [birthplaceStates, setBirthplaceStates] = useState<State[]>([]);
   const [birthplaceCities, setBirthplaceCities] = useState<City[]>([]);
 
+  // Cambiar formato de birthplace y address para recibirlos desde un helper
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -53,13 +65,28 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({step,nextStep,prevStep}) =
     gender: "",
   });
 
-  useEffect(() => {
-    const fetchTokenData = async () => {
-      const token = await fetchToken();
-      setToken(token);
+  // Función para obtener el token de la API de paises
+  const fetchToken = async () => {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "api-token":
+          "VZRqSoUfPdoEnzyMgPW1tVrHuhwNYcX0CZfoksSE61-79Tb0r-YgSF-oQDSAXJwwRSA",
+        "user-email": "correopruebas086@gmail.com",
+      },
     };
-    fetchTokenData();
-  }, []);
+    try {
+      const response = await fetch(
+        "https://www.universal-tutorial.com/api/getaccesstoken",
+        requestOptions
+      );
+      const result = await response.json();
+      setToken(result.auth_token);
+    } catch (error) {
+      console.error("Error fetching token:", error);
+    }
+  };
 
   useEffect(() => {
     if (token) {
@@ -146,6 +173,7 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({step,nextStep,prevStep}) =
     setErrors((prev) => ({ ...prev, [name]: "" })); // Limpiar el error al cambiar el valor
   };
 
+  //sacar las validaciones a otro archivo, pasando el step
   const validateStep = () => {
     const newErrors: { [key: string]: string } = {};
 

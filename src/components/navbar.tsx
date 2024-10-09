@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-
 import { Logout, Login } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter, usePathname } from "next/navigation";
+import AdminNav from "./navigation/adminNav";
+import UserNav from "./navigation/userNav";
+import RootNav from "./navigation/rootNav";
 
 function Navbar() {
   const theme = useTheme();
@@ -62,39 +64,18 @@ function Navbar() {
         )}
         {
           // Verifica si el token existe y no es una página de autenticación
-          searchToken && !isAuthPage && (
-            <li id="navEdit" className="hidden md:block">
-              <Link href="/profile/edit">
-                <button
-                  className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
-                  style={{
-                    // backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.background.paper,
-                    marginRight: "2rem",
-                  }}
-                >
-                  Editar Perfil
-                </button>
-              </Link>
-            </li>
+          searchToken && !isAuthPage && (role === 'USER') && (
+            <UserNav />
           )
         }
         {
           searchToken && !isAuthPage && (role === 'ROOT') && (
-            <li id="navAdmins" className="hidden md:block">
-              <Link href="/admins">
-                <button
-                  className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
-                  style={{
-                  // backgroundColor: theme.palette.background.paper,
-                  color: theme.palette.background.paper,
-                  marginRight: "2rem",
-                  }}
-                >
-                  Gestionar Administradores
-                </button>
-              </Link>
-            </li>
+            <RootNav />
+          )
+        }
+        {
+          searchToken && !isAuthPage && (role === 'ADMIN') && (
+            <AdminNav />
           )
         }
         {
