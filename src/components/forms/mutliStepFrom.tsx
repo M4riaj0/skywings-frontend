@@ -13,15 +13,17 @@ import {
 } from "@mui/material";
 import { handleRegister } from "@/services/auth";
 import { useRouter } from "next/navigation";
+import { UserFormDataType } from '@/app/schemas/users'
 import {fetchToken,fetchCountries,fetchStates,fetchCities} from '@/services/location'
 
 interface MultiStepFormProps {
-    step: number;
-    nextStep: () => void;
-    prevStep: () => void;
+  step: number;
+  nextStep: () => void;
+  prevStep: () => void;
+  user?: UserFormDataType;
 }
 
-const MultiStepForm: React.FC<MultiStepFormProps> = ({step,nextStep,prevStep}) => {
+const MultiStepForm: React.FC<MultiStepFormProps> = ({step, nextStep, prevStep, user}) => {
   const router = useRouter();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   //Token para la API de paises
@@ -281,6 +283,41 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({step,nextStep,prevStep}) =
       else alert("Error al registrar el usuario");
     }
   };
+
+  const checkUserInfo = () => {
+    if (user) {
+      setFormData({
+        username: user.username || "",
+        email: user.email || "",
+        password: "",
+        confirmPassword: "",
+        name1: user.name1 || "",
+        name2: user.name2 || "",
+        surname1: user.surname1 || "",
+        surname2: user.surname2 || "",
+        dni: user.dni || "",
+        address: {
+          country: user.address?.country || "",
+          state: user.address?.state || "",
+          city: user.address?.city || "",
+          street: user.address?.street || "",
+          numberStreet: user.address?.numberStreet || "",
+          number: user.address?.number || "",
+        },
+        birthplace: {
+          country: user.birthplace?.country || "",
+          state: user.birthplace?.state || "",
+          city: user.birthplace?.city || "",
+        },
+        birthDate: user.birthDate || "",
+        gender: user.gender || "",
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkUserInfo();
+  }, [user]);
 
   return (
     <form onSubmit={handleSubmit} className="w-full">

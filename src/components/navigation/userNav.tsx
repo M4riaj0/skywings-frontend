@@ -6,7 +6,7 @@ export default function UserNav() {
   return (
     <>
       <li id="navEdit" className="hidden md:block">
-        <Link href="/profile/edit">
+        <Link href="/profile">
           <button
             className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
             style={{
