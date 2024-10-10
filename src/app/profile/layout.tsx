@@ -6,8 +6,8 @@ const ProfileLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <div className="flex justify-center items-center h-[85vh]">
-      <div className="w-full max-w-[600px] py-5 bg-white shadow-md rounded-lg text-center flex justify-center items-center">
+    <div className="h-[80vh] mt-[1vh]">
+      <div className="w-full mx-auto max-w-[600px] py-4 bg-white shadow-md rounded-lg text-center flex justify-center h-auto">
         {children}
       </div>
     </div>

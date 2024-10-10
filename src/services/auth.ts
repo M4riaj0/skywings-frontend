@@ -3,8 +3,6 @@ import {RegisterData, LoginData} from '@/app/schemas/users'
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export async function handleLogin(data: LoginData) {
-  console.log(backendUrl);
-  // console.log("Inicio de sesión:", data);
   try {
     const response = await fetch(`${backendUrl}/auth/login`, {
       method: "POST",
@@ -25,10 +23,6 @@ export async function handleLogin(data: LoginData) {
 }
 
 export async function handleRegister(data: RegisterData) {
-  // console.log("Registro:", data);
-
-  const backendUrl = process.env.BACKEND_URL;
-  console.log(backendUrl);
   try {
     const response = await fetch(`${backendUrl}/auth/signup`, {
       method: "POST",

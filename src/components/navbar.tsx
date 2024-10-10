@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Logout, Login } from "@mui/icons-material";
+import { Logout, Login, Menu } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter, usePathname } from "next/navigation";
 import AdminNav from "./navigation/adminNav";
@@ -57,11 +57,24 @@ function Navbar() {
                   marginRight: "2rem",
                 }}
               >
-                Iniciar sesión <Login />
+                <Login />
               </button>
             </Link>
           </li>
         )}
+        {/* {window.innerWidth < 768 && (
+          <li id="navMenu">
+            <button
+              className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+              style={{
+                color: theme.palette.background.paper,
+                marginRight: "2rem",
+              }}
+            >
+              <Menu />
+            </button>
+          </li>
+        )} */}
         {
           // Verifica si el token existe y no es una página de autenticación
           searchToken && !isAuthPage && (role === 'USER') && (

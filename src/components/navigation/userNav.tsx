@@ -41,21 +41,24 @@ export default function UserNav() {
         </button>
         <ul className="absolute bg-white shadow-lg rounded mt-5 hidden">
           <li>
-            <Link href="/tickets/reservations">
+            {/* /tickets/reservations */}
+            <Link href="/">
               <button className="w-full font-bold py-1 px-3 rounded hover:border hover:border-gray-300">
           Ver reservas
               </button>
             </Link>
           </li>
           <li>
-            <Link href="/tickets/active">
+            {/* /tickets/active */}
+            <Link href="/">
               <button className="w-full font-bold py-1 px-3 hover:border hover:border-gray-300">
           Ver tiquetes activos
               </button>
             </Link>
           </li>
           <li>
-            <Link href="/tickets/history">
+            {/* /tickets/history */}
+            <Link href="/">
               <button className="w-full font-bold py-1 px-3 rounded hover:border hover:border-gray-300">
           Historial
               </button>
@@ -64,7 +67,8 @@ export default function UserNav() {
         </ul>
       </li>
       <li id="navFinancial" className="hidden md:block">
-        <Link href="/financial">
+        {/* /financial */}
+        <Link href="/">
           <button
             className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
             style={{
@@ -77,7 +81,8 @@ export default function UserNav() {
         </Link>
       </li>
       <li id="navMessages" className="hidden md:block">
-        <Link href="/messages">
+        {/* /messages */}
+        <Link href="/">
           <button
             className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
             style={{
@@ -90,7 +95,8 @@ export default function UserNav() {
         </Link>
       </li>
       <li id="navNotifications" className="hidden md:block">
-        <Link href="/notifications">
+        {/* /notifications */}
+        <Link href="/">
           <button
             className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
             style={{
