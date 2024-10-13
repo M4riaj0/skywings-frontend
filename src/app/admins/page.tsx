@@ -4,7 +4,7 @@ import { Typography, Button, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AddAdminDialog from "@/components/admins/addAdminDialog";
 import AdminTable from "@/components/admins/adminTable";
-import { getAdmins, addAdmin, deleteAdmin } from "@/app/services/admins";
+import { getAdmins, addAdmin, deleteAdmin } from "@/services/admins";
 // import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -47,10 +47,14 @@ const AdminManager = () => {
   //Cambiar al conectar con el back
   const handleAddAdmin = async (newAdmin: Admin) => {
     const res = await addAdmin(newAdmin);
-    alert(`Nuevo administrador creado: ${res.username}`);
-    setAdmins(await getAdmins());
-    // router.refresh()
-    handleClose();
+    if (res && res.username) {
+      alert(`Nuevo administrador creado: ${res.username}`);
+      setAdmins(await getAdmins());
+      // router.refresh()
+      handleClose();
+    } else {
+      alert("Error al crear el administrador. Por favor, inténtelo de nuevo.");
+    }
   };
 
   const handleDeleteAdmin = async (username: string) => {

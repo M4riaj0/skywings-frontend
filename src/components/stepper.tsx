@@ -9,7 +9,7 @@ interface StepperProps {
 
   const Stepper: React.FC<StepperProps> = ({ steps, currentStep }) => {
     return (
-      <div className="flex justify-between h-auto items-center my-3">
+      <div className="flex justify-between h-auto items-center py-4">
         {steps.map((step, index) => (
           <div
             key={index}
