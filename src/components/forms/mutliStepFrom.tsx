@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { handleRegister } from "@/services/auth";
-import { UserFormDataType } from "@/app/schemas/users";
 import {
   fetchToken,
   fetchCountries,
@@ -31,8 +31,99 @@ interface Country {
 const MultiStepForm = ({ steps, user }) => {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const { control, handleSubmit, setValue, getValues, watch,
-    formState: { errors },setError,} = useForm({
+
+  const step0Schema = z.object({
+    username: z
+      .string()
+      .min(5, "El nombre de usuario debe tener al menos 5 caracteres")
+      .max(20, "El nombre de usuario debe tener como máximo 20 caracteres")
+      .regex(/^\S*$/, "El nombre de usuario no debe contener espacios en blanco"),
+    email: z.string().email("El formato del email es incorrecto")
+      .max(20, "El email debe tener como máximo 20 caracteres"),
+    password: user ? z.string().optional() : z
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .max(20, "La contraseña debe tener como máximo 20 caracteres")
+    .regex(/^\S*$/, "La contraseña no debe contener espacios en blanco"),
+    confirmPassword: user ? z.string().optional() : z
+      .string()
+      .refine(
+        (val) => val === getValues().password,
+        "Las contraseñas no coinciden"
+      ),
+  });
+  
+  const step1Schema = z.object({
+    name1: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+    name2: z
+      .string()
+      .regex(/^\S*$/, "El nombre no debe contener espacios en blanco")
+      .optional(),
+    surname1: z
+      .string()
+      .min(3, "El apellido debe tener al menos 3 caracteres")
+      .regex(/^\S*$/, "El apellido no debe contener espacios en blanco")
+      .optional(),
+    surname2: z
+      .string()
+      .regex(/^\S*$/, "El apellido no debe contener espacios en blanco")
+      .optional(),
+    dni: z.string().nonempty("Se requiere el DNI")
+      .regex(/^\S*$/, "El DNI no debe contener espacios en blanco ni letras"),
+    gender: z.string().optional(), 
+  });
+  
+  const step2Schema = z.object({
+    address: z.object({
+      country: z.string().nonempty("Se requiere un país"),
+      state: z.string().nonempty("Se requiere un estado"),
+      city: z.string().nonempty("Se requiere una ciudad"),
+      street: z.string().nonempty("Se requiere una calle o carrera"),
+      numberStreet: z.string().nonempty("Número de vía requerido"),
+      number: z.string().nonempty("Número requerido"),
+    }),
+  });
+  
+  const step3Schema = z.object({
+    birthDate: z.string().refine((val) => {
+      const birthDate = new Date(val);
+      const today = new Date();
+      const eighteenYearsAgo = new Date(
+        today.getFullYear() - 18,
+        today.getMonth(),
+        today.getDate()
+      );
+      const ninetyYearsAgo = new Date(
+        today.getFullYear() - 90,
+        today.getMonth(),
+        today.getDate()
+      );
+      return birthDate <= eighteenYearsAgo && birthDate >= ninetyYearsAgo && birthDate <= today;
+    }, "Debes tener entre 18 y 90 años, y la fecha de nacimiento no puede estar en el futuro"),
+  });
+  
+  const getSchema = (): z.ZodSchema => {
+    // const formData = getValues();
+  
+    switch (step) {
+      case 0:
+        return step0Schema;
+        break;
+      case 1:
+        return step1Schema;
+        break;
+      case 2:
+        return step2Schema;
+        break;
+      case 3:
+        return step3Schema;
+        break;
+      default:
+        return z.object({});
+    }
+  };
+
+  const { control, handleSubmit, setValue, getValues, watch, trigger, formState: { errors } } = useForm({
     defaultValues: {
       username: "",
       email: "",
@@ -59,6 +150,7 @@ const MultiStepForm = ({ steps, user }) => {
       birthDate: "",
       gender: "",
     },
+    resolver: zodResolver(getSchema()),
   });
 
   const [token, setToken] = useState<string | null>(null);
@@ -166,118 +258,11 @@ const MultiStepForm = ({ steps, user }) => {
     }
   }, [user, setValue]);
 
-  const step0Schema = z.object({
-    username: z
-      .string()
-      .min(5, "El nombre de usuario debe tener al menos 5 caracteres")
-      .max(20, "El nombre de usuario debe tener como máximo 20 caracteres")
-      .regex(/^\S*$/, "El nombre de usuario no debe contener espacios en blanco"),
-    email: z.string().email("El formato del email es incorrecto")
-    .regex(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "El formato del email es incorrecto"
-    ),
-    password: user ? z.string().optional() : z
-    .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .max(20, "La contraseña debe tener como máximo 20 caracteres")
-    .regex(/^\S*$/, "La contraseña no debe contener espacios en blanco"),
-    confirmPassword: user ? z.string().optional() : z
-      .string()
-      .refine(
-        (val) => val === getValues().password,
-        "Las contraseñas no coinciden"
-      ),
-  });
 
-  const step1Schema = z.object({
-    name1: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-    name2: z
-      .string()
-      .regex(/^\S*$/, "El nombre no debe contener espacios en blanco")
-      .optional(),
-    surname1: z
-      .string()
-      .min(3, "El apellido debe tener al menos 3 caracteres")
-      .regex(/^\S*$/, "El apellido no debe contener espacios en blanco")
-      .optional(),
-    surname2: z
-      .string()
-      .regex(/^\S*$/, "El apellido no debe contener espacios en blanco")
-      .optional(),
-    dni: z.string().nonempty("Se requiere el DNI")
-      .regex(/^\S*$/, "El DNI no debe contener espacios en blanco ni letras"),
-    gender: z.string().optional(), 
-  });
-
-  const step2Schema = z.object({
-    address: z.object({
-      country: z.string().nonempty("Se requiere un país"),
-      state: z.string().nonempty("Se requiere un estado"),
-      city: z.string().nonempty("Se requiere una ciudad"),
-      street: z.string().nonempty("Se requiere una calle o carrera"),
-      numberStreet: z.string().nonempty("Número de vía requerido"),
-      number: z.string().nonempty("Número requerido"),
-    }),
-  });
-
-  const step3Schema = z.object({
-    birthDate: z.string().refine((val) => {
-      const birthDate = new Date(val);
-      const today = new Date();
-      const eighteenYearsAgo = new Date(
-        today.getFullYear() - 18,
-        today.getMonth(),
-        today.getDate()
-      );
-      const ninetyYearsAgo = new Date(
-        today.getFullYear() - 90,
-        today.getMonth(),
-        today.getDate()
-      );
-      return birthDate <= eighteenYearsAgo && birthDate >= ninetyYearsAgo && birthDate <= today;
-    }, "Debes tener entre 18 y 90 años, y la fecha de nacimiento no puede estar en el futuro"),
-  });
-
-  const validateStep = () => {
-    const formData = getValues();
-    let schema;
-
-    switch (step) {
-      case 0:
-        schema = step0Schema;
-        break;
-      case 1:
-        schema = step1Schema;
-        break;
-      case 2:
-        schema = step2Schema;
-        break;
-      case 3:
-        schema = step3Schema;
-        break;
-      default:
-        schema = z.object({});
-    }
-
-    const result = schema.safeParse(formData);
-    if (!result.success) {
-      result.error.errors.forEach((error) => {
-        setError(error.path.join(".") as any, {
-          type: "manual",
-          message: error.message,
-        });
-      });
-      return false;
-    }
-
-    return true;
-  };
-
-  const nextStep = () => {
-    if (validateStep()) {
-      if (step < 4)
-        setStep(step + 1);
+  const nextStep = async () => {
+    const validateStep = await trigger()
+    if (validateStep) {
+      setStep(step + 1);
     }
   };
 
@@ -287,7 +272,7 @@ const MultiStepForm = ({ steps, user }) => {
   };
 
   const onSubmit = async (data: any) => {
-    if (validateStep()) {
+    if (await trigger()) {
       const formDataToSend = {
         ...data,
         address: `${data.address.street} ${data.address.numberStreet} #${data.address.number}, ${data.address.city}, ${data.address.state}, ${data.address.country}`,
@@ -327,7 +312,7 @@ const MultiStepForm = ({ steps, user }) => {
                   required
                   fullWidth
                   error={!!errors.username}
-                  helperText={errors.username?.message}
+                  helperText={errors.username ? errors.username.message : ""}
                 />
               )}
             />
@@ -344,7 +329,7 @@ const MultiStepForm = ({ steps, user }) => {
                   required
                   fullWidth
                   error={!!errors.email}
-                  helperText={errors.email?.message}
+                  helperText={errors.email ? errors.email.message : ""}
                 />
               )}
             />

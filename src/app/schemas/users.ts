@@ -24,31 +24,3 @@ export interface Admin {
   email: string;
   password: string;
 }
-
-export interface UserFormDataType {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  name1: string;
-  name2: string;
-  surname1: string;
-  surname2: string;
-  dni: string;
-  address: {
-    country: string;
-    state: string;
-    city: string;
-    street: string;
-    numberStreet: string;
-    number: string;
-  };
-  birthplace: {
-    country: string;
-    state: string;
-    city: string;
-  };
-  birthDate: string;
-  gender: string;
-  user_image: string;
-}

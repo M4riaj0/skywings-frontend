@@ -47,10 +47,14 @@ const AdminManager = () => {
   //Cambiar al conectar con el back
   const handleAddAdmin = async (newAdmin: Admin) => {
     const res = await addAdmin(newAdmin);
-    alert(`Nuevo administrador creado: ${res.username}`);
-    setAdmins(await getAdmins());
-    // router.refresh()
-    handleClose();
+    if (res && res.username) {
+      alert(`Nuevo administrador creado: ${res.username}`);
+      setAdmins(await getAdmins());
+      // router.refresh()
+      handleClose();
+    } else {
+      alert("Error al crear el administrador. Por favor, inténtelo de nuevo.");
+    }
   };
 
   const handleDeleteAdmin = async (username: string) => {
