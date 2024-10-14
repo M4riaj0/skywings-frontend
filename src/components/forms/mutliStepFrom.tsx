@@ -22,6 +22,8 @@ import {
 } from "@/services/location";
 import Stepper from "@/components/stepper";
 import { updateUser } from "@/services/profile";
+import UploadFiles from "../uploadFiles/uploadFiles";
+import { MdEdit } from "react-icons/md";
 
 interface Country {
   country_name: string;
@@ -159,6 +161,12 @@ const MultiStepForm = ({ steps, user }) => {
   const [addressCities, setAddressCities] = useState<City[]>([]);
   const [birthplaceStates, setBirthplaceStates] = useState<State[]>([]);
   const [birthplaceCities, setBirthplaceCities] = useState<City[]>([]);
+  const [profilePicUrl, setProfilePicUrl] = useState('');
+  const [isEditingFoto, setIsEditingFoto] = useState(true);
+
+  const handlephotoUrlUpload = (url: string) => {
+    setProfilePicUrl(url);
+  };
 
   useEffect(() => {
     const fetchTokenData = async () => {
@@ -300,6 +308,36 @@ const MultiStepForm = ({ steps, user }) => {
       <Stack spacing={2} className="w-full max-w-md">
         {step === 0 && (
           <>
+            <div className='flex flex-col items-center mb-5'>
+              <div className='relative w-24 h-24'>
+                {profilePicUrl.length > 0 ? (
+                  <img
+                    src={profilePicUrl}
+                    alt="Foto de perfil"
+                    className="w-full h-full rounded-full object-contain bg-gray-300 flex justify-center items-center"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full flex items-center justify-center bg-gray-300 text-gray-500 text-center p-2">
+                    No se ha seleccionado ninguna foto de perfil
+                  </div>
+                )}
+                <button
+                  type="button"
+                  className="absolute top-1 right-1 bg-indigo-600 border-none rounded-full p-1 cursor-pointer shadow-md transition-colors duration-300 hover:bg-indigo-700"
+                  onClick={() => setIsEditingFoto(!isEditingFoto)}
+                >
+                  <MdEdit />
+                </button>
+              </div>
+              <div className='mt-2'>
+                <label className="block text-center">Foto de Perfil</label>
+              </div>
+              {isEditingFoto && (
+                <div className='mt-2'>
+                  <UploadFiles onUpload={(url) => {handlephotoUrlUpload(url); setIsEditingFoto(false); }} />
+                </div>
+              )}
+            </div>
             <Controller
               name="username"
               control={control}
