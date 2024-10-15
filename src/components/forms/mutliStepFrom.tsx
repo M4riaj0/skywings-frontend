@@ -41,7 +41,7 @@ const MultiStepForm = ({ steps, user }) => {
       .max(20, "El nombre de usuario debe tener como máximo 20 caracteres")
       .regex(/^\S*$/, "El nombre de usuario no debe contener espacios en blanco"),
     email: z.string().email("El formato del email es incorrecto")
-      .max(20, "El email debe tener como máximo 20 caracteres"),
+      .max(40, "El email debe tener como máximo 20 caracteres"),
     password: user ? z.string().optional() : z
     .string()
     .min(8, "La contraseña debe tener al menos 8 caracteres")
@@ -105,8 +105,6 @@ const MultiStepForm = ({ steps, user }) => {
   });
   
   const getSchema = (): z.ZodSchema => {
-    // const formData = getValues();
-  
     switch (step) {
       case 0:
         return step0Schema;
@@ -279,8 +277,9 @@ const MultiStepForm = ({ steps, user }) => {
       setStep(step - 1);
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async () => {
     if (await trigger()) {
+      const data = getValues();
       const formDataToSend = {
         ...data,
         address: `${data.address.street} ${data.address.numberStreet} #${data.address.number}, ${data.address.city}, ${data.address.state}, ${data.address.country}`,
