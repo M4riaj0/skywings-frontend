@@ -5,26 +5,23 @@ export default function UserNav() {
   const theme = useTheme();
   return (
     <>
-      <li id="navEdit" className="hidden md:block">
+      <li id="navEdit">
         <Link href="/profile">
           <button
-            className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
             style={{
-              // backgroundColor: theme.palette.background.paper,
               color: theme.palette.background.paper,
-              marginRight: "2rem",
             }}
           >
             Editar Perfil
           </button>
         </Link>
       </li>
-      <li id="navTickets" className="hidden md:block">
+      <li id="navTickets">
         <button
-          className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+          className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
           style={{
             color: theme.palette.background.paper,
-            marginRight: "2rem",
           }}
           onClick={() => {
             const navTickets = document.getElementById("navTickets");
@@ -39,12 +36,12 @@ export default function UserNav() {
         >
           Tiquetes
         </button>
-        <ul className="absolute bg-white shadow-lg rounded mt-5 hidden">
+        <ul className="absolute bg-white shadow-lg rounded mt-1 hidden">
           <li>
             {/* /tickets/reservations */}
             <Link href="/">
               <button className="w-full font-bold py-1 px-3 rounded hover:border hover:border-gray-300">
-          Ver reservas
+                Ver reservas
               </button>
             </Link>
           </li>
@@ -52,7 +49,7 @@ export default function UserNav() {
             {/* /tickets/active */}
             <Link href="/">
               <button className="w-full font-bold py-1 px-3 hover:border hover:border-gray-300">
-          Ver tiquetes activos
+                Ver tiquetes activos
               </button>
             </Link>
           </li>
@@ -60,48 +57,45 @@ export default function UserNav() {
             {/* /tickets/history */}
             <Link href="/">
               <button className="w-full font-bold py-1 px-3 rounded hover:border hover:border-gray-300">
-          Historial
+                Historial
               </button>
             </Link>
           </li>
         </ul>
       </li>
-      <li id="navFinancial" className="hidden md:block">
+      <li id="financial">
         {/* /financial */}
         <Link href="/">
           <button
-            className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
             style={{
               color: theme.palette.background.paper,
-              marginRight: "2rem",
             }}
           >
             Área financiera
           </button>
         </Link>
       </li>
-      <li id="navMessages" className="hidden md:block">
+      <li id="messages">
         {/* /messages */}
         <Link href="/">
           <button
-            className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
             style={{
               color: theme.palette.background.paper,
-              marginRight: "2rem",
             }}
           >
             Mensajes
           </button>
         </Link>
       </li>
-      <li id="navNotifications" className="hidden md:block">
+      <li id="navNotifications">
         {/* /notifications */}
         <Link href="/">
           <button
-            className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
             style={{
               color: theme.palette.background.paper,
-              marginRight: "2rem",
             }}
           >
             Notificaciones

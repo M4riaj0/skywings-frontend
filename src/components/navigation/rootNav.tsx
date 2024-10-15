@@ -5,28 +5,26 @@ export default function RootNav() {
   const theme = useTheme();
   return (
     <>
-      <li>
+      <li id="changePass">
         {/* This route must be changed to /changePassword or something like that */}
-        <Link href='/'> 
+        <Link href="/">
           <button
-            className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
             style={{
               color: theme.palette.background.paper,
-              marginRight: "2rem",
             }}
           >
             Cambiar contraseña
           </button>
         </Link>
       </li>
-      <li id="navAdmins" className="hidden md:block">
+      <li id="admins">
         <Link href="/admins">
           <button
-            className="font-bold py-1 px-3 rounded hover:border hover:rounded-2xl hover:border-gray-50"
+            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
             style={{
               // backgroundColor: theme.palette.background.paper,
               color: theme.palette.background.paper,
-              marginRight: "2rem",
             }}
           >
             Gestionar Administradores
