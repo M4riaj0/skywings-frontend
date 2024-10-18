@@ -30,7 +30,7 @@ export async function getUser () {
 export async function updateUser (data: RegisterData) {
   try {
     const response = await fetch(`${backendUrl}/users/updateuser`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
