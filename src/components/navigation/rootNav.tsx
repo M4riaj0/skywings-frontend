@@ -7,7 +7,7 @@ export default function RootNav() {
     <>
       <li id="changePass">
         {/* This route must be changed to /changePassword or something like that */}
-        <Link href="/">
+        <Link href="/profile/password">
           <button
             className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
             style={{

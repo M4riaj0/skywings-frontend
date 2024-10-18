@@ -6,16 +6,40 @@ export default function UserNav() {
   return (
     <>
       <li id="navEdit">
-        <Link href="/profile">
-          <button
-            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-            style={{
-              color: theme.palette.background.paper,
-            }}
-          >
-            Editar Perfil
-          </button>
-        </Link>
+        <button
+          className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
+          style={{
+            color: theme.palette.background.paper,
+          }}
+          onClick={() => {
+            const navEdit = document.getElementById("navEdit");
+            if (navEdit) {
+              const childUl = navEdit.querySelector("ul");
+              if (childUl) {
+                childUl.style.display =
+                  childUl.style.display === "block" ? "none" : "block";
+              }
+            }
+          }}
+        >
+          Editar Perfil
+        </button>
+        <ul className="absolute bg-white shadow-lg rounded mt-1 hidden">
+          <li>
+            <Link href="/profile">
+              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
+                Editar información
+              </button>
+            </Link>
+          </li>
+          <li>
+            <Link href="/profile/password">
+              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
+                Cambiar contraseña
+              </button>
+            </Link>
+          </li>
+        </ul>
       </li>
       <li id="navTickets">
         <button
@@ -40,7 +64,7 @@ export default function UserNav() {
           <li>
             {/* /tickets/reservations */}
             <Link href="/">
-              <button className="w-full font-bold py-1 px-3 rounded hover:border hover:border-gray-300">
+              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
                 Ver reservas
               </button>
             </Link>
@@ -48,7 +72,7 @@ export default function UserNav() {
           <li>
             {/* /tickets/active */}
             <Link href="/">
-              <button className="w-full font-bold py-1 px-3 hover:border hover:border-gray-300">
+              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
                 Ver tiquetes activos
               </button>
             </Link>
@@ -56,7 +80,7 @@ export default function UserNav() {
           <li>
             {/* /tickets/history */}
             <Link href="/">
-              <button className="w-full font-bold py-1 px-3 rounded hover:border hover:border-gray-300">
+              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
                 Historial
               </button>
             </Link>
