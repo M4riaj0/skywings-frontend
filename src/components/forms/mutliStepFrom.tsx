@@ -35,26 +35,36 @@ const MultiStepForm = ({ steps, user }) => {
   const [step, setStep] = useState(0);
 
   const step0Schema = z.object({
+    user_image: z.string().optional(),
     username: z
       .string()
       .min(5, "El nombre de usuario debe tener al menos 5 caracteres")
       .max(20, "El nombre de usuario debe tener como máximo 20 caracteres")
-      .regex(/^\S*$/, "El nombre de usuario no debe contener espacios en blanco"),
-    email: z.string().email("El formato del email es incorrecto")
-      .max(40, "El email debe tener como máximo 20 caracteres"),
-    password: user ? z.string().optional() : z
-    .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .max(20, "La contraseña debe tener como máximo 20 caracteres")
-    .regex(/^\S*$/, "La contraseña no debe contener espacios en blanco"),
-    confirmPassword: user ? z.string().optional() : z
-      .string()
-      .refine(
-        (val) => val === getValues().password,
-        "Las contraseñas no coinciden"
+      .regex(
+        /^\S*$/,
+        "El nombre de usuario no debe contener espacios en blanco"
       ),
+    email: z
+      .string()
+      .email("El formato del email es incorrecto")
+      .max(40, "El email debe tener como máximo 20 caracteres"),
+    password: user
+      ? z.string().optional()
+      : z
+          .string()
+          .min(8, "La contraseña debe tener al menos 8 caracteres")
+          .max(20, "La contraseña debe tener como máximo 20 caracteres")
+          .regex(/^\S*$/, "La contraseña no debe contener espacios en blanco"),
+    confirmPassword: user
+      ? z.string().optional()
+      : z
+          .string()
+          .refine(
+            (val) => val === getValues().password,
+            "Las contraseñas no coinciden"
+          ),
   });
-  
+
   const step1Schema = z.object({
     name1: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
     name2: z
@@ -70,11 +80,13 @@ const MultiStepForm = ({ steps, user }) => {
       .string()
       .regex(/^\S*$/, "El apellido no debe contener espacios en blanco")
       .optional(),
-    dni: z.string().nonempty("Se requiere el DNI")
+    dni: z
+      .string()
+      .nonempty("Se requiere el DNI")
       .regex(/^\S*$/, "El DNI no debe contener espacios en blanco ni letras"),
-    gender: z.string().optional(), 
+    gender: z.string().optional(),
   });
-  
+
   const step2Schema = z.object({
     address: z.object({
       country: z.string().nonempty("Se requiere un país"),
@@ -85,7 +97,7 @@ const MultiStepForm = ({ steps, user }) => {
       number: z.string().nonempty("Número requerido"),
     }),
   });
-  
+
   const step3Schema = z.object({
     birthDate: z.string().refine((val) => {
       const birthDate = new Date(val);
@@ -100,10 +112,14 @@ const MultiStepForm = ({ steps, user }) => {
         today.getMonth(),
         today.getDate()
       );
-      return birthDate <= eighteenYearsAgo && birthDate >= ninetyYearsAgo && birthDate <= today;
+      return (
+        birthDate <= eighteenYearsAgo &&
+        birthDate >= ninetyYearsAgo &&
+        birthDate <= today
+      );
     }, "Debes tener entre 18 y 90 años, y la fecha de nacimiento no puede estar en el futuro"),
   });
-  
+
   const getSchema = (): z.ZodSchema => {
     switch (step) {
       case 0:
@@ -123,7 +139,15 @@ const MultiStepForm = ({ steps, user }) => {
     }
   };
 
-  const { control, handleSubmit, setValue, getValues, watch, trigger, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    trigger,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       username: "",
       email: "",
@@ -149,6 +173,7 @@ const MultiStepForm = ({ steps, user }) => {
       },
       birthDate: "",
       gender: "",
+      user_image: "",
     },
     resolver: zodResolver(getSchema()),
   });
@@ -159,11 +184,11 @@ const MultiStepForm = ({ steps, user }) => {
   const [addressCities, setAddressCities] = useState<City[]>([]);
   const [birthplaceStates, setBirthplaceStates] = useState<State[]>([]);
   const [birthplaceCities, setBirthplaceCities] = useState<City[]>([]);
-  const [profilePicUrl, setProfilePicUrl] = useState('');
+  // const [user_image, setuser_image] = useState('');
   const [isEditingFoto, setIsEditingFoto] = useState(true);
 
   const handlephotoUrlUpload = (url: string) => {
-    setProfilePicUrl(url);
+    setuser_image(url);
   };
 
   useEffect(() => {
@@ -223,6 +248,20 @@ const MultiStepForm = ({ steps, user }) => {
 
   useEffect(() => {
     if (user) {
+      setValue("username", user.username);
+      setValue("email", user.email);
+      setValue("name1", user.name1);
+      setValue("name2", user.name2);
+      setValue("surname1", user.surname1);
+      setValue("surname2", user.surname2);
+      setValue("dni", user.dni);
+      if (user.birthDate) {
+        const birthDate = new Date(user.birthDate).toISOString().split("T")[0];
+        setValue("birthDate", birthDate);
+      }
+      setValue("gender", user.gender);
+      if (user.user_image) setValue("user_image", user.user_image);
+
       if (user.address) {
         const address = user.address.split(", ");
         handleLocationChange("country", address[3], true).then(() => {
@@ -247,34 +286,32 @@ const MultiStepForm = ({ steps, user }) => {
     }
   }, [user, setValue, token]);
 
-  useEffect(() => {
-    if (user) {
-      setValue("username", user.username);
-      setValue("email", user.email);
-      setValue("name1", user.name1);
-      setValue("name2", user.name2);
-      setValue("surname1", user.surname1);
-      setValue("surname2", user.surname2);
-      setValue("dni", user.dni);
-      if (user.birthDate) {
-        const birthDate = new Date(user.birthDate).toISOString().split("T")[0];
-        setValue("birthDate", birthDate);
-      }
-      setValue("gender", user.gender);
-    }
-  }, [user, setValue]);
-
+  // useEffect(() => {
+  //   if (user) {
+  //     setValue("username", user.username);
+  //     setValue("email", user.email);
+  //     setValue("name1", user.name1);
+  //     setValue("name2", user.name2);
+  //     setValue("surname1", user.surname1);
+  //     setValue("surname2", user.surname2);
+  //     setValue("dni", user.dni);
+  //     if (user.birthDate) {
+  //       const birthDate = new Date(user.birthDate).toISOString().split("T")[0];
+  //       setValue("birthDate", birthDate);
+  //     }
+  //     setValue("gender", user.gender);
+  //   }
+  // }, [user, setValue]);
 
   const nextStep = async () => {
-    const validateStep = await trigger()
+    const validateStep = await trigger();
     if (validateStep) {
       setStep(step + 1);
     }
   };
 
   const prevStep = () => {
-    if (step > 0)
-      setStep(step - 1);
+    if (step > 0) setStep(step - 1);
   };
 
   const onSubmit = async () => {
@@ -282,494 +319,525 @@ const MultiStepForm = ({ steps, user }) => {
       const data = getValues();
       const formDataToSend = {
         ...data,
-        address: `${data.address.street} ${data.address.numberStreet} #${data.address.number}, ${data.address.city}, ${data.address.state}, ${data.address.country}`,
+        address: `${data.address.street} ${data.address.numberStreet} # ${data.address.number}, ${data.address.city}, ${data.address.state}, ${data.address.country}`,
         birthPlace: `${data.birthplace.city}, ${data.birthplace.state}, ${data.birthplace.country}`,
         birthDate: new Date(data.birthDate),
+        // user_image: data.user_image.toString(),
       };
+      console.log("this is the user", formDataToSend);
       let res;
-      if (user)
+      if (user) {
         res = await updateUser(formDataToSend);
-      else
-        res = await handleRegister(formDataToSend);
-      if (res === "Usuario registrado") {
-        alert("Usuario registrado exitosamente");
-        router.push("/auth/login");
+        if (!res.error) {
+          console.log(res);
+          alert("Usuario actualizado exitosamente");
+          router.push("/");
+        } else {
+          alert("Error al actualizar el usuario");
+          console.log(res);
+        }
       } else {
-        alert("Error al registrar el usuario");
+        res = await handleRegister(formDataToSend);
+        if (res === "Usuario registrado") {
+          alert("Usuario registrado exitosamente");
+          router.push("/auth/login");
+        } else {
+          alert("Error al registrar el usuario");
+        }
       }
     }
   };
 
   return (
     <>
-    <Stepper steps={steps} currentStep={step + 1}/>
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <Stack spacing={2} className="w-full max-w-md">
-        {step === 0 && (
-          <>
-            <div className='flex flex-col items-center mb-5'>
-              <div className='relative w-24 h-24'>
-                {profilePicUrl.length > 0 ? (
-                  <img
-                    src={profilePicUrl}
-                    alt="Foto de perfil"
-                    className="w-full h-full rounded-full object-contain bg-gray-300 flex justify-center items-center"
-                  />
-                ) : (
-                  <div className="w-full h-full rounded-full flex items-center justify-center bg-gray-300 text-gray-500 text-center p-2">
-                    No se ha seleccionado ninguna foto de perfil
+      <Stepper steps={steps} currentStep={step + 1} />
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+        <Stack spacing={2} className="w-full max-w-md">
+          {step === 0 && (
+            <>
+              <div className="flex flex-col items-center mb-5">
+                <div className="relative w-24 h-24">
+                  {getValues().user_image.length > 0 ? (
+                    <img
+                      src={getValues().user_image}
+                      alt="Foto de perfil"
+                      className="w-full h-full rounded-full object-contain bg-gray-300 flex justify-center items-center"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full flex items-center justify-center bg-gray-300 text-gray-500 text-center p-2">
+                      No se ha seleccionado ninguna foto de perfil
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    className="absolute top-1 right-1 bg-indigo-600 border-none rounded-full p-1 cursor-pointer shadow-md transition-colors duration-300 hover:bg-indigo-700"
+                    onClick={() => setIsEditingFoto(!isEditingFoto)}
+                  >
+                    <MdEdit />
+                  </button>
+                </div>
+                <div className="mt-2">
+                  <label className="block text-center">
+                    Foto de Perfil (opcional)
+                    {/* aqui - {typeof(getValues().user_image)}
+                    {getValues().user_image} */}
+                  </label>
+                </div>
+                {isEditingFoto && (
+                  <div className="mt-2">
+                    <UploadFiles
+                      onUpload={(url) => {
+                        console.log(url);
+                        setIsEditingFoto(false);
+                        setValue("user_image", url);
+                      }}
+                    />
                   </div>
                 )}
-                <button
-                  type="button"
-                  className="absolute top-1 right-1 bg-indigo-600 border-none rounded-full p-1 cursor-pointer shadow-md transition-colors duration-300 hover:bg-indigo-700"
-                  onClick={() => setIsEditingFoto(!isEditingFoto)}
-                >
-                  <MdEdit />
-                </button>
               </div>
-              <div className='mt-2'>
-                <label className="block text-center">Foto de Perfil</label>
-              </div>
-              {isEditingFoto && (
-                <div className='mt-2'>
-                  <UploadFiles onUpload={(url) => {handlephotoUrlUpload(url); setIsEditingFoto(false); }} />
-                </div>
-              )}
-            </div>
-            <Controller
-              name="username"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  {...user ? { disabled: true } : {}}
-                  label="Nombre de usuario"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  error={!!errors.username}
-                  helperText={errors.username ? errors.username.message : ""}
-                />
-              )}
-            />
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  {...user ? { disabled: true } : {}}
-                  label="Email"
-                  type="email"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  error={!!errors.email}
-                  helperText={errors.email ? errors.email.message : ""}
-                />
-              )}
-            />
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Contraseña"
-                  type="password"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                />
-              )}
-            />
-            <Controller
-              name="confirmPassword"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Confirmar contraseña"
-                  type="password"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword?.message}
-                />
-              )}
-            />
-          </>
-        )}
-
-        {step === 1 && (
-          <>
-            <Controller
-              name="name1"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Primer nombre"
-                  variant="outlined"
-                  fullWidth
-                  error={!!errors.name1}
-                  helperText={errors.name1?.message}
-                />
-              )}
-            />
-            <Controller
-              name="name2"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Segundo nombre"
-                  variant="outlined"
-                  fullWidth
-                  error={!!errors.name2}
-                  helperText={errors.name2?.message}
-                />
-              )}
-            />
-            <Controller
-              name="surname1"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Primer apellido"
-                  variant="outlined"
-                  fullWidth
-                  error={!!errors.surname1}
-                  helperText={errors.surname1?.message}
-                />
-              )}
-            />
-            <Controller
-              name="surname2"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Segundo apellido"
-                  variant="outlined"
-                  fullWidth
-                  error={!!errors.surname2}
-                  helperText={errors.surname2?.message}
-                />
-              )}
-            />
-            <Controller
-              name="dni"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  {...user ? { disabled: true } : {}}
-                  label="DNI"
-                  type="number"
-                  variant="outlined"
-                  fullWidth
-                  error={!!errors.dni}
-                  helperText={errors.dni?.message}
-                />
-              )}
-            />
-            <Controller
-              name="gender"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth error={!!errors.gender}>
-                  <InputLabel id="gender-label">Género</InputLabel>
-                  <Select {...field} labelId="gender-label" label="Género">
-                    <MenuItem value="">
-                      <em>Seleccionar</em>
-                    </MenuItem>
-                    <MenuItem value="male">Masculino</MenuItem>
-                    <MenuItem value="female">Femenino</MenuItem>
-                    <MenuItem value="other">Otro</MenuItem>
-                  </Select>
-                  {errors.gender && <span>{errors.gender.message}</span>}
-                </FormControl>
-              )}
-            />
-          </>
-        )}
-
-        {step === 2 && (
-          <>
-            <Controller
-              name="address.country"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  label="País"
-                  variant="outlined"
-                  required
-                  onChange={(e) =>
-                    handleLocationChange("country", e.target.value, true)
-                  }
-                  error={!!errors.address?.country}
-                  helperText={errors.address?.country?.message}
-                >
-                  {countries.length > 0 ? (
-                    countries.map((country) => (
-                      <MenuItem
-                        key={country.country_short_name}
-                        value={country.country_name}
-                      >
-                        {country.country_name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>Cargando países...</MenuItem>
-                  )}
-                </TextField>
-              )}
-            />
-            <Controller
-              name="address.state"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  label="Estado"
-                  variant="outlined"
-                  required
-                  disabled={!watch("address.country")}
-                  onChange={(e) =>
-                    handleLocationChange("state", e.target.value, true)
-                  }
-                  error={!!errors.address?.state}
-                  helperText={errors.address?.state?.message}
-                >
-                  {addressStates.length > 0 ? (
-                    addressStates.map((state) => (
-                      <MenuItem key={state.state_name} value={state.state_name}>
-                        {state.state_name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>Cargando estados...</MenuItem>
-                  )}
-                </TextField>
-              )}
-            />
-            <Controller
-              name="address.city"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  label="Ciudad"
-                  variant="outlined"
-                  required
-                  disabled={!watch("address.state")}
-                  onChange={(e) =>
-                    handleLocationChange("city", e.target.value, true)
-                  }
-                  error={!!errors.address?.city}
-                  helperText={errors.address?.city?.message}
-                >
-                  {addressCities.length > 0 ? (
-                    addressCities.map((city) => (
-                      <MenuItem key={city.city_name} value={city.city_name}>
-                        {city.city_name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>Cargando ciudades...</MenuItem>
-                  )}
-                </TextField>
-              )}
-            />
-            <Controller
-              name="address.street"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  label="Tipo de vía"
-                  variant="outlined"
-                  required
-                  disabled={!watch("address.city")}
-                  error={!!errors.address?.street}
-                  helperText={errors.address?.street?.message}
-                >
-                  <MenuItem value="Calle">Calle</MenuItem>
-                  <MenuItem value="Carrera">Carrera</MenuItem>
-                </TextField>
-              )}
-            />
-            <Stack direction="row" spacing={2} alignItems="center">
               <Controller
-                name="address.numberStreet"
+                name="username"
                 control={control}
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label="Número vía"
-                    type="number"
+                    {...(user ? { disabled: true } : {})}
+                    label="Nombre de usuario"
                     variant="outlined"
                     required
-                    disabled={!watch("address.street")}
-                    error={!!errors.address?.numberStreet}
-                    helperText={errors.address?.numberStreet?.message}
+                    fullWidth
+                    error={!!errors.username}
+                    helperText={errors.username ? errors.username.message : ""}
                   />
                 )}
               />
-              <Typography variant="subtitle1" component="h5" align="left">
-                #
-              </Typography>
               <Controller
-                name="address.number"
+                name="email"
                 control={control}
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label="Número"
-                    type="number"
+                    {...(user ? { disabled: true } : {})}
+                    label="Email"
+                    type="email"
                     variant="outlined"
                     required
-                    disabled={!watch("address.numberStreet")}
-                    error={!!errors.address?.number}
-                    helperText={errors.address?.number?.message}
+                    fullWidth
+                    error={!!errors.email}
+                    helperText={errors.email ? errors.email.message : ""}
                   />
                 )}
               />
-            </Stack>
-          </>
-        )}
+              {!user && (
+                <>
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Contraseña"
+                        type="password"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                      />
+                    )}
+                  />
 
-        {step === 3 && (
-          <>
-            <Controller
-              name="birthplace.country"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  label="País"
-                  variant="outlined"
-                  onChange={(e) =>
-                    handleLocationChange("country", e.target.value, false)
-                  }
-                  error={!!errors.birthplace?.country}
-                  helperText={errors.birthplace?.country?.message}
-                >
-                  {countries.length > 0 ? (
-                    countries.map((country) => (
-                      <MenuItem
-                        key={country.country_short_name}
-                        value={country.country_name}
-                      >
-                        {country.country_name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>Cargando países...</MenuItem>
-                  )}
-                </TextField>
+                  <Controller
+                    name="confirmPassword"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Confirmar contraseña"
+                        type="password"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        error={!!errors.confirmPassword}
+                        helperText={errors.confirmPassword?.message}
+                      />
+                    )}
+                  />
+                </>
               )}
-            />
-            <Controller
-              name="birthplace.state"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  label="Estado"
-                  variant="outlined"
-                  required
-                  disabled={!watch("birthplace.country")}
-                  onChange={(e) =>
-                    handleLocationChange("state", e.target.value, false)
-                  }
-                  error={!!errors.birthplace?.state}
-                  helperText={errors.birthplace?.state?.message}
-                >
-                  {birthplaceStates.length > 0 ? (
-                    birthplaceStates.map((state) => (
-                      <MenuItem key={state.state_name} value={state.state_name}>
-                        {state.state_name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>Cargando estados...</MenuItem>
-                  )}
-                </TextField>
-              )}
-            />
-            <Controller
-              name="birthplace.city"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  label="Ciudad"
-                  variant="outlined"
-                  required
-                  disabled={!watch("birthplace.state")}
-                  onChange={(e) =>
-                    handleLocationChange("city", e.target.value, false)
-                  }
-                  error={!!errors.birthplace?.city}
-                  helperText={errors.birthplace?.city?.message}
-                >
-                  {birthplaceCities.length > 0 ? (
-                    birthplaceCities.map((city) => (
-                      <MenuItem key={city.city_name} value={city.city_name}>
-                        {city.city_name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>Cargando ciudades...</MenuItem>
-                  )}
-                </TextField>
-              )}
-            />
-            <Controller
-              name="birthDate"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Fecha de nacimiento"
-                  type="date"
-                  variant="outlined"
-                  fullWidth
-                  InputLabelProps={{ shrink: true }}
-                  error={!!errors.birthDate}
-                  helperText={errors.birthDate?.message}
-                />
-              )}
-            />
-          </>
-        )}
-
-        <div>
-          {step > 0 && <Button onClick={prevStep}>Atrás</Button>}
-          {step < 3 ? (
-            <Button onClick={nextStep}>Siguiente</Button>
-          ) : (
-            
-            <Button onClick={onSubmit}>{user ? "Guardar" : "Enviar"}</Button>
+            </>
           )}
-        </div>
-      </Stack>
-    </form>
+
+          {step === 1 && (
+            <>
+              <Controller
+                name="name1"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Primer nombre"
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.name1}
+                    helperText={errors.name1?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="name2"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Segundo nombre"
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.name2}
+                    helperText={errors.name2?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="surname1"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Primer apellido"
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.surname1}
+                    helperText={errors.surname1?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="surname2"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Segundo apellido"
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.surname2}
+                    helperText={errors.surname2?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="dni"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    {...(user ? { disabled: true } : {})}
+                    label="DNI"
+                    type="number"
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.dni}
+                    helperText={errors.dni?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="gender"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth error={!!errors.gender}>
+                    <InputLabel id="gender-label">Género</InputLabel>
+                    <Select {...field} labelId="gender-label" label="Género">
+                      <MenuItem value="">
+                        <em>Seleccionar</em>
+                      </MenuItem>
+                      <MenuItem value="male">Masculino</MenuItem>
+                      <MenuItem value="female">Femenino</MenuItem>
+                      <MenuItem value="other">Otro</MenuItem>
+                    </Select>
+                    {errors.gender && <span>{errors.gender.message}</span>}
+                  </FormControl>
+                )}
+              />
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <Controller
+                name="address.country"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="País"
+                    variant="outlined"
+                    required
+                    onChange={(e) =>
+                      handleLocationChange("country", e.target.value, true)
+                    }
+                    error={!!errors.address?.country}
+                    helperText={errors.address?.country?.message}
+                  >
+                    {countries.length > 0 ? (
+                      countries.map((country) => (
+                        <MenuItem
+                          key={country.country_short_name}
+                          value={country.country_name}
+                        >
+                          {country.country_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>Cargando países...</MenuItem>
+                    )}
+                  </TextField>
+                )}
+              />
+              <Controller
+                name="address.state"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="Estado"
+                    variant="outlined"
+                    required
+                    disabled={!watch("address.country")}
+                    onChange={(e) =>
+                      handleLocationChange("state", e.target.value, true)
+                    }
+                    error={!!errors.address?.state}
+                    helperText={errors.address?.state?.message}
+                  >
+                    {addressStates.length > 0 ? (
+                      addressStates.map((state) => (
+                        <MenuItem
+                          key={state.state_name}
+                          value={state.state_name}
+                        >
+                          {state.state_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>Cargando estados...</MenuItem>
+                    )}
+                  </TextField>
+                )}
+              />
+              <Controller
+                name="address.city"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="Ciudad"
+                    variant="outlined"
+                    required
+                    disabled={!watch("address.state")}
+                    onChange={(e) =>
+                      handleLocationChange("city", e.target.value, true)
+                    }
+                    error={!!errors.address?.city}
+                    helperText={errors.address?.city?.message}
+                  >
+                    {addressCities.length > 0 ? (
+                      addressCities.map((city) => (
+                        <MenuItem key={city.city_name} value={city.city_name}>
+                          {city.city_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>Cargando ciudades...</MenuItem>
+                    )}
+                  </TextField>
+                )}
+              />
+              <Controller
+                name="address.street"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="Tipo de vía"
+                    variant="outlined"
+                    required
+                    disabled={!watch("address.city")}
+                    error={!!errors.address?.street}
+                    helperText={errors.address?.street?.message}
+                  >
+                    <MenuItem value="Calle">Calle</MenuItem>
+                    <MenuItem value="Carrera">Carrera</MenuItem>
+                  </TextField>
+                )}
+              />
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Controller
+                  name="address.numberStreet"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Número vía"
+                      type="number"
+                      variant="outlined"
+                      required
+                      disabled={!watch("address.street")}
+                      error={!!errors.address?.numberStreet}
+                      helperText={errors.address?.numberStreet?.message}
+                    />
+                  )}
+                />
+                <Typography variant="subtitle1" component="h5" align="left">
+                  #
+                </Typography>
+                <Controller
+                  name="address.number"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Número"
+                      type="number"
+                      variant="outlined"
+                      required
+                      disabled={!watch("address.numberStreet")}
+                      error={!!errors.address?.number}
+                      helperText={errors.address?.number?.message}
+                    />
+                  )}
+                />
+              </Stack>
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <Controller
+                name="birthplace.country"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="País"
+                    variant="outlined"
+                    onChange={(e) =>
+                      handleLocationChange("country", e.target.value, false)
+                    }
+                    error={!!errors.birthplace?.country}
+                    helperText={errors.birthplace?.country?.message}
+                  >
+                    {countries.length > 0 ? (
+                      countries.map((country) => (
+                        <MenuItem
+                          key={country.country_short_name}
+                          value={country.country_name}
+                        >
+                          {country.country_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>Cargando países...</MenuItem>
+                    )}
+                  </TextField>
+                )}
+              />
+              <Controller
+                name="birthplace.state"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="Estado"
+                    variant="outlined"
+                    required
+                    disabled={!watch("birthplace.country")}
+                    onChange={(e) =>
+                      handleLocationChange("state", e.target.value, false)
+                    }
+                    error={!!errors.birthplace?.state}
+                    helperText={errors.birthplace?.state?.message}
+                  >
+                    {birthplaceStates.length > 0 ? (
+                      birthplaceStates.map((state) => (
+                        <MenuItem
+                          key={state.state_name}
+                          value={state.state_name}
+                        >
+                          {state.state_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>Cargando estados...</MenuItem>
+                    )}
+                  </TextField>
+                )}
+              />
+              <Controller
+                name="birthplace.city"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="Ciudad"
+                    variant="outlined"
+                    required
+                    disabled={!watch("birthplace.state")}
+                    onChange={(e) =>
+                      handleLocationChange("city", e.target.value, false)
+                    }
+                    error={!!errors.birthplace?.city}
+                    helperText={errors.birthplace?.city?.message}
+                  >
+                    {birthplaceCities.length > 0 ? (
+                      birthplaceCities.map((city) => (
+                        <MenuItem key={city.city_name} value={city.city_name}>
+                          {city.city_name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>Cargando ciudades...</MenuItem>
+                    )}
+                  </TextField>
+                )}
+              />
+              <Controller
+                name="birthDate"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Fecha de nacimiento"
+                    type="date"
+                    variant="outlined"
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.birthDate}
+                    helperText={errors.birthDate?.message}
+                  />
+                )}
+              />
+            </>
+          )}
+
+          <div>
+            {step > 0 && <Button onClick={prevStep}>Atrás</Button>}
+            {step < 3 ? (
+              <Button onClick={nextStep}>Siguiente</Button>
+            ) : (
+              <Button onClick={onSubmit}>{user ? "Guardar" : "Enviar"}</Button>
+            )}
+          </div>
+        </Stack>
+      </form>
     </>
   );
 };
