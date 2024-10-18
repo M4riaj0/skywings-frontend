@@ -87,7 +87,7 @@ export default function UserNav() {
           </li>
         </ul>
       </li>
-      <li id="financial">
+      <li id="navFinancial">
         {/* /financial */}
         <Link href="/">
           <button
@@ -100,7 +100,7 @@ export default function UserNav() {
           </button>
         </Link>
       </li>
-      <li id="messages">
+      <li id="navMessages">
         {/* /messages */}
         <Link href="/">
           <button
