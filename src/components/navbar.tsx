@@ -14,7 +14,7 @@ function Navbar() {
   const pathname = usePathname(); // Usar usePathname para obtener la ruta actual
   const router = useRouter();
 
-  // Verifica si la ruta actual es "/auth/login" o "/auth/register"
+  // Verifica si la ruta actual es "/auth/login" o "/auth/register"   
   const isAuthPage =
     pathname === "/auth/login" || pathname === "/auth/register";
 
@@ -33,33 +33,36 @@ function Navbar() {
   };
 
   const showMenu = () => {
-    return (
-      <>
-        {
-          // Verifica si el token existe y no es una página de autenticación
-          !searchToken && !isAuthPage && (
-            <div className="absolute right-0 h-screen">
-              {role === "USER" && <UserNav />}
-              {role === "ROOT" && <RootNav />}
-              {role === "ADMIN" && <AdminNav />}
-            </div>
-          )
-        }
-      </>
-    );
+    const userNav = document.getElementById("menu");
+    userNav?.classList.toggle("hidden");
+    const navEditList = document.getElementById("navEdit");
+    const navVuelosList = document.getElementById("navVuelos");
+    const navTicketsList = document.getElementById("navTickets");
+    if (navEditList) {
+      const childUl = navEditList.getElementsByTagName("ul");
+      childUl.item(0)?.classList.toggle("absolute");
+    }
+    if (navVuelosList) {
+      const childUl = navVuelosList.getElementsByTagName("ul");
+      childUl.item(0)?.classList.toggle("absolute");
+    }
+    if (navTicketsList) {
+      const childUl = navTicketsList.getElementsByTagName("ul");
+      childUl.item(0)?.classList.toggle("absolute");
+    }
   };
 
   return (
     <nav
-      className="p-0 shadow-md"
+      className="p-0 m-0 shadow-md w-full h-[12vh]"
       style={{ backgroundColor: theme.palette.primary.main }}
     >
-      <ul className="flex justify-between items-center">
+      <ul className="flex justify-between items-center h-full">
         <li id="navHome" className="ml-4">
           <Link href="/" className="flex">
-            <Image src="/images/logo.png" alt="Logo" width={70} height={70} />
+            <Image src="/images/logo.png" alt="Logo" width={64} height={64} />
             <span
-              className="font-bold py-[21px] text-xl"
+              className="font-bold my-auto text-xl"
               style={{ color: theme.palette.background.paper }}
             >
               SkyWings
@@ -70,7 +73,7 @@ function Navbar() {
           <li id="navLogIn">
             <Link href="/auth/login">
               <button
-                className="font-bold py-[20px] mr-5 border-b-2 border-transparent  hover:border-gray-50 hidden sm:block"
+                className="font-bold my-auto mr-5 border-b-2 border-transparent  hover:border-gray-50 hidden sm:block"
                 style={{
                   color: theme.palette.background.paper,
                 }}
@@ -148,17 +151,25 @@ function Navbar() {
           )
         }
       </ul>
-      {/* {
-        // Verifica si el token existe y no es una página de autenticación
-        !searchToken && !isAuthPage && (
-          <div className="absolute right-50 top-50 bg-black h-screen flex column">
-            <UserNav />
+      {// Verifica si el token existe y no es una página de autenticación
+        searchToken && !isAuthPage && (
+          <div
+            id="menu"
+            className="absolute right-0 h-[88vh] top-[12vh] w-2/5 h-screen border-t border-gray-50 hidden"
+            style={{ backgroundColor: theme.palette.primary.main }}
+          >
+            <ul
+              id="menuList"
+              className="flex flex-col text-center justify-center"
+            >
+              <UserNav />
+            </ul>
             {role === "USER" && <UserNav />}
             {role === "ROOT" && <RootNav />}
             {role === "ADMIN" && <AdminNav />}
           </div>
         )
-      } */}
+      }
     </nav>
   );
 }
