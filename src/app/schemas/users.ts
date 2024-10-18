@@ -24,3 +24,9 @@ export interface Admin {
   email: string;
   password: string;
 }
+
+export interface ChangePassword {
+  username: string;
+  currentPassword: string;
+  newPassword: string;
+}

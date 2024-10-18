@@ -1,4 +1,4 @@
-import { RegisterData } from "@/app/schemas/users";
+import { RegisterData, ChangePassword } from "@/app/schemas/users";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -41,5 +41,22 @@ export async function updateUser (data: RegisterData) {
     return result;
   } catch (error) {
     console.error("Error actualizando la información del usuario:", error);
+  }
+}
+
+export async function changePassword (data: ChangePassword) {
+  try {
+    const response = await fetch(`${backendUrl}/users/updatepassword`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error al actualizar contraseña: ", error);
   }
 }

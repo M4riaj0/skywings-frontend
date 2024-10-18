@@ -328,7 +328,7 @@ const MultiStepForm = ({ steps, user }) => {
       let res;
       if (user) {
         res = await updateUser(formDataToSend);
-        if (!res.error) {
+        if (!res.error ) {
           console.log(res);
           alert("Usuario actualizado exitosamente");
           router.push("/");
