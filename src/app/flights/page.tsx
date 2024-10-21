@@ -3,15 +3,15 @@ import { useState, useEffect } from "react";
 import { Typography, Button, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AddAdminDialog from "@/components/admins/addAdminDialog";
+import AddFlightDialog from "@/components/flights/addFlightDialog";
 import FlightTable from "@/components/flights/flightTable";
 import { getAdmins, addAdmin, deleteAdmin } from "@/services/admins";
-// import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 const FlightManager = () => {
-  const [admins, setAdmins] = useState([
-  ]);
+  const [admins, setAdmins] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -21,8 +21,6 @@ const FlightManager = () => {
 
     fetchAdmins();
   }, []);
-
-  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -38,25 +36,30 @@ const FlightManager = () => {
     password: string;
   }
 
-  //Cambiar al conectar con el back
-  const handleAddAdmin = async (newAdmin: Admin) => {
-    const res = await addAdmin(newAdmin);
-    if (res && res.username) {
-      alert(`Nuevo administrador creado: ${res.username}`);
-      setAdmins(await getAdmins());
-      // router.refresh()
-      handleClose();
-    } else {
-      alert("Error al crear el administrador. Por favor, inténtelo de nuevo.");
-    }
-  };
-
   const handleDeleteFlight = async (username: string) => {
     console.log(username);
     const res = await deleteAdmin(username);
-    alert(`Administrador eliminado: ${res.username}`); // Imprimir en consola el username del admin eliminado
+    alert(`Administrador eliminado: ${res.username}`);
     // router.refresh()
     setAdmins(await getAdmins());
+  };
+
+  // Función para agregar vuelo
+  const handleAddFlight = async (newFlight: {
+    code: string;
+    origin: string;
+    destination: string;
+    departureDate1: string;
+    arrivalDate1: string;
+    departureDate2: string;
+    arrivalDate2: string;
+    priceFirstClass: number;
+    priceEconomyClass: number;
+  }) => {
+    // Aquí puedes agregar la lógica para agregar un vuelo, por ejemplo:
+    alert(`Nuevo vuelo agregado: ${JSON.stringify(newFlight)}`);
+    handleClose();
+    // Actualiza el estado de los vuelos si es necesario
   };
 
   return (
@@ -93,10 +96,10 @@ const FlightManager = () => {
 
       <FlightTable flights={admins} onDeleteFlight={handleDeleteFlight} />
 
-      <AddAdminDialog
+      <AddFlightDialog
         open={open}
-        onClose={handleClose}
-        onAddAdmin={handleAddAdmin}
+        onClose={handleClose} 
+        onAddFlight={handleAddFlight}
       />
     </div>
   );
