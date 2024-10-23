@@ -98,13 +98,13 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight }) =>
                 <td className="px-6 py-4 border-b text-sm flex space-x-2">
 
                   <Tooltip title="ver detalles">
-                    <IconButton aria-label="info" size="small" onClick={() => handleOpenDialog(flight, false)}>
+                    <IconButton aria-label="info" size="small" onClick={() => handleOpenDialog(flight)}>
                       <InfoIcon />
                     </IconButton>
                   </Tooltip>
 
                   <Tooltip title="editar">
-                    <IconButton color="primary"  size="small" aria-label="editar" onClick={() => handleOpenDialog(flight, true)}>
+                    <IconButton color="primary"  size="small" aria-label="editar" onClick={() => handleOpenDialog(flight)}>
                     <Edit />
                     </IconButton>
                   </Tooltip>
