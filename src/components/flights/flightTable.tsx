@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import FlightDetailsDialog from '@/components/flights/flightDetailsDialog'
+import { Delete, Edit } from '@mui/icons-material';
 
 interface FlightTableProps {
   flights: Flight[];
@@ -130,15 +131,24 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight }) =>
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{flight.destination}</td>
                 <td className="px-6 py-4 border-b text-sm text-gray-700">{flight.departureDate1.split('T')[0]}</td>
                 <td className="px-6 py-4 border-b text-sm flex space-x-2">
-                  <IconButton aria-label="info" onClick={() => handleOpenDialog(flight)}>
-                    <InfoIcon />
-                  </IconButton>
-                  <button 
-                    className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-700 transition duration-200"
-                    onClick={() => onDeleteFlight(flight.code)}
-                  >
-                    Eliminar
-                  </button>
+
+                  <Tooltip title="ver detalles">
+                    <IconButton aria-label="info" size="small" onClick={() => handleOpenDialog(flight)}>
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="editar">
+                    <IconButton color="primary"  size="small" aria-label="editar" onClick={() => handleOpenDialog(flight)}>
+                    <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  
+                  <Tooltip title="borrar">
+                    <IconButton color="error"  size="small" aria-label="borrar" onClick={() => onDeleteFlight(flight.code)}>
+                      <Delete  />
+                    </IconButton>
+                  </Tooltip>
                 </td>
               </tr>
             ))

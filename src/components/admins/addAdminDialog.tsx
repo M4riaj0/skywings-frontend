@@ -16,7 +16,7 @@ export default function AddAdminDialog({ open, onClose, onAddAdmin }: AddAdminDi
       .max(20, { message: "El nombre de usuario no puede tener más de 20 caracteres" })
       .regex(/^[a-zA-Z0-9_]+$/, { message: "El nombre de usuario solo puede contener letras, números y guiones bajos" }),
     email: z.string().email({ message: "El email no es válido" })
-      .max(20, { message: "El email no puede tener más de 20 caracteres" })
+      .max(60, { message: "El email no puede tener más de 60 caracteres" })
       .nonempty({ message: "El email no puede estar vacío" }),
     password: z.string().min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
       .max(20, { message: "La contraseña no puede tener más de 20 caracteres" })
