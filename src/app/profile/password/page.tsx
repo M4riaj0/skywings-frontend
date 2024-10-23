@@ -13,7 +13,7 @@ const UpdatePasswordForm = () => {
   const theme = useTheme();
   const router = useRouter();
 
-  const schema = z.object({
+  const schema: z.ZodSchema = z.object({
     currentPassword: z
       .string()
       .nonempty("Se requiere la contraseña actual")
