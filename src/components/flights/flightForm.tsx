@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
-import { flightFormSchema, ReceivingData } from "./flightFormSchema";
-import type { FlightForm, CitiesSchema } from "./flightFormSchema";
+import { flightFormSchema, ReceivingData } from "@/app/schemas/flightFormSchema";
+import type { FlightForm, CitiesSchema } from "@/app/schemas/flightFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, Typography, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -106,140 +107,157 @@ function FlightForm() {
           name="origin"
           control={control}
           render={({ field }) => (
-        <TextField
-          {...field}
-          select
-          label="Origen"
-          variant="outlined"
-          value={field.value || ""}
-          error={!!errors.origin}
-          helperText={errors.origin?.message}
-          onChange={(e) => {
-            field.onChange(e);
-            getCities(e.target.value);
-          }}
-        >
-          {nationalCities.length > 0 && internationalCities.length > 0 ? (
-            [
-          ...nationalCities.map((city) => (
-            <MenuItem key={city.code} value={city.city}>
-              {city.city}
-            </MenuItem>
-          )),
-          ...internationalCities.map((city) => (
-            <MenuItem key={city.code} value={city.city}>
-              {city.city}
-            </MenuItem>
-          )),
-            ]
-          ) : nationalCities.length > 0 ? (
-            nationalCities.map((city) => (
-          <MenuItem key={city.code} value={city.city}>
-            {city.city}
-          </MenuItem>
-            ))
-          ) : (
-            <MenuItem disabled>Cargando ciudades...</MenuItem>
-          )}
-        </TextField>
+            <TextField
+              {...field}
+              select
+              label="Origen"
+              variant="outlined"
+              value={field.value || ""}
+              error={!!errors.origin}
+              helperText={errors.origin?.message}
+              onChange={(e) => {
+                field.onChange(e);
+                getCities(e.target.value);
+              }}
+            >
+              {nationalCities.length > 0 && internationalCities.length > 0 ? (
+                [
+                  ...nationalCities.map((city) => (
+                    <MenuItem key={city.code} value={city.city}>
+                      {city.city}
+                    </MenuItem>
+                  )),
+                  ...internationalCities.map((city) => (
+                    <MenuItem key={city.code} value={city.city}>
+                      {city.city}
+                    </MenuItem>
+                  )),
+                ]
+              ) : nationalCities.length > 0 ? (
+                nationalCities.map((city) => (
+                  <MenuItem key={city.code} value={city.city}>
+                    {city.city}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>Cargando ciudades...</MenuItem>
+              )}
+            </TextField>
           )}
         />
         <Controller
           name="destination"
           control={control}
           render={({ field }) => (
-        <TextField
-          {...field}
-          select
-          label="Destino"
-          variant="outlined"
-          value={field.value || ""}
-          error={!!errors.destination}
-          helperText={errors.destination?.message}
-        >
-          {destinationCities.length > 0 ? (
-            destinationCities.map((city) => (
-          <MenuItem key={city.city} value={city.city}>
-            {city.city}
-          </MenuItem>
-            ))
-          ) : (
-            <MenuItem disabled>Cargando ciudades...</MenuItem>
-          )}
-        </TextField>
+            <TextField
+              {...field}
+              select
+              label="Destino"
+              variant="outlined"
+              value={field.value || ""}
+              error={!!errors.destination}
+              helperText={errors.destination?.message}
+            >
+              {destinationCities.length > 0 ? (
+                destinationCities.map((city) => (
+                  <MenuItem key={city.city} value={city.city}>
+                    {city.city}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>Cargando ciudades...</MenuItem>
+              )}
+            </TextField>
           )}
         />
         <Controller
           name="departure.date"
           control={control}
           render={({ field }) => (
-        <TextField
-          {...field}
-          label="Fecha de salida"
-          type="date"
-          variant="outlined"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          error={!!errors.departure?.date}
-          helperText={errors.departure?.date?.message}
-        />
+            <TextField
+              {...field}
+              label="Fecha de salida"
+              type="date"
+              variant="outlined"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              error={!!errors.departure?.date}
+              helperText={errors.departure?.date?.message}
+            />
           )}
         />
         <Controller
           name="departure.time"
           control={control}
           render={({ field }) => (
-        <TextField
-          {...field}
-          label="Hora de salida"
-          type="time"
-          variant="outlined"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          error={!!errors.departure?.time}
-          helperText={errors.departure?.time?.message}
-        />
+            <TextField
+              {...field}
+              label="Hora de salida"
+              type="time"
+              variant="outlined"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              error={!!errors.departure?.time}
+              helperText={errors.departure?.time?.message}
+            />
           )}
         />
         <Controller
           name="priceFirstClass"
           control={control}
           render={({ field }) => (
-        <TextField
-          {...field}
-          label="Precio primera clase"
-          type="number"
-          variant="outlined"
-          onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : '')}
-          error={!!errors.priceEconomyClass || field.value.toString() === ''}
-          helperText={field.value.toString() == '' ? 'Se requiere un precio válido' : errors.priceEconomyClass?.message}
-        />
+            <TextField
+              {...field}
+              label="Precio primera clase"
+              type="number"
+              variant="outlined"
+              onChange={(e) =>
+                field.onChange(e.target.value ? Number(e.target.value) : "")
+              }
+              error={
+                !!errors.priceEconomyClass || field.value.toString() === ""
+              }
+              helperText={
+                field.value.toString() == ""
+                  ? "Se requiere un precio válido"
+                  : errors.priceEconomyClass?.message
+              }
+            />
           )}
         />
         <Controller
           name="priceEconomyClass"
           control={control}
           render={({ field }) => (
-        <TextField
-          {...field}
-          label="Precio clase económica"
-          type="number"
-          variant="outlined"
-          onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : '')}
-          error={!!errors.priceEconomyClass || field.value.toString() === ''}
-          helperText={field.value.toString() == '' ? 'Se requiere un precio válido' : errors.priceEconomyClass?.message}
-        />
+            <TextField
+              {...field}
+              label="Precio clase económica"
+              type="number"
+              variant="outlined"
+              onChange={(e) =>
+                field.onChange(e.target.value ? Number(e.target.value) : "")
+              }
+              error={
+                !!errors.priceEconomyClass || field.value.toString() === ""
+              }
+              helperText={
+                field.value.toString() == ""
+                  ? "Se requiere un precio válido"
+                  : errors.priceEconomyClass?.message
+              }
+            />
           )}
         />
       </div>
       <div className="flex justify-between">
-        <button
-          type="submit"
-          className="px-4 py-2 text-white rounded shadow-lg"
-          style={{ backgroundColor: theme.palette.primary.light }}
-        >
-          Atrás
-        </button>
+        <Link href='/flights'>
+          <button
+            className="px-4 py-2 text-white rounded shadow-lg"
+            style={{ backgroundColor: theme.palette.primary.light }}
+          >
+            Atrás
+          </button>
+        </Link>
         <button
           type="submit"
           className="px-4 py-2 text-white rounded shadow-lg"

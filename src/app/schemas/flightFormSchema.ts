@@ -74,3 +74,20 @@ export interface ReceivingData {
 }
 
 export type CitiesSchema = City[];
+
+export interface FlightData {
+  code: string,
+  creator: string,
+  type: string,
+  origin: string,
+  destination: string,
+  priceFirstClass: number,
+  priceEconomyClass: number,
+  departureDate1:  string,
+  arrivalDate1:  string,
+  departureDate2:  string,
+  arrivalDate2:  string,
+  creationDate:  string,
+  lastUpdateDate:  string,
+  erased: boolean
+}

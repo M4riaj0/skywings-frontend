@@ -1,4 +1,4 @@
-import { FlightForm, FlightFormToSend } from "@/components/flights/flightFormSchema";
+import { FlightForm, FlightFormToSend } from "@/app/schemas/flightFormSchema";
 
 const international = {
   colombia: [
@@ -99,6 +99,22 @@ export const createFlight = async (flightData: FlightForm) => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(dataToSend),
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+export const deleteFlight = async (code: string) => {
+  try {
+    const response = await fetch(`${backend_url}/flights/${code}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
 
     return response.json();
