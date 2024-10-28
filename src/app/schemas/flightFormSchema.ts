@@ -1,4 +1,14 @@
 import { z } from "zod";
+import { DateTime } from "luxon"; // Luxon para facilitar el manejo de zonas horarias
+
+const cityTimeZoneMap: { [key: string]: string } = {
+  "Madrid, España": "Europe/Madrid",
+  "Londres, Reino Unido": "Europe/London",
+  "New York, Estados Unidos": "America/New_York",
+  "Buenos Aires, Argentina": "America/Argentina/Buenos_Aires",
+  "Miami, Estados Unidos": "America/New_York",
+  "Bogotá, Colombia": "America/Bogota" // Asumiendo Bogotá para vuelos nacionales en Colombia
+};
 
 export const flightFormSchema = z
   .object({
@@ -21,20 +31,36 @@ export const flightFormSchema = z
       }),
   })
   .superRefine((data, ctx) => {
-    const type = data.type;
-    const departureDate = new Date(
-      `${data.departure.date}T${data.departure.time}`
-    );
-    const currentTime = new Date();
+    const { type, origin, departure } = data;
+
+    // Obtiene la zona horaria de la ciudad de origen
+    const originModified = type === "national" ? `Bogotá, Colombia` : origin;
+    const originTimeZone = cityTimeZoneMap[originModified];
+
+    if (!originTimeZone) {
+      ctx.addIssue({
+        path: ["origin"],
+        code: z.ZodIssueCode.custom,
+        message: `No se encontró la zona horaria para la ciudad de origen: ${origin}.`,
+      });
+      return;
+    }
+
+    // Fecha y hora de salida en la zona horaria del origen
+    const departureDateTime = DateTime.fromISO(`${departure.date}T${departure.time}`, {
+      zone: originTimeZone,
+    });
+    const currentTime = DateTime.now();
     const hoursToAdd = type === "national" ? 2 : 4;
-    const minTimeDeparture = new Date(
-      currentTime.getTime() + hoursToAdd * 60 * 60 * 1000
-    );
-    if (departureDate < minTimeDeparture) {
+
+    // Calcula el tiempo mínimo permitido en la zona horaria local
+    const minTimeDeparture = currentTime.plus({ hours: hoursToAdd });
+
+    if (departureDateTime < minTimeDeparture) {
       ctx.addIssue({
         path: ["departure", "time"],
         code: z.ZodIssueCode.custom,
-        message: `La hora de salida debe ser al menos ${hoursToAdd} horas a partir de ahora.`,
+        message: `La hora de salida debe ser al menos ${hoursToAdd} horas a partir de ahora, considerando la zona horaria de la ciudad de origen.`,
       });
     }
   });
