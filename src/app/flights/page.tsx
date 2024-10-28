@@ -1,21 +1,22 @@
 "use client";
+
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Typography, Button, IconButton } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import AddAdminDialog from "@/components/admins/addAdminDialog";
 import FlightTable from "@/components/flights/flightTable";
-import { getAdmins, addAdmin, deleteAdmin } from "@/services/admins";
+import { getAllFlights, deleteFlight } from "@/services/flights";
+import AddIcon from "@mui/icons-material/Add";
 
 export const dynamic = "force-dynamic";
 
 const FlightManager = () => {
-  const [admins, setAdmins] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [flights, setFlights] = useState([]);
+  const [, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchAdmins = async () => {
-      const adminsList = await getAdmins();
-      setAdmins(adminsList);
+      const adminsList = await getAllFlights();
+      setFlights(adminsList);
     };
 
     fetchAdmins();
@@ -25,34 +26,13 @@ const FlightManager = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  interface Admin {
-    username: string;
-    email: string;
-    password: string;
-  }
-
-  const handleDeleteFlight = async (username: string) => {
-    console.log(username);
-    const res = await deleteAdmin(username);
-    alert(`Administrador eliminado: ${res.username}`);
+  const handleDeleteFlight = async (code: string) => {
+    console.log(code);
+    const res = await deleteFlight(code);
+    console.log(res);
+    alert(`Vuelo ${code} eliminado exitosamente`);
     // router.refresh()
-    setAdmins(await getAdmins());
-  };
-
-  const handleAddAdmin = async (newAdmin: Admin) => {
-    const res = await addAdmin(newAdmin);
-    if (res && res.username) {
-      alert(`Nuevo administrador creado: ${res.username}`);
-      setAdmins(await getAdmins());
-      // router.refresh()
-      handleClose();
-    } else {
-      alert("Error al crear el administrador. Por favor, inténtelo de nuevo.");
-    }
+    setFlights(await getAllFlights());
   };
 
   return (
@@ -63,15 +43,17 @@ const FlightManager = () => {
         </Typography>
 
         <div className="hidden md:flex">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleClickOpen}
-            className="flex items-center"
-            startIcon={<AddIcon />}
-          >
-            Crear vuelo
-          </Button>
+          <Link href="/flights/create">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClickOpen}
+              className="flex items-center"
+              startIcon={<AddIcon />}
+            >
+              Crear vuelo
+            </Button>
+          </Link>
         </div>
 
         <div className="md:hidden">
@@ -87,13 +69,7 @@ const FlightManager = () => {
         </div>
       </div>
 
-      <FlightTable flights={admins} onDeleteFlight={handleDeleteFlight} />
-
-      <AddAdminDialog
-        open={open}
-        onClose={handleClose}
-        onAddAdmin={handleAddAdmin}
-      />
+      <FlightTable flights={flights} onDeleteFlight={handleDeleteFlight} />
     </div>
   );
 };

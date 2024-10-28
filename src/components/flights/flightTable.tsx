@@ -3,27 +3,11 @@ import { IconButton, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import FlightDetailsDialog from '@/components/flights/flightDetailsDialog'
 import { Delete, Edit } from '@mui/icons-material';
+import { FlightData } from '@/app/schemas/flightFormSchema';
 
 interface FlightTableProps {
-  flights: Flight[];
+  flights: FlightData[];
   onDeleteFlight: (code: string) => void;
-}
-
-interface Flight {
-  code: string,
-  creator: string,
-  type: string,
-  origin: string,
-  destination: string,
-  priceFirstClass: number,
-  priceEconomyClass: number,
-  departureDate1:  string,
-  arrivalDate1:  string,
-  departureDate2:  string,
-  arrivalDate2:  string,
-  creationDate:  string,
-  lastUpdateDate:  string,
-  erased: boolean
 }
 
 const flightsData = [
@@ -63,48 +47,29 @@ const flightsData = [
 
 const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight }) => {
   flights = flightsData;
-  const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [selectedFlight, setSelectedFlight] = useState<FlightData | null>(null);
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+  const [isDetailsDialogOpen, setDetailsDialogOpen] = useState(false);
 
-  const handleOpenDialog = (flight: Flight) => {
+  const handleOpenDialog = (flight: FlightData, edit: boolean) => {
     setSelectedFlight(flight);
-    setDialogOpen(true);
+    if (edit)
+      setEditDialogOpen(true);
+    else 
+      setDetailsDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
     setSelectedFlight(null);
-    setDialogOpen(false);
+    if (isEditDialogOpen)
+      setEditDialogOpen(false);
+    else
+      setDetailsDialogOpen(false);
   };
 
   return (
     <div className="overflow-x-auto md:overflow-visible">
-      <FlightDetailsDialog open={isDialogOpen} onClose={handleCloseDialog} flight={selectedFlight} />
-      
-      <div className="md:hidden">
-        {flights.length === 0 ? (
-          <p className="text-center text-gray-500">No hay vuelos disponibles.</p>
-        ) : (
-          flights.map((flight, index) => (
-            <div key={`${flight.code}-${index}`} className="border rounded p-4 mb-4 bg-white shadow">
-              <p><strong>Código:</strong> {flight.code}</p>
-              <p><strong>Origen:</strong> {flight.origin}</p>
-              <p><strong>Destino:</strong> {flight.destination}</p>
-              <p><strong>Horario:</strong> {flight.departureDate1.split('T')[0]}</p>
-              <div className="flex justify-between mt-4">
-                <IconButton aria-label="info" onClick={() => handleOpenDialog(flight)}>
-                  <InfoIcon />
-                </IconButton>
-                <button 
-                  className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-700 transition duration-200"
-                  onClick={() => onDeleteFlight(flight.code)}
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+      <FlightDetailsDialog open={isDetailsDialogOpen} onClose={handleCloseDialog} flight={selectedFlight} />
 
       <table className="hidden md:min-w-full md:bg-white md:border md:border-gray-300 md:table">
         <thead className="bg-gray-50">
@@ -133,13 +98,13 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight }) =>
                 <td className="px-6 py-4 border-b text-sm flex space-x-2">
 
                   <Tooltip title="ver detalles">
-                    <IconButton aria-label="info" size="small" onClick={() => handleOpenDialog(flight)}>
+                    <IconButton aria-label="info" size="small" onClick={() => handleOpenDialog(flight, false)}>
                       <InfoIcon />
                     </IconButton>
                   </Tooltip>
 
                   <Tooltip title="editar">
-                    <IconButton color="primary"  size="small" aria-label="editar" onClick={() => handleOpenDialog(flight)}>
+                    <IconButton color="primary"  size="small" aria-label="editar" onClick={() => handleOpenDialog(flight, true)}>
                     <Edit />
                     </IconButton>
                   </Tooltip>
