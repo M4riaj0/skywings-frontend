@@ -5,7 +5,8 @@ import {
   ArrowCircleRightRounded,
   ArrowCircleLeftRounded,
 } from "@mui/icons-material";
-import {NewsItem, Card4News} from "./card4News";
+import { Box } from "@mui/material";
+import { NewsItem, Card4News } from "./card4News";
 
 interface NewsCarouselProps {
   newsItems: NewsItem[];
@@ -29,11 +30,15 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
   }, [newsItems.length, interval]);
 
   if (newsItems.length === 0) {
-    return <div className="news-carousel">No hay noticias disponibles</div>;
+    return (
+      <Box className="flex justify-center mt-3 mb-6 text-2xl">
+        <p>No hay noticias disponibles</p>
+      </Box>
+    );
   }
 
   return (
-    <section id="news" className="mb-4">
+    <section id="news" className="mb-6">
       <h2 className="text-3xl my-3 font-bold text-center">Noticias</h2>
       <div className="news-carousel flex justify-evenly items-center">
         <button

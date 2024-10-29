@@ -1,131 +1,80 @@
 import Link from "next/link";
 import { useTheme } from "@mui/material/styles";
+import { useState } from "react";
 
 export default function UserNav() {
   const theme = useTheme();
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  const toggleMenu = (menuId: string): void => {
+    setOpenMenu(openMenu === menuId ? null : menuId);
+  };
+
+  const menuItems = [
+    {
+      id: "navEdit",
+      label: "Editar Perfil",
+      links: [
+        { href: "/profile", label: "Editar información" },
+        { href: "/profile/password", label: "Cambiar contraseña" },
+      ],
+    },
+    {
+      id: "navTickets",
+      label: "Tiquetes",
+      links: [
+        { href: "/tickets/reservations", label: "Ver reservas" },
+        { href: "/tickets/active", label: "Ver tiquetes activos" },
+        { href: "/tickets/history", label: "Historial" },
+      ],
+    },
+    { id: "navFinancial", label: "Área financiera", href: "/financial" },
+    { id: "navMessages", label: "Mensajes", href: "/messages" },
+    { id: "navNotifications", label: "Notificaciones", href: "/notifications" },
+  ];
+
   return (
     <>
-      <li id="navEdit">
-        <button
-          className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-          style={{
-            color: theme.palette.background.paper,
-          }}
-          onClick={() => {
-            const navEdit = document.getElementById("navEdit");
-            if (navEdit) {
-              const childUl = navEdit.querySelector("ul");
-              if (childUl) {
-                childUl.style.display =
-                  childUl.style.display === "block" ? "none" : "block";
-              }
-            }
-          }}
-        >
-          Editar Perfil
-        </button>
-        <ul className="absolute bg-white shadow-lg rounded mt-1 hidden">
-          <li>
-            <Link href="/profile">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Editar información
+      {menuItems.map((item) => (
+        <li key={item.id} className="relative">
+          {item.links ? (
+            <>
+              <button
+                className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
+                style={{ color: theme.palette.background.paper }}
+                onClick={() => toggleMenu(item.id)}
+              >
+                {item.label}
+              </button>
+              {openMenu === item.id && (
+                <ul
+                  className="absolute top-full mt-1 bg-white shadow-lg rounded z-50"
+                  style={{ minWidth: "180px" }}
+                >
+                  {item.links.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href}>
+                        <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
+                          {link.label}
+                        </button>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          ) : (
+            <Link href={item.href}>
+              <button
+                className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
+                style={{ color: theme.palette.background.paper }}
+              >
+                {item.label}
               </button>
             </Link>
-          </li>
-          <li>
-            <Link href="/profile/password">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Cambiar contraseña
-              </button>
-            </Link>
-          </li>
-        </ul>
-      </li>
-      <li id="navTickets">
-        <button
-          className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-          style={{
-            color: theme.palette.background.paper,
-          }}
-          onClick={() => {
-            const navTickets = document.getElementById("navTickets");
-            if (navTickets) {
-              const childUl = navTickets.querySelector("ul");
-              if (childUl) {
-                childUl.style.display =
-                  childUl.style.display === "block" ? "none" : "block";
-              }
-            }
-          }}
-        >
-          Tiquetes
-        </button>
-        <ul className="absolute bg-white shadow-lg rounded mt-1 hidden">
-          <li>
-            {/* /tickets/reservations */}
-            <Link href="/">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Ver reservas
-              </button>
-            </Link>
-          </li>
-          <li>
-            {/* /tickets/active */}
-            <Link href="/">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Ver tiquetes activos
-              </button>
-            </Link>
-          </li>
-          <li>
-            {/* /tickets/history */}
-            <Link href="/">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Historial
-              </button>
-            </Link>
-          </li>
-        </ul>
-      </li>
-      <li id="navFinancial">
-        {/* /financial */}
-        <Link href="/">
-          <button
-            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-            style={{
-              color: theme.palette.background.paper,
-            }}
-          >
-            Área financiera
-          </button>
-        </Link>
-      </li>
-      <li id="navMessages">
-        {/* /messages */}
-        <Link href="/">
-          <button
-            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-            style={{
-              color: theme.palette.background.paper,
-            }}
-          >
-            Mensajes
-          </button>
-        </Link>
-      </li>
-      <li id="navNotifications">
-        {/* /notifications */}
-        <Link href="/">
-          <button
-            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-            style={{
-              color: theme.palette.background.paper,
-            }}
-          >
-            Notificaciones
-          </button>
-        </Link>
-      </li>
+          )}
+        </li>
+      ))}
     </>
   );
 }

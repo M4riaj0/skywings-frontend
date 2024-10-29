@@ -35,14 +35,12 @@ const FlightDetailsDialog: React.FC<FlightDetailsDialogProps> = ({
   onClose,
   flight,
 }) => {
-  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+  const [scroll, ] = React.useState<DialogProps['scroll']>('paper');
 
   if (!flight) return null;
 
   const departure1 = formatDateAndTime(flight.departureDate1);
   const arrival1 = formatDateAndTime(flight.arrivalDate1);
-  const departure2 = formatDateAndTime(flight.departureDate2);
-  const arrival2 = formatDateAndTime(flight.arrivalDate2);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth scroll={scroll}>
@@ -98,11 +96,6 @@ const FlightDetailsDialog: React.FC<FlightDetailsDialogProps> = ({
               <Typography><span className="font-medium">Fecha de Salida (Ida):</span> {departure1.date}</Typography>
               <Typography><span className="font-medium">Hora de Salida (Ida):</span> {departure1.time}</Typography>
               <Typography><span className="font-medium">Hora de Llegada (Ida):</span> {arrival1.time}</Typography>
-            </Box>
-            <Box>
-              <Typography><span className="font-medium">Fecha de Salida (Vuelta):</span> {departure2.date}</Typography>
-              <Typography><span className="font-medium">Hora de Salida (Vuelta):</span> {departure2.time}</Typography>
-              <Typography><span className="font-medium">Hora de Llegada (Vuelta):</span> {arrival2.time}</Typography>
             </Box>
           </Box>
         </Paper>

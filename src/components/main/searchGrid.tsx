@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Grid2, Autocomplete, TextField, Divider, Box, Pagination } from "@mui/material";
+import {
+  Grid2,
+  Autocomplete,
+  TextField,
+  Divider,
+  Box,
+  Pagination,
+} from "@mui/material";
 import FligthCard from "./card4Flights";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 
@@ -74,7 +81,14 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
         />
         <TextField
           id="search"
-          type="text"
+          type={
+            searchOption === "Precio"
+              ? "number"
+              : searchOption === "Fecha de salida" ||
+                searchOption === "Fecha de llegada"
+              ? "date"
+              : "text"
+          }
           placeholder="Buscar..."
           sx={{ width: 200 }}
           value={searchTerm}
@@ -93,6 +107,11 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
         />
       </Box>
       <Divider />
+      {filteredData.length === 0 && (
+        <Box className="flex justify-center my-3 text-2xl">
+          <p>No se encontraron vuelos disponibles</p>
+        </Box>
+      )}
       <Grid2
         className="my-3 rounded"
         container
@@ -100,11 +119,13 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
         columns={{ sm: 1, md: 2, lg: 4 }}
         justifyContent="center"
       >
-        {filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((item, index) => (
-          <Grid2 key={index}>
-        <FligthCard {...item} />
-          </Grid2>
-        ))}
+        {filteredData
+          .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+          .map((item, index) => (
+            <Grid2 key={index}>
+              <FligthCard {...item} />
+            </Grid2>
+          ))}
       </Grid2>
       <Box className="flex justify-center my-3">
         <Pagination

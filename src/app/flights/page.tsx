@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Typography, Button, IconButton } from "@mui/material";
 import FlightTable from "@/components/flights/flightTable";
-import { getAllFlights, deleteFlight } from "@/services/flights";
+import { getAllFlights, updateFlight, deleteFlight } from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
+import { FlightFormUpdate } from "@/app/schemas/flightFormSchema";
 
 export const dynamic = "force-dynamic";
 
 const FlightManager = () => {
   const [flights, setFlights] = useState([]);
-  const [, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchFlights = async () => {
@@ -21,16 +21,19 @@ const FlightManager = () => {
     fetchFlights();
   }, []);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const handleUpdateFlight = async (updatedFlight: FlightFormUpdate) => {
+    console.log(updatedFlight);
+    const res = await updateFlight(updatedFlight);
+    console.log(res);
+    alert("Vuelo actualizado exitosamente");
+    setFlights(await getAllFlights());
+  }
 
   const handleDeleteFlight = async (code: string) => {
     console.log(code);
     const res = await deleteFlight(code);
     console.log(res);
     alert(`Vuelo ${code} eliminado exitosamente`);
-    // router.refresh()
     setFlights(await getAllFlights());
   };
 
@@ -46,7 +49,6 @@ const FlightManager = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleClickOpen}
               className="flex items-center"
               startIcon={<AddIcon />}
             >
@@ -58,8 +60,7 @@ const FlightManager = () => {
         <div className="md:hidden">
           <IconButton
             color="primary"
-            onClick={handleClickOpen}
-            className="bg-blue-500 text-white hover:bg-blue-700 transition duration-300"
+            className="text-white  transition duration-300"
             aria-label="add"
             size="large"
           >
@@ -68,7 +69,7 @@ const FlightManager = () => {
         </div>
       </div>
 
-      <FlightTable flights={flights} onDeleteFlight={handleDeleteFlight} />
+      <FlightTable flights={flights} onSaveFlight={handleUpdateFlight} onDeleteFlight={handleDeleteFlight} />
     </div>
   );
 };
