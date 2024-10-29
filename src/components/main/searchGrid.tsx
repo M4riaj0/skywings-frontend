@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Grid2, Autocomplete, TextField, Divider, Box } from "@mui/material";
+import { Grid2, Autocomplete, TextField, Divider, Box, Pagination } from "@mui/material";
 import FligthCard from "./card4Flights";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 
@@ -20,6 +20,8 @@ const searchOptions = [
 const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchOption, setSearchOption] = useState<string | null>("");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 4;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -98,12 +100,19 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
         columns={{ sm: 1, md: 2, lg: 4 }}
         justifyContent="center"
       >
-        {filteredData.map((item, index) => (
+        {filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((item, index) => (
           <Grid2 key={index}>
-            <FligthCard {...item} />
+        <FligthCard {...item} />
           </Grid2>
         ))}
       </Grid2>
+      <Box className="flex justify-center my-3">
+        <Pagination
+          count={Math.ceil(filteredData.length / itemsPerPage)}
+          page={page}
+          onChange={(event, value) => setPage(value)}
+        />
+      </Box>
     </section>
   );
 };

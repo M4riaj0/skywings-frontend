@@ -1,22 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Typography, Button, IconButton } from "@mui/material";
+import { Typography, Button, IconButton, Alert } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AddAdminDialog from "@/components/admins/addAdminDialog";
 import AdminTable from "@/components/admins/adminTable";
 import { getAdmins, addAdmin, deleteAdmin } from "@/services/admins";
-// import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 const AdminManager = () => {
 
   // Mantener la lista de administradores en el estado
-  const [admins, setAdmins] = useState([
-    // { id: 1, username: "juan.lopez", email: "juan.lopez@example.com" },
-    // { id: 2, username: "maria.medina", email: "maria.medina@example.com" },
-    // { id: 3, username: "andres.palacio", email: "andres.palacio@example.com" },
-  ]);
+  const [admins, setAdmins] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState("");
+  const [warning, setWarning] = useState("");
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -28,7 +26,6 @@ const AdminManager = () => {
   }, []);
 
   const [open, setOpen] = useState(false);
-  // const router = useRouter();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -48,20 +45,24 @@ const AdminManager = () => {
   const handleAddAdmin = async (newAdmin: Admin) => {
     const res = await addAdmin(newAdmin);
     if (res && res.username) {
-      alert(`Nuevo administrador creado: ${res.username}`);
+      setSuccess(`Administrador creado: ${res.username}`);
+      setErrorMessage("");
+      setWarning("");
       setAdmins(await getAdmins());
-      // router.refresh()
       handleClose();
     } else {
-      alert("Error al crear el administrador. Por favor, inténtelo de nuevo.");
+      setErrorMessage("Error al crear el administrador");
+      setSuccess("");
+      setWarning("");
     }
   };
 
   const handleDeleteAdmin = async (username: string) => {
     console.log(username);
     const res = await deleteAdmin(username);
-    alert(`Administrador eliminado: ${res.username}`); // Imprimir en consola el username del admin eliminado
-    // router.refresh()
+    setWarning(`Administrador eliminado: ${res.username}`);
+    setSuccess("");
+    setErrorMessage("");
     setAdmins(await getAdmins());
   };
 
@@ -71,6 +72,15 @@ const AdminManager = () => {
         <Typography variant="h4" component="h1" className="font-bold">
           Gestionar Administradores
         </Typography>
+        {errorMessage && ( // Renderiza el Alert si hay un mensaje de error
+          <Alert severity="error">{errorMessage}</Alert>
+        )}
+        {success && ( // Renderiza el Alert si hay un mensaje de error
+          <Alert severity="success">{success}</Alert>
+        )}
+        {warning && ( // Renderiza el Alert si hay un mensaje de error
+          <Alert severity="warning">{warning}</Alert>
+        )}
 
         {/* Botón para pantallas grandes */}
         <div className="hidden md:flex">

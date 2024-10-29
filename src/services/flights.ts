@@ -62,7 +62,6 @@ export const getLocations = async (type: string) => {
 
 export const getAllFlights = async () => {
   try {
-
     const response = await fetch(`${backend_url}/flights`, {
       method: "GET",
       headers: {
@@ -75,6 +74,21 @@ export const getAllFlights = async () => {
     console.error("Error:", error);
   }
 };
+
+export const getAllFligthNews = async () => {
+  try {
+    const response = await fetch(`${backend_url}/flights/news`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 export const createFlight = async (flightData: FlightForm) => {
   const token = localStorage.getItem("token");

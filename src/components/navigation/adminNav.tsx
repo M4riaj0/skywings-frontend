@@ -61,16 +61,14 @@ export default function AdminNav() {
         </button>
         <ul className="absolute bg-white shadow-lg rounded mt-1 hidden">
           <li>
-            {/* /vuelos/create */}
-            <Link href="/">
+            <Link href="/flights/create">
               <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
                 Crear Vuelo
               </button>
             </Link>
           </li>
           <li>
-            {/* /vuelos */}
-            <Link href="/">
+            <Link href="/flights">
               <button className="w-full font-bold py-1 px-5 border-2 border-transparent hover:border-gray-300">
                 Listar vuelos
               </button>

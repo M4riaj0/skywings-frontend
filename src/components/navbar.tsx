@@ -54,7 +54,7 @@ function Navbar() {
 
   return (
     <nav
-      className="p-0 m-0 shadow-md w-full h-[12vh]"
+      className="p-0 m-0 shadow-md w-full h-[13vh]"
       style={{ backgroundColor: theme.palette.primary.main }}
     >
       <ul className="flex justify-between items-center h-full">

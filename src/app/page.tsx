@@ -1,50 +1,34 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAllFlights } from '@/services/flights';
+import { getAllFlights, getAllFligthNews } from '@/services/flights';
 import NewsCarousel from '@/components/main/newsCarousel';
 import SearchGrid from '@/components/main/searchGrid';
-// import Image from "next/image";
 
-// export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
-
-  const newCarouselInfo = [
-    {
-      // image: "/images/flight1.jpg",
-      title: "Flight to Bogotá",
-      content: "Enjoy a comfortable flight to Bogotá with our top-notch services."
-    },
-    {
-      // image: "/images/flight2.jpg",
-      title: "Flight to Medellín",
-      content: "Experience the beauty of Medellín with our exclusive flight deals."
-    },
-    {
-      // image: "/images/flight3.jpg",
-      title: "Flight to Cartagena",
-      content: "Discover the historic city of Cartagena with our affordable flights."
-    }
-  ];
-
   const [flights, setFlights] = useState([]);
+  const [news, setNews] = useState([]);
 
   useEffect(() => {
     const fetchFlights = async () => {
       setFlights(await getAllFlights());
     };
 
+    const fetchNews = async () => {
+      setNews(await getAllFligthNews());
+    }
+
     fetchFlights();
+    fetchNews();
   }, []);
 
   return (
-    <div className="mt-5 w-full">
-      {/* <h1 className="text-4xl font-bold">Bienvenido</h1>
-      <Image src="/images/logo.png" alt="Logo" width={200} height={200}/>
-      <h3>Más funcionalidades estarán disponibles próximamente</h3> */}
-      <NewsCarousel newsItems={newCarouselInfo} />
+    <main className="mt-5 w-full">
+      <h1 className="text-3xl font-bold text-center mb-4">Vuela con nosotros</h1>
       <SearchGrid data={flights} />
-    </div>
+      <NewsCarousel newsItems={news} />
+    </main>
   );
 }

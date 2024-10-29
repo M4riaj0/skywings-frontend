@@ -9,7 +9,7 @@ import {
 } from "@/app/schemas/flightFormSchema";
 import type { FlightForm, CitiesSchema } from "@/app/schemas/flightFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, Typography, MenuItem, Autocomplete } from "@mui/material";
+import { TextField, Typography, MenuItem, Autocomplete, Alert } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { createFlight, getLocations } from "@/services/flights";
 
@@ -20,11 +20,14 @@ function FlightForm() {
     []
   );
   const [destinationCities, setDestinationCities] = useState<CitiesSchema>([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState("");
 
   const {
     handleSubmit,
     control,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<FlightForm>({
     defaultValues: {
@@ -72,7 +75,18 @@ function FlightForm() {
     )?.code;
     data.origin = departureCode || "";
     data.destination = destinationCode || "";
-    createFlight(data);
+    const res = await createFlight(data);
+    console.log(res);
+    if (res.statusCode === 500) {
+      console.log("Error");
+      setErrorMessage(res.message);
+      setSuccess("");
+    } else {
+      console.log("Success");
+      setSuccess("Vuelo creado exitosamente");
+      setErrorMessage("");
+      reset();
+    }
   });
 
   return (
@@ -85,6 +99,12 @@ function FlightForm() {
       >
         Crear vuelo
       </Typography>
+      {errorMessage && (
+        <Alert severity="error">{errorMessage}</Alert>
+      )}
+      {success && (
+        <Alert severity="success">{success}</Alert>
+      )}
       <Controller
         name="type"
         control={control}
