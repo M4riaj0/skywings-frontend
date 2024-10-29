@@ -95,7 +95,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
         className="my-3 rounded"
         container
         spacing={3}
-        columns={{ sm: 1, md: 2, lg: 3 }}
+        columns={{ sm: 1, md: 2, lg: 4 }}
         justifyContent="center"
       >
         {filteredData.map((item, index) => (

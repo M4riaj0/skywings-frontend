@@ -46,7 +46,7 @@ const flightsData = [
 ];
 
 const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight }) => {
-  flights = flightsData;
+  flights =  flights !== null ? flights : flightsData;
   const [selectedFlight, setSelectedFlight] = useState<FlightData | null>(null);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [isDetailsDialogOpen, setDetailsDialogOpen] = useState(false);

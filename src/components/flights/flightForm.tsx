@@ -3,7 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
-import { flightFormSchema, ReceivingData } from "@/app/schemas/flightFormSchema";
+import {
+  flightFormSchema,
+  ReceivingData,
+} from "@/app/schemas/flightFormSchema";
 import type { FlightForm, CitiesSchema } from "@/app/schemas/flightFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, Typography, MenuItem, Autocomplete } from "@mui/material";
@@ -13,7 +16,9 @@ import { createFlight, getLocations } from "@/services/flights";
 function FlightForm() {
   const theme = useTheme();
   const [nationalCities, setNationalCities] = useState<CitiesSchema>([]);
-  const [internationalCities, setInternationalCities] = useState<CitiesSchema>([]);
+  const [internationalCities, setInternationalCities] = useState<CitiesSchema>(
+    []
+  );
   const [destinationCities, setDestinationCities] = useState<CitiesSchema>([]);
 
   const {
@@ -59,6 +64,14 @@ function FlightForm() {
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    const departureCode =
+      nationalCities.find((city) => city.city === data.origin)?.code ||
+      internationalCities.find((city) => city.city === data.origin)?.code;
+    const destinationCode = destinationCities.find(
+      (city) => city.city === data.destination
+    )?.code;
+    data.origin = departureCode || "";
+    data.destination = destinationCode || "";
     createFlight(data);
   });
 

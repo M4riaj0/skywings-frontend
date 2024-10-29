@@ -7,7 +7,7 @@ const cityTimeZoneMap: { [key: string]: string } = {
   "New York, Estados Unidos": "America/New_York",
   "Buenos Aires, Argentina": "America/Argentina/Buenos_Aires",
   "Miami, Estados Unidos": "America/New_York",
-  "Bogotá, Colombia": "America/Bogota" // Asumiendo Bogotá para vuelos nacionales en Colombia
+  "Bogotá, Colombia": "America/Bogota", // Asumiendo Bogotá para vuelos nacionales en Colombia
 };
 
 export const flightFormSchema = z
@@ -34,7 +34,9 @@ export const flightFormSchema = z
     const { type, origin, departure } = data;
 
     // Obtiene la zona horaria de la ciudad de origen
-    const originModified = type === "national" ? `Bogotá, Colombia` : origin;
+    const originModified = origin.includes("Colombia")
+      ? `Bogotá, Colombia`
+      : origin;
     const originTimeZone = cityTimeZoneMap[originModified];
 
     if (!originTimeZone) {
@@ -47,9 +49,12 @@ export const flightFormSchema = z
     }
 
     // Fecha y hora de salida en la zona horaria del origen
-    const departureDateTime = DateTime.fromISO(`${departure.date}T${departure.time}`, {
-      zone: originTimeZone,
-    });
+    const departureDateTime = DateTime.fromISO(
+      `${departure.date}T${departure.time}`,
+      {
+        zone: originTimeZone,
+      }
+    );
     const currentTime = DateTime.now();
     const hoursToAdd = type === "national" ? 2 : 4;
 
@@ -84,7 +89,14 @@ export interface FlightFormToSend {
   destination: string;
   priceFirstClass: number;
   priceEconomyClass: number;
-  departure: Date;
+  departureDate1: Date;
+  lastUpdateDate: Date;
+}
+
+export interface FlightFormUpdate {
+  code: string;
+  priceFirstClass: number;
+  priceEconomyClass: number;
   lastUpdateDate: Date;
 }
 
@@ -102,18 +114,16 @@ export interface ReceivingData {
 export type CitiesSchema = City[];
 
 export interface FlightData {
-  code: string,
-  creator: string,
-  type: string,
-  origin: string,
-  destination: string,
-  priceFirstClass: number,
-  priceEconomyClass: number,
-  departureDate1:  string,
-  arrivalDate1:  string,
-  departureDate2:  string,
-  arrivalDate2:  string,
-  creationDate:  string,
-  lastUpdateDate:  string,
-  erased: boolean
+  code: string;
+  creator: string;
+  type: string;
+  origin: string;
+  destination: string;
+  priceFirstClass: number;
+  priceEconomyClass: number;
+  departureDate1: string;
+  arrivalDate1: string;
+  creationDate: string;
+  lastUpdateDate: string;
+  erased: boolean;
 }

@@ -14,12 +14,11 @@ const FlightManager = () => {
   const [, setOpen] = useState(false);
 
   useEffect(() => {
-    const fetchAdmins = async () => {
-      const adminsList = await getAllFlights();
-      setFlights(adminsList);
+    const fetchFlights = async () => {
+      setFlights(await getAllFlights());
     };
 
-    fetchAdmins();
+    fetchFlights();
   }, []);
 
   const handleClickOpen = () => {
