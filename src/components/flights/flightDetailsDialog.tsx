@@ -6,7 +6,9 @@ import {
   DialogActions,
   Button,
   Typography,
-  Divider,
+  Box,
+  Paper,
+  DialogProps,
 } from "@mui/material";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 
@@ -33,6 +35,8 @@ const FlightDetailsDialog: React.FC<FlightDetailsDialogProps> = ({
   onClose,
   flight,
 }) => {
+  const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+
   if (!flight) return null;
 
   const departure1 = formatDateAndTime(flight.departureDate1);
@@ -41,108 +45,82 @@ const FlightDetailsDialog: React.FC<FlightDetailsDialogProps> = ({
   const arrival2 = formatDateAndTime(flight.arrivalDate2);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth scroll={scroll}>
       <DialogTitle>
-        <div className="flex flex-col">
-          <Typography variant="h5" className="font-bold text-gray-800">
-            Detalles del Vuelo
+        <Box className="flex flex-col">
+          <Typography className="text-2xl font-bold text-gray-800">
+            Detalles del Vuelo 
           </Typography>
-          <Typography variant="subtitle1" className="text-gray-500 italic">
+          <Typography className="text-sm text-gray-500 italic">
             Código de Vuelo: {flight.code}
           </Typography>
-        </div>
+        </Box>
       </DialogTitle>
 
-      <DialogContent dividers className="bg-gray-50 p-4 sm:p-6">
-        <Typography variant="h6" gutterBottom className="font-bold">
-          Información General
-        </Typography>
-        <div className="flex flex-col md:flex-row justify-between mb-4">
-          <Typography className="w-full md:w-1/2">
-            <strong>Origen:</strong> {flight.origin}
+      <DialogContent dividers>
+        <Box className="mb-4">
+          <img src="/images/flight.png" alt="Flight Image" className="w-full max-h-52 object-cover" />
+        </Box>
+        
+        {/* Información General */}
+        <Paper elevation={3} className="mb-4 p-4">
+          <Typography className="text-lg font-semibold text-gray-700 border-b border-gray-300 pb-2 mb-4">
+            Información General
           </Typography>
-          <Typography className="w-full md:w-1/2">
-            <strong>Destino:</strong> {flight.destination}
-          </Typography>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between mb-4">
-          <Typography className="w-full md:w-1/2">
-            <strong>Tipo de vuelo:</strong> {flight.type === 'national' ? 'Nacional' : 'Internacional'}
-          </Typography>
-          <Typography className="w-full md:w-1/2">
-            <strong>Creador:</strong> {flight.creator}
-          </Typography>
-        </div>
+          <Box className="flex flex-col md:flex-row justify-between">
+            <Typography><span className="font-medium">Origen:</span> {flight.origin}</Typography>
+            <Typography><span className="font-medium">Destino:</span> {flight.destination}</Typography>
+          </Box>
+          <Box className="flex flex-col md:flex-row justify-between mt-2">
+            <Typography><span className="font-medium">Tipo de vuelo:</span> {flight.type === 'national' ? 'Nacional' : 'Internacional'}</Typography>
+            <Typography><span className="font-medium">Creador:</span> {flight.creator}</Typography>
+          </Box>
+        </Paper>
 
-        <Divider className="my-4" />
-
-        <Typography variant="h6" gutterBottom className="font-bold">
-          Precios
-        </Typography>
-        <div className="flex flex-col md:flex-row justify-between mb-4">
-          <Typography className="w-full md:w-1/2">
-            <strong>Primera Clase:</strong> ${flight.priceFirstClass}
+        {/* Precios */}
+        <Paper elevation={3} className="mb-4 p-4">
+          <Typography className="text-lg font-semibold text-gray-700 border-b border-gray-300 pb-2 mb-4">
+            Precios
           </Typography>
-          <Typography className="w-full md:w-1/2">
-            <strong>Clase Económica:</strong> ${flight.priceEconomyClass}
+          <Box className="flex flex-col md:flex-row justify-between">
+            <Typography><span className="font-medium">Primera Clase:</span> ${flight.priceFirstClass}</Typography>
+            <Typography><span className="font-medium">Clase Económica:</span> ${flight.priceEconomyClass}</Typography>
+          </Box>
+        </Paper>
+
+        {/* Fechas y Horarios */}
+        <Paper elevation={3} className="mb-4 p-4">
+          <Typography className="text-lg font-semibold text-gray-700 border-b border-gray-300 pb-2 mb-4">
+            Fechas y Horarios
           </Typography>
-        </div>
+          <Box className="flex flex-col md:flex-row justify-between">
+            <Box>
+              <Typography><span className="font-medium">Fecha de Salida (Ida):</span> {departure1.date}</Typography>
+              <Typography><span className="font-medium">Hora de Salida (Ida):</span> {departure1.time}</Typography>
+              <Typography><span className="font-medium">Hora de Llegada (Ida):</span> {arrival1.time}</Typography>
+            </Box>
+            <Box>
+              <Typography><span className="font-medium">Fecha de Salida (Vuelta):</span> {departure2.date}</Typography>
+              <Typography><span className="font-medium">Hora de Salida (Vuelta):</span> {departure2.time}</Typography>
+              <Typography><span className="font-medium">Hora de Llegada (Vuelta):</span> {arrival2.time}</Typography>
+            </Box>
+          </Box>
+        </Paper>
 
-        <Divider className="my-4" />
-
-        {/* Fechas de Salida y Llegada */}
-        <Typography variant="h6" gutterBottom className="font-bold">
-          Fechas y Horarios
-        </Typography>
-        <div className="flex flex-col md:flex-row justify-between mb-4">
-          <div className="w-full md:w-1/2">
-            <Typography>
-              <strong>Fecha de Salida (Ida):</strong> {departure1.date}
-            </Typography>
-            <Typography>
-              <strong>Hora de Salida (Ida):</strong> {departure1.time}
-            </Typography>
-            <Typography>
-              <strong>Hora de Llegada (Ida):</strong> {arrival1.time}
-            </Typography>
-          </div>
-          <div className="w-full md:w-1/2">
-            <Typography>
-              <strong>Fecha de Salida (Vuelta):</strong> {departure2.date}
-            </Typography>
-            <Typography>
-              <strong>Hora de Salida (Vuelta):</strong> {departure2.time}
-            </Typography>
-            <Typography>
-              <strong>Hora de Llegada (Vuelta):</strong> {arrival2.time}
-            </Typography>
-          </div>
-        </div>
-
-        <Divider className="my-4" />
-
-        <Typography variant="h6" gutterBottom className="font-bold">
-          Registro
-        </Typography>
-        <div className="flex flex-col md:flex-row justify-between">
-          <Typography>
-            <strong>Fecha de Creación:</strong>{" "}
-            {flight.creationDate.split("T")[0]}
+        {/* Registro */}
+        <Paper elevation={3} className="p-4">
+          <Typography className="text-lg font-semibold text-gray-700 border-b border-gray-300 pb-2 mb-4">
+            Registro
           </Typography>
-          <Typography>
-            <strong>Última Actualización:</strong>{" "}
-            {flight.lastUpdateDate.split("T")[0]}
-          </Typography>
-        </div>
+          <Box className="flex flex-col md:flex-row justify-between">
+            <Typography><span className="font-medium">Fecha de Creación:</span> {flight.creationDate.split("T")[0]}</Typography>
+            <Typography><span className="font-medium">Última Actualización:</span> {flight.lastUpdateDate.split("T")[0]}</Typography>
+          </Box>
+        </Paper>
       </DialogContent>
 
-      <DialogActions className="p-4">
-        <Button
-          onClick={onClose}
-          color="primary"
-          variant="contained"
-          className="text-white rounded-lg px-4 py-2"
-        >
+      <DialogActions>
+        <Button onClick={onClose} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
           Cerrar
         </Button>
       </DialogActions>
