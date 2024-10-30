@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid2,
   Autocomplete,
@@ -54,6 +54,10 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
     setFilteredData(filtered);
     setPage(1);
   };
+
+  useEffect(() => {
+    setFilteredData(data);
+  }, [data]);
 
   return (
     <section className="bg-gray-50 py-2 px-5 rounded-lg border-t shadow-md">
