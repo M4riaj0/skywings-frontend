@@ -76,16 +76,16 @@ function FlightForm() {
     data.origin = departureCode || "";
     data.destination = destinationCode || "";
     const res = await createFlight(data);
-    console.log(res);
     if (res.statusCode === 500) {
-      console.log("Error");
       setErrorMessage(res.message);
       setSuccess("");
-    } else {
-      console.log("Success");
+    } else if (res.creator) {
       setSuccess("Vuelo creado exitosamente");
       setErrorMessage("");
       reset();
+    } else {
+      setErrorMessage("Error inesperado al crear el vuelo");
+      setSuccess("");
     }
   });
 

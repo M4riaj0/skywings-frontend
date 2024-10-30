@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 export default function UserNav() {
   const theme = useTheme();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const toggleMenu = (menuId: string): void => {
     setOpenMenu(openMenu === menuId ? null : menuId);
@@ -48,7 +49,9 @@ export default function UserNav() {
               </button>
               {openMenu === item.id && (
                 <ul
-                  className="absolute top-full mt-1 bg-white shadow-lg rounded z-50"
+                  className={`${
+                    isSmallScreen ? "relative" : "absolute"
+                  } top-full mt-1 bg-white shadow-lg rounded z-50`}
                   style={{ minWidth: "180px" }}
                 >
                   {item.links.map((link) => (

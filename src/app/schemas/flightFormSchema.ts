@@ -68,6 +68,14 @@ export const flightFormSchema = z
         message: `La hora de salida debe ser al menos ${hoursToAdd} horas a partir de ahora, considerando la zona horaria de la ciudad de origen.`,
       });
     }
+
+    if (data.priceEconomyClass >= data.priceFirstClass) {
+      ctx.addIssue({
+        path: ["priceEconomyClass"],
+        code: z.ZodIssueCode.custom,
+        message: "El precio de la clase económica debe ser menor que el precio de la primera clase.",
+      });
+    }
   });
 
 export const flightUpdateSchema = z.object({
@@ -96,6 +104,14 @@ export const flightUpdateSchema = z.object({
       message: "El descuento debe ser un número entre 1 y 90",
     })
     .optional(),
+}).superRefine((data, ctx) => {
+  if (data.priceEconomyClass >= data.priceFirstClass) {
+    ctx.addIssue({
+      path: ["priceEconomyClass"],
+      code: z.ZodIssueCode.custom,
+      message: "El precio de la clase económica debe ser menor que el precio de la primera clase.",
+    });
+  }
 });
 
 export interface FlightForm {

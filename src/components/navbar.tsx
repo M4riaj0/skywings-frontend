@@ -43,7 +43,7 @@ function Navbar() {
       className="p-0 m-0 shadow-md w-full h-[13vh] flex items-center justify-between"
       style={{ backgroundColor: theme.palette.primary.main }}
     >
-      <div className="flex items-center ml-4 md:w-[20%]">
+      <div className="flex items-center ml-4 md:w-[25%]">
         <Link href="/" className="flex items-center">
           <Image src="/images/logo.png" alt="Logo" width={64} height={64} />
           <span
@@ -55,7 +55,7 @@ function Navbar() {
         </Link>
       </div>
 
-      <div className="flex items-center justify-end md:w-[80%]">
+      <div className="flex items-center justify-end md:w-[75%]">
         {!searchToken && !isAuthPage && (
           <Link href="/auth/login">
             <button
@@ -74,9 +74,10 @@ function Navbar() {
               <>
                 <IconButton
                   onClick={toggleDrawer(true)}
-                  style={{ color: theme.palette.background.paper }}
+                  className="mr-6"
+                  style={{ color: theme.palette.background.paper}}
                 >
-                  <Menu />
+                  <Menu style={{ fontSize: "2rem" }} />
                 </IconButton>
                 <Drawer
                   anchor="right"
@@ -84,7 +85,7 @@ function Navbar() {
                   onClose={toggleDrawer(false)}
                 >
                   <div
-                    className="p-4 w-64"
+                    className="p-4 w-64 h-full"
                     style={{ backgroundColor: theme.palette.primary.main }}
                   >
                     <ul className="flex flex-col space-y-2">
@@ -94,7 +95,7 @@ function Navbar() {
                       <li>
                         <button
                           onClick={handleLogout}
-                          className="w-full font-bold text-left"
+                          className="font-bold py-[18px] text-white border-b-2 border-transparent hover:border-gray-50"
                         >
                           Cerrar sesión <Logout />
                         </button>

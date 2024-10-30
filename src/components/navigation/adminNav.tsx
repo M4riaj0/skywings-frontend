@@ -1,102 +1,81 @@
 import Link from "next/link";
+import { useState } from "react";
 import theme from "../../theme";
+import { useMediaQuery } from "@mui/material";
+
+const menuItems = [
+  {
+    id: "navEdit",
+    label: "Editar Perfil",
+    options: [
+      { href: "/profile", label: "Editar información" },
+      { href: "/profile/password", label: "Cambiar contraseña" },
+    ],
+  },
+  {
+    id: "navVuelos",
+    label: "Gestionar vuelos",
+    options: [
+      { href: "/flights/create", label: "Crear Vuelo" },
+      { href: "/flights", label: "Listar vuelos" },
+      { href: "/", label: "Historial" },
+    ],
+  },
+  { id: "navMessages", label: "Mensajes", href: "/messages" },
+];
 
 export default function AdminNav() {
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const toggleMenu = (id: string) => {
+    setOpenMenu((prev) => (prev === id ? null : id));
+  };
+
   return (
     <>
-      <li id="navEdit">
-        <button
-          className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-          style={{
-            color: theme.palette.background.paper,
-          }}
-          onClick={() => {
-            const navEdit = document.getElementById("navEdit");
-            if (navEdit) {
-              const childUl = navEdit.querySelector("ul");
-              if (childUl) {
-                childUl.style.display =
-                  childUl.style.display === "block" ? "none" : "block";
-              }
-            }
-          }}
-        >
-          Editar Perfil
-        </button>
-        <ul className="absolute bg-white shadow-lg rounded mt-1 hidden">
-          <li>
-            <Link href="/profile">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Editar información
+      {menuItems.map((item) => (
+        <li key={item.id} className="relative">
+          {item.options ? (
+            <>
+              <button
+                className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
+                style={{ color: theme.palette.background.paper }}
+                onClick={() => toggleMenu(item.id)}
+              >
+                {item.label}
+              </button>
+              {openMenu === item.id && (
+                <ul
+                  className={`${
+                  isSmallScreen ? "relative" : "absolute"
+                  } top-full mt-1 bg-white shadow-lg rounded z-50`}
+                  style={{ minWidth: "180px" }}
+                >
+                  {item.options.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href}>
+                    <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
+                      {link.label}
+                    </button>
+                    </Link>
+                  </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          ) : (
+            <Link href={item.href}>
+              <button
+                className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
+                style={{ color: theme.palette.background.paper }}
+              >
+                {item.label}
               </button>
             </Link>
-          </li>
-          <li>
-            <Link href="/profile/password">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Cambiar contraseña
-              </button>
-            </Link>
-          </li>
-        </ul>
-      </li>
-      <li id="navVuelos">
-        <button
-          className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-          style={{
-            color: theme.palette.background.paper,
-          }}
-          onClick={() => {
-            const navVuelos = document.getElementById("navVuelos");
-            if (navVuelos) {
-              const childUl = navVuelos.querySelector("ul");
-              if (childUl) {
-                childUl.style.display =
-                  childUl.style.display === "block" ? "none" : "block";
-              }
-            }
-          }}
-        >
-          Gestionar vuelos
-        </button>
-        <ul className="absolute bg-white shadow-lg rounded mt-1 hidden">
-          <li>
-            <Link href="/flights/create">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Crear Vuelo
-              </button>
-            </Link>
-          </li>
-          <li>
-            <Link href="/flights">
-              <button className="w-full font-bold py-1 px-5 border-2 border-transparent hover:border-gray-300">
-                Listar vuelos
-              </button>
-            </Link>
-          </li>
-          <li>
-            {/* /vuelos/historial */}
-            <Link href="/">
-              <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
-                Historial
-              </button>
-            </Link>
-          </li>
-        </ul>
-      </li>
-      <li id="navMessages">
-        {/* /messages */}
-        <Link href="/">
-          <button
-            className="font-bold py-[20px] border-b-2 border-transparent  hover:border-gray-50"
-            style={{
-              color: theme.palette.background.paper,
-            }}
-          >
-            Mensajes
-          </button>
-        </Link>
-      </li>
+          )}
+        </li>
+      ))}
     </>
   );
 }
