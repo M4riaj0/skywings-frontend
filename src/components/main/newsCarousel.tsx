@@ -13,6 +13,12 @@ interface NewsCarouselProps {
   interval?: number;
 }
 
+const imageList = [
+  "/images/destination.png",
+  "/images/family.png",
+  "/images/traveler.png",
+];
+
 const NewsCarousel: React.FC<NewsCarouselProps> = ({
   newsItems,
   interval = 20000,
@@ -43,7 +49,7 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
       <div className="news-carousel flex justify-evenly items-center">
         <button
           type="button"
-          className="z-30 h-full px-6 cursor-pointer group focus:outline-none"
+          className="z-30 h-full pl-5 cursor-pointer group focus:outline-none"
           onClick={() =>
             setCurrentIndex(
               (currentIndex - 1 + newsItems.length) % newsItems.length
@@ -53,17 +59,26 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
           <ArrowCircleLeftRounded style={{ fontSize: "2rem" }} />
         </button>
         <div className="news-item">
-          <Card4News {...newsItems[currentIndex]} />
+          <Card4News
+            {...newsItems[currentIndex]}
+            image={imageList[currentIndex % imageList.length]}
+          />
         </div>
         <div className="news-item hidden md:block">
-          <Card4News {...newsItems[(currentIndex + 1) % newsItems.length]} />
+          <Card4News
+            {...newsItems[(currentIndex + 1) % newsItems.length]}
+            image={imageList[(currentIndex + 1) % imageList.length]}
+          />
         </div>
         <div className="news-item hidden lg:block">
-          <Card4News {...newsItems[(currentIndex + 2) % newsItems.length]} />
+          <Card4News
+            {...newsItems[(currentIndex + 2) % newsItems.length]}
+            image={imageList[(currentIndex + 2) % imageList.length]}
+          />
         </div>
         <button
           type="button"
-          className="z-30 h-full px-6 cursor-pointer group focus:outline-none"
+          className="z-30 h-full pr-5 cursor-pointer group focus:outline-none"
           onClick={() => setCurrentIndex((currentIndex + 1) % newsItems.length)}
         >
           <ArrowCircleRightRounded style={{ fontSize: "2rem" }} />

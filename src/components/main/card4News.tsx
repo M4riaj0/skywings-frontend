@@ -3,20 +3,21 @@ import {Card, CardContent, CardMedia, Typography, CardActionArea } from '@mui/ma
 export interface NewsItem {
   title: string;
   content: string;
+  image: string;
 }
 
 export function Card4News(newItem: NewsItem) {
   return (
-    <Card sx={{ maxWidth: 300, height: 330 }}>
+    <Card sx={{ maxWidth: 270, height: 310 }}>
       <CardActionArea className='h-full flex flex-col justify-start'>
         <CardMedia
           component="img"
-          image="https://img.freepik.com/free-photo/woman-with-hat-sitting-chairs-beach-beautiful-tropical-beach-woman-relaxing-tropical-beach-koh-nangyuan-island_335224-1110.jpg?t=st=1730174451~exp=1730178051~hmac=8616d7e860d719ac28000d6a0c12243d75bbaca89bb6e31e7b8f6c14f9e8ab3b&w=740"
-          alt="woman relaxing on a tropical beach"
+          image={newItem.image}
+          alt="Imagen de viajes"
           className='h-40'
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="h6" component="div" className='font-bold'>
         {newItem.title}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>

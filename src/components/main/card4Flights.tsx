@@ -1,60 +1,29 @@
-import {
-  Card,
-  CardContent,
-  CardActionArea,
-  CardActions,
-  Typography,
-  Button,
-  useTheme,
-} from "@mui/material";
+import { Card, CardContent, CardActionArea, Typography } from "@mui/material";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 
 export default function FligthCard(flightInfo: FlightData) {
-  const theme = useTheme();
   return (
-    <Card className="bg-slate-100">
-      <CardActionArea className="text-center py-2 flex flex-col">
-        <Typography gutterBottom variant="h6" component="div" className="font-bold">
-          Vuelo {flightInfo.destination.split(",")[0]} a {flightInfo.destination.split(",")[0]}
+    <Card className="bg-slate-100 w-4/5">
+      <CardActionArea className="text-center flex flex-col h-full">
+        <Typography gutterBottom variant="h6" component="div"className="font-bold">
+          Vuelo {flightInfo.destination.split(",")[0]} a{" "}
+          {flightInfo.destination.split(",")[0]}
         </Typography>
-        <CardContent className="text-left" sx={{ paddingBottom: 0 }}>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Código {flightInfo.code}
+        <CardContent className="flex items-center space-x-10 pb-0">
+          <Typography variant="body2" className="text-gray-500">
+            {flightInfo.departureDate1.split("T")[0]}
+            <br />
+            {flightInfo.departureDate1
+              .split("T")[1]
+              .split(":")
+              .slice(0, 2)
+              .join(":")}
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Origen {flightInfo.origin}
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Destino {flightInfo.destination}
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Salida: {flightInfo.departureDate1.split("T")[0]}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: "text" }}
-            className="mt-2 text-center font-bold"
-          >
+          <Typography variant="body1" className="text-center font-bold text-xl">
             Desde {flightInfo.priceEconomyClass} COP
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
-        <Button
-          size="small"
-          color="primary"
-          className="w-full font-bold "
-          style={{ backgroundColor: theme.palette.secondary.light, transition: "background-color 0.2s" }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = theme.palette.secondary.main;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = theme.palette.secondary.light;
-          }}
-        >
-          Añadir al carrito
-        </Button>
-      </CardActions>
     </Card>
   );
 }

@@ -1,227 +1,148 @@
-import React from "react";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-} from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import { FlightData, flightUpdateSchema } from "@/app/schemas/flightFormSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState, ChangeEvent } from 'react';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem, Select, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
+import { FlightData } from '@/app/schemas/flightFormSchema';
+import { flightUpdateSchema } from '@/app/schemas/flightFormSchema';
 
 interface FlightEditFormProps {
   open: boolean;
   flight: FlightData;
-  onSave: (updatedFlight: {
-    priceEconomyClass: number;
-    priceFirstClass: number;
-  }) => void;
+  onSave: (updatedFlight: { priceEconomyClass: number; priceFirstClass: number }) => void;
   onClose: () => void;
 }
 
-const FlightEditForm: React.FC<FlightEditFormProps> = ({
-  open,
-  flight,
-  onSave,
-  onClose,
-}) => {
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      editType: "change",
-      priceEconomyClass: flight.priceEconomyClass,
-      priceFirstClass: flight.priceFirstClass,
-      discountEconomy: 0,
-      discountFirstClass: 0,
-    },
-    resolver: zodResolver(flightUpdateSchema),
-  });
+const FlightEditForm: React.FC<FlightEditFormProps> = ({ open, flight, onSave, onClose }) => {
+  const [editType, setEditType] = useState<'change' | 'discount'>('change');
+  const [priceEconomyClass, setPriceEconomyClass] = useState<number | string>(flight.priceEconomyClass);
+  const [priceFirstClass, setPriceFirstClass] = useState<number | string>(flight.priceFirstClass);
+  const [discountEconomy, setDiscountEconomy] = useState<number | string>('');
+  const [discountFirstClass, setDiscountFirstClass] = useState<number | string>('');
 
-  const editType = watch("editType");
+  const handleEditTypeChange = (event: SelectChangeEvent<'change' | 'discount'>) => {
+    setEditType(event.target.value as 'change' | 'discount');
+  };
 
-  const handleSave = handleSubmit((data) => {
-    console.log(data);
+  const handlePriceChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setPrice: React.Dispatch<React.SetStateAction<number | string>>) => {
+    const value = e.target.value;
+    setPrice(value === '' ? '' : parseFloat(value));
+  };
+
+  const handleDiscountChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, 
+    setDiscount: React.Dispatch<React.SetStateAction<number | string>>,
+    priceClass: 'economy' | 'first'
+  ) => {
+    const value = e.target.value;
+    const discountValue = value === '' ? '' : parseFloat(value);
+    setDiscount(discountValue);
+
+    if (editType === 'discount') {
+      if (priceClass === 'economy') {
+        const newPriceEconomy = discountValue ? flight.priceEconomyClass - (flight.priceEconomyClass * discountValue) / 100 : flight.priceEconomyClass;
+        setPriceEconomyClass(parseFloat(newPriceEconomy.toFixed(2)));
+      } else if (priceClass === 'first') {
+        const newPriceFirstClass = discountValue ? flight.priceFirstClass - (flight.priceFirstClass * discountValue) / 100 : flight.priceFirstClass;
+        setPriceFirstClass(parseFloat(newPriceFirstClass.toFixed(2)));
+      }
+    }
+  };
+
+  const handleSave = () => {
     onSave({
-      priceEconomyClass: data.priceEconomyClass,
-      priceFirstClass: data.priceFirstClass,
+      priceEconomyClass: typeof priceEconomyClass === 'string' ? parseFloat(priceEconomyClass) : priceEconomyClass,
+      priceFirstClass: typeof priceFirstClass === 'string' ? parseFloat(priceFirstClass) : priceFirstClass,
     });
-    onClose();
-  });
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Editar vuelo: {flight.code}</DialogTitle>
       <DialogContent>
-        <Controller
-          name="priceEconomyClass"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              margin="dense"
-              label="Precio Actual Clase Económica"
-              type="number"
-              fullWidth
-              variant="outlined"
-              {...field}
-              disabled
-            />
-          )}
+        <TextField
+          margin="dense"
+          label="Precio Actual Clase Económica"
+          type="number"
+          fullWidth
+          variant="outlined"
+          value={priceEconomyClass}
+          InputProps={{
+            readOnly: editType === 'discount',
+          }}
+          onChange={(e) => handlePriceChange(e, setPriceEconomyClass)}
         />
-        <Controller
-          name="priceFirstClass"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              margin="dense"
-              label="Precio Actual Clase Ejecutiva"
-              type="number"
-              fullWidth
-              variant="outlined"
-              {...field}
-              disabled
-            />
-          )}
+        <TextField
+          margin="dense"
+          label="Precio Actual Clase Ejecutiva"
+          type="number"
+          fullWidth
+          variant="outlined"
+          value={priceFirstClass}
+          InputProps={{
+            readOnly: editType === 'discount',
+          }}
+          onChange={(e) => handlePriceChange(e, setPriceFirstClass)}
         />
 
         <FormControl fullWidth margin="dense">
           <InputLabel>Tipo de Edición</InputLabel>
-          <Controller
-            name="editType"
-            control={control}
-            render={({ field }) => (
-              <Select {...field} label="Tipo de edición">
-                <MenuItem value="change">Cambiar Precio</MenuItem>
-                <MenuItem value="discount">Aplicar Descuento</MenuItem>
-              </Select>
-            )}
-          />
+          <Select value={editType} onChange={handleEditTypeChange}>
+            <MenuItem value="change">Cambiar Precio</MenuItem>
+            <MenuItem value="discount">Aplicar Descuento</MenuItem>
+          </Select>
         </FormControl>
 
-        {editType === "change" ? (
+        {editType === 'change' ? (
           <>
-            <Controller
-              name="priceEconomyClass"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  margin="dense"
-                  label="Nuevo Precio Clase Económica"
-                  type="number"
-                  fullWidth
-                  variant="outlined"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(e.target.value ? Number(e.target.value) : "")
-                  }
-                  error={!!errors.priceEconomyClass}
-                  helperText={errors.priceEconomyClass?.message}
-                />
-              )}
+            <TextField
+              margin="dense"
+              label="Nuevo Precio Clase Económica"
+              type="number"
+              fullWidth
+              variant="outlined"
+              value={priceEconomyClass}
+              onChange={(e) => handlePriceChange(e, setPriceEconomyClass)}
+              inputProps={{ min: 0 }}
             />
-            <Controller
-              name="priceFirstClass"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  margin="dense"
-                  label="Nuevo Precio Clase Ejecutiva"
-                  type="number"
-                  fullWidth
-                  variant="outlined"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(e.target.value ? Number(e.target.value) : "")
-                  }
-                  error={!!errors.priceFirstClass}
-                  helperText={errors.priceFirstClass?.message}
-                />
-              )}
+            <TextField
+              margin="dense"
+              label="Nuevo Precio Clase Ejecutiva"
+              type="number"
+              fullWidth
+              variant="outlined"
+              value={priceFirstClass}
+              onChange={(e) => handlePriceChange(e, setPriceFirstClass)}
+              inputProps={{ min: 0 }}
             />
           </>
         ) : (
           <>
-            <Controller
-              name="discountEconomy"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  margin="dense"
-                  label="Descuento (%) Clase Económica"
-                  type="number"
-                  fullWidth
-                  variant="outlined"
-                  {...field}
-                  onChange={(e) => {
-                    const value = e.target.value ? Number(e.target.value) : "";
-                    field.onChange(value);
-
-                    const currentPrice = flight.priceEconomyClass;
-                    const newPriceEconomy = value
-                      ? currentPrice - (currentPrice * value) / 100
-                      : currentPrice;
-                    setValue(
-                      "priceEconomyClass",
-                      parseFloat(newPriceEconomy.toFixed(2))
-                    );
-                  }}
-                  error={!!errors.discountEconomy}
-                  helperText={errors.discountEconomy?.message}
-                />
-              )}
+            <TextField
+              margin="dense"
+              label="Descuento (%) Clase Económica"
+              type="number"
+              fullWidth
+              variant="outlined"
+              value={discountEconomy}
+              onChange={(e) => handleDiscountChange(e, setDiscountEconomy, 'economy')}
+              inputProps={{ min: 0 }}
             />
-            <Controller
-              name="discountFirstClass"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  margin="dense"
-                  label="Descuento (%) Clase Ejecutiva"
-                  type="number"
-                  fullWidth
-                  variant="outlined"
-                  {...field}
-                  onChange={(e) => {
-                    const value = e.target.value ? Number(e.target.value) : "";
-                    field.onChange(value);
-
-                    const currentPrice = flight.priceEconomyClass;
-                    const newPriceEconomy = value
-                      ? currentPrice - (currentPrice * value) / 100
-                      : currentPrice;
-                    setValue(
-                      "priceEconomyClass",
-                      parseFloat(newPriceEconomy.toFixed(2))
-                    );
-                  }}
-                  error={!!errors.discountFirstClass}
-                  helperText={errors.discountFirstClass?.message}
-                />
-              )}
+            <TextField
+              margin="dense"
+              label="Descuento (%) Clase Ejecutiva"
+              type="number"
+              fullWidth
+              variant="outlined"
+              value={discountFirstClass}
+              onChange={(e) => handleDiscountChange(e, setDiscountFirstClass, 'first')}
+              inputProps={{ min: 0 }}
             />
           </>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary" variant="contained">
+        <Button onClick={onClose} color="secondary">
           Cancelar
         </Button>
-        <Button
-          type="submit"
-          onClick={handleSave}
-          color="primary"
-          variant="contained"
-        >
+        <Button onClick={handleSave} color="primary" variant="contained">
           Guardar
         </Button>
       </DialogActions>

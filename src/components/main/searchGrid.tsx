@@ -115,14 +115,12 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
       <Grid2
         className="my-3 rounded"
         container
-        spacing={3}
-        columns={{ sm: 1, md: 2, lg: 4 }}
-        justifyContent="center"
+        spacing={2}
       >
         {filteredData
           .slice((page - 1) * itemsPerPage, page * itemsPerPage)
           .map((item, index) => (
-            <Grid2 key={index}>
+            <Grid2 size={{sm:12, md:6}} key={index}>
               <FligthCard {...item} />
             </Grid2>
           ))}
