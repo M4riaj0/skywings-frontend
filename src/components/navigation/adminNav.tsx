@@ -18,7 +18,7 @@ const menuItems = [
     options: [
       { href: "/flights/create", label: "Crear Vuelo" },
       { href: "/flights", label: "Listar vuelos" },
-      { href: "/", label: "Historial" },
+      { href: "/flights/history", label: "Historial" },
     ],
   },
   { id: "navMessages", label: "Mensajes", href: "/messages" },
