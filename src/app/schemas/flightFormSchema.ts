@@ -79,7 +79,6 @@ export const flightFormSchema = z
   });
 
 export const flightUpdateSchema = z.object({
-  code: z.string().nonempty("Se requiere el código del vuelo"),
   priceFirstClass: z
     .number()
     .refine((value) => value > 0 && value <= 10000000, {
@@ -90,20 +89,12 @@ export const flightUpdateSchema = z.object({
     .refine((value) => value > 0 && value <= 10000000, {
       message: "El precio debe ser un número entre 1 y 10.000.000",
     }),
-  discountEconomy: z
+  discount: z
     .number()
     .int()
-    .refine((value) => value > 0 && value <= 90, {
+    .refine((value) => value >= 0 && value <= 90, {
       message: "El descuento debe ser un número entre 1 y 90",
-    })
-    .optional(),
-  discountFirstClass: z
-    .number()
-    .int()
-    .refine((value) => value > 0 && value <= 90, {
-      message: "El descuento debe ser un número entre 1 y 90",
-    })
-    .optional(),
+    }),
 }).superRefine((data, ctx) => {
   if (data.priceEconomyClass >= data.priceFirstClass) {
     ctx.addIssue({
