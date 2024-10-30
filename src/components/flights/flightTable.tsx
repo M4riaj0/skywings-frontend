@@ -40,24 +40,21 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
   const handleSave = (updatedFlight: { priceEconomyClass: number; priceFirstClass: number }) => {
     if (selectedFlight) {
       onSaveFlight({
-        code: selectedFlight.code,
+        flightCode: selectedFlight.code,
         priceEconomyClass: updatedFlight.priceEconomyClass,
         priceFirstClass: updatedFlight.priceFirstClass,
         lastUpdateDate: new Date(),
       });
-      handleCloseEditDialog();
+      console.log("Guardando cambios en vuelo", updatedFlight);
+      // handleCloseEditDialog();
     }
   };
 
   return (
     <div className="overflow-x-auto md:overflow-visible">
       <FlightDetailsDialog open={isDetailsDialogOpen} onClose={handleCloseDetailsDialog} flight={selectedFlight} />
-
-      {isEditDialogOpen && selectedFlight && (
-        <FlightEditForm
-          flight={selectedFlight}
-          onSave={handleSave}
-          onClose={handleCloseEditDialog} open={true}        />
+      {selectedFlight && (
+        <FlightEditForm open={isEditDialogOpen} flight={selectedFlight} onSave={handleSave} onClose={handleCloseEditDialog} />
       )}
 
       {/* Vista en Cards para pantallas pequeñas */}

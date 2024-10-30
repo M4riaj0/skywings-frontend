@@ -146,7 +146,7 @@ export const deleteFlight = async (code: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ code: code }),
+      body: JSON.stringify({ flightCode: code }),
     });
 
     return response.json();

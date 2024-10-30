@@ -7,7 +7,6 @@ import {
   Button,
   useTheme,
 } from "@mui/material";
-import Image from "next/image";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 
 export default function FligthCard(flightInfo: FlightData) {
@@ -16,15 +15,8 @@ export default function FligthCard(flightInfo: FlightData) {
     <Card className="bg-slate-100">
       <CardActionArea className="text-center py-2 flex flex-col">
         <Typography gutterBottom variant="h6" component="div" className="font-bold">
-          Vuelo a {flightInfo.destination.split(",")[0]}
+          Vuelo {flightInfo.destination.split(",")[0]} a {flightInfo.destination.split(",")[0]}
         </Typography>
-        <Image
-          src="/images/logo.png"
-          alt="Flight"
-          className="mx-auto"
-          width={120}
-          height={120}
-        />
         <CardContent className="text-left" sx={{ paddingBottom: 0 }}>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             Código {flightInfo.code}

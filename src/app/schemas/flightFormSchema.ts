@@ -138,7 +138,7 @@ export interface FlightFormToSend {
 }
 
 export interface FlightFormUpdate {
-  code: string;
+  flightCode: string;
   priceFirstClass: number;
   priceEconomyClass: number;
   lastUpdateDate: Date;
