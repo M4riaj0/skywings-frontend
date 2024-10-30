@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Typography, Button, IconButton } from "@mui/material";
 import FlightTable from "@/components/flights/flightTable";
-import { getAllFlights } from "@/services/flights";
+import { getRealizedFlights } from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +14,7 @@ const FlightManager = () => {
 
   useEffect(() => {
     const fetchFlights = async () => {
-      setFlights(await getAllFlights());
+      setFlights(await getRealizedFlights());
     };
 
     fetchFlights();

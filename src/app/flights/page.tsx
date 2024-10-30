@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Typography, Button, IconButton } from "@mui/material";
 import FlightTable from "@/components/flights/flightTable";
-import { getAllFlights, updateFlight, deleteFlight } from "@/services/flights";
+import { getAvaliableFlights, updateFlight, deleteFlight } from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
 import { FlightFormUpdate } from "@/app/schemas/flightFormSchema";
 
@@ -15,7 +15,7 @@ const FlightManager = () => {
 
   useEffect(() => {
     const fetchFlights = async () => {
-      setFlights(await getAllFlights());
+      setFlights(await getAvaliableFlights());
     };
 
     fetchFlights();
@@ -26,7 +26,7 @@ const FlightManager = () => {
     const res = await updateFlight(updatedFlight);
     console.log(res);
     alert("Vuelo actualizado exitosamente");
-    setFlights(await getAllFlights());
+    setFlights(await getAvaliableFlights());
   }
 
   const handleDeleteFlight = async (code: string) => {
@@ -34,7 +34,7 @@ const FlightManager = () => {
     const res = await deleteFlight(code);
     console.log(res);
     alert(`Vuelo ${code} eliminado exitosamente`);
-    setFlights(await getAllFlights());
+    setFlights(await getAvaliableFlights());
   };
 
   return (

@@ -8,7 +8,9 @@ import {
   Divider,
   Box,
   Pagination,
+  Button,
 } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 import FligthCard from "./card4Flights";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 
@@ -16,55 +18,45 @@ interface SearchGridProps {
   data: FlightData[];
 }
 
-const searchOptions = [
-  "Origen",
-  "Destino",
-  "Fecha de salida",
-  "Fecha de llegada",
-  "Precio",
-];
+const searchOptions = ["Fecha de salida", "Fecha de llegada", "Precio"];
 
 const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerms, setSearchTerms] = useState({ origen: "", destino: "", filter: "" });
   const [searchOption, setSearchOption] = useState<string | null>("");
+  const [filteredData, setFilteredData] = useState<FlightData[]>(data);
   const [page, setPage] = useState(1);
   const itemsPerPage = 4;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+    const { id, value } = event.target;
+    setSearchTerms(prev => ({ ...prev, [id]: value }));
   };
 
-  const filteredData = data.filter((item) => {
-    if (searchOption === null || searchTerm === "") {
-      return Object.values(item).some((value) =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    } else if (!/^0+$/.test(searchTerm)) {
-      switch (searchOption) {
-        case "Origen":
-          return item.origin.toLowerCase().includes(searchTerm.toLowerCase());
-        case "Destino":
-          return item.destination
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
-        case "Fecha de salida":
-          return item.departureDate1
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
-        case "Fecha de llegada":
-          return item.arrivalDate1
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
-        case "Precio":
-          return item.priceEconomyClass.toString().includes(searchTerm);
-        default:
-          return false;
-      }
-    }
-  });
+  const handleSearch = () => {
+    const filtered = data.filter(item => {
+      const searchFields: { [key: string]: string | number } = {
+        "Fecha de salida": item.departureDate1,
+        "Fecha de llegada": item.arrivalDate1,
+        Precio: item.priceEconomyClass.toString(),
+      };
+      const matchesSearchOption = searchOption
+        ? searchFields[searchOption]?.toString().toLowerCase().includes(searchTerms.filter.toLowerCase())
+        : true;
+      const matchesOrigin = searchTerms.origen
+        ? item.origin.toLowerCase().includes(searchTerms.origen.toLowerCase())
+        : true;
+      const matchesDestination = searchTerms.destino
+        ? item.destination.toLowerCase().includes(searchTerms.destino.toLowerCase())
+        : true;
+      return matchesSearchOption && matchesOrigin && matchesDestination;
+    });
+
+    setFilteredData(filtered);
+    setPage(1);
+  };
 
   return (
-    <section className="bg-white py-2 px-5 rounded">
+    <section className="bg-gray-50 py-2 px-5 rounded-lg border-t shadow-md">
       <Box className="flex my-3 space-x-3">
         <Autocomplete
           disablePortal
@@ -72,39 +64,39 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
           options={searchOptions}
           sx={{ width: 200 }}
           value={searchOption}
-          onChange={(event, newValue) => {
-            setSearchOption(newValue);
-          }}
-          renderInput={(params) => (
-            <TextField {...params} label="Elegir filtro" />
-          )}
+          onChange={(event, newValue) => setSearchOption(newValue)}
+          renderInput={(params) => <TextField {...params} label="Elegir filtro" />}
         />
         <TextField
-          id="search"
-          type={
-            searchOption === "Precio"
-              ? "number"
-              : searchOption === "Fecha de salida" ||
-                searchOption === "Fecha de llegada"
-              ? "date"
-              : "text"
-          }
+          id="filter"
           placeholder="Buscar..."
           sx={{ width: 200 }}
-          value={searchTerm}
+          value={searchTerms.filter}
           onChange={handleSearchChange}
-          error={
-            /^0+$/.test(searchTerm) ||
-            (searchTerm.length > 0 && filteredData.length === 0)
-          }
-          helperText={
-            /^0+$/.test(searchTerm)
-              ? "El término de búsqueda no puede ser una cadena de ceros"
-              : searchTerm.length > 0 && filteredData.length === 0
-              ? "No se encontraron resultados"
-              : ""
-          }
+          type={searchOption === "Precio" ? "number" : "date"}
         />
+        <TextField
+          id="origen"
+          label="Origen"
+          sx={{ width: 200 }}
+          value={searchTerms.origen}
+          onChange={handleSearchChange}
+        />
+        <TextField
+          id="destino"
+          label="Destino"
+          sx={{ width: 200 }}
+          value={searchTerms.destino}
+          onChange={handleSearchChange}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          className="rounded-full"
+          onClick={handleSearch}
+        >
+          <SearchIcon />
+        </Button>
       </Box>
       <Divider />
       {filteredData.length === 0 && (
@@ -112,19 +104,12 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
           <p>No se encontraron vuelos disponibles</p>
         </Box>
       )}
-      <Grid2
-        className="my-3 rounded"
-        container
-        columns={1}
-        spacing={2}
-      >
-        {filteredData
-          .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-          .map((item, index) => (
-            <Grid2 size={1} key={index}>
-              <FligthCard {...item} />
-            </Grid2>
-          ))}
+      <Grid2 className="my-3 rounded" container columns={1} spacing={2}>
+        {filteredData.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((item, index) => (
+          <Grid2 size={1} key={index}>
+            <FligthCard {...item} />
+          </Grid2>
+        ))}
       </Grid2>
       <Box className="flex justify-center my-3">
         <Pagination

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAllFlights, getAllFligthNews } from '@/services/flights';
+import { getAvaliableFlights, getAllFligthNews } from '@/services/flights';
 import NewsCarousel from '@/components/main/newsCarousel';
 import SearchGrid from '@/components/main/searchGrid';
 
@@ -13,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchFlights = async () => {
-      setFlights(await getAllFlights());
+      setFlights(await getAvaliableFlights());
     };
 
     const fetchNews = async () => {

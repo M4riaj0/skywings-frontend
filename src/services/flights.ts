@@ -60,9 +60,24 @@ export const getLocations = async (type: string) => {
   else return national;
 };
 
-export const getAllFlights = async () => {
+export const getAvaliableFlights = async () => {
   try {
     const response = await fetch(`${backend_url}/flights`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+export const getRealizedFlights = async () => {
+  try {
+    const response = await fetch(`${backend_url}/flights/realized`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
