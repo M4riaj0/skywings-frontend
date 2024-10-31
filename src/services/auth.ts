@@ -37,7 +37,9 @@ export async function handleRegister(data: RegisterData) {
       return "Usuario registrado";
       // Redirigir o manejar el éxito
     } else {
-      console.error("Error al iniciar sesión");
+      console.error("Error al registrarse");
+      const error = await response.json();
+      return error;
     }
   } catch (error) {
     console.error("Error de red:", error);

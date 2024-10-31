@@ -308,12 +308,13 @@ const MultiStepForm = ({ steps, user }) => {
       let res;
       if (user) {
         res = await updateUser(formDataToSend);
+        console.log("Update user\n", res)
         if (!res.error ) {
           console.log(res);
           alert("Usuario actualizado exitosamente");
           router.push("/");
         } else {
-          alert("Error al actualizar el usuario");
+          alert(`Error al actualizar el usuario:\n${res.message}`);
           console.log(res);
         }
       } else {
@@ -322,7 +323,7 @@ const MultiStepForm = ({ steps, user }) => {
           alert("Usuario registrado exitosamente");
           router.push("/auth/login");
         } else {
-          alert("Error al registrar el usuario");
+          alert(`Error al registrar el usuario:\n${res.message}`);
         }
       }
     }

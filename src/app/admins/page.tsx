@@ -51,7 +51,8 @@ const AdminManager = () => {
       setAdmins(await getAdmins());
       handleClose();
     } else {
-      setErrorMessage("Error al crear el administrador");
+      console.log("Error al crear el administrador:", res);
+      setErrorMessage("Error al crear el administrador:\n" + res.message);
       setSuccess("");
       setWarning("");
     }
