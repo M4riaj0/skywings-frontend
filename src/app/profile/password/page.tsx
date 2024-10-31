@@ -80,7 +80,7 @@ const UpdatePasswordForm = () => {
       router.refresh();
     } else {
       console.log(res);
-      alert("Error al intentar cambiar contraseña");
+      alert(`Error al intentar cambiar contraseña:\n${res.message}`);
     }
   });
 
@@ -93,7 +93,7 @@ const UpdatePasswordForm = () => {
         <TextField
           id="currentPassword"
           type="password"
-          label="Cambiar contraseña"
+          label="Contraseña actual"
           {...register("currentPassword")}
           error={!!errors.currentPassword}
           helperText={errors.currentPassword?.message}
