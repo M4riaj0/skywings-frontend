@@ -8,19 +8,40 @@ import {
 import FlightIcon from "@mui/icons-material/Flight";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 
+const cityTimeZoneMap: { [key: string]: string } = {
+  "Madrid, España": "Europe/Madrid",
+  "Londres, Reino Unido": "Europe/London",
+  "New York, Estados Unidos": "America/New_York",
+  "Buenos Aires, Argentina": "America/Argentina/Buenos_Aires",
+  "Miami, Estados Unidos": "America/New_York",
+  "Bogotá, Colombia": "America/Bogota", // Asumiendo Bogotá para vuelos nacionales en Colombia
+};
+const formatDateAndTime = (city: string, dateTime: string) => {
+  const modifiedCity = city.includes("Colombia") ? `Bogotá, Colombia` : city;
+  const timeZone = cityTimeZoneMap[modifiedCity];
+  const [date, time] = dateTime.split("T");
+  const formattedTime = time
+      ? new Date(`1970-01-01T${time}`).toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false,
+            timeZone: timeZone,
+        })
+      : "";
+  return { date, time: formattedTime };
+};
+
 export default function FligthCard(flightInfo: FlightData) {
+  const departure1 = formatDateAndTime(flightInfo.origin, flightInfo.departureDate1);
+  const arrival1 = formatDateAndTime(flightInfo.destination, flightInfo.arrivalDate1);
   return (
     <Card className="bg-slate-50 rounded-lg border border-slate-200">
       <CardActionArea className="text-center flex justify-between h-full">
         <CardContent className="flex flex-col items-center w-[20%]">
           <Typography variant="body2" className="text-gray-500">
-            {flightInfo.departureDate1.split("T")[0]}
+            {departure1.date}
             <br />
-            {flightInfo.departureDate1
-              .split("T")[1]
-              .split(":")
-              .slice(0, 2)
-              .join(":")}
+            {departure1.time}
           </Typography>
           <Typography variant="h6" component="div" className="font-bold">
             {flightInfo.origin.split(",")[0]}
@@ -37,13 +58,9 @@ export default function FligthCard(flightInfo: FlightData) {
         />
         <CardContent className="flex flex-col items-center w-[20%]">
           <Typography variant="body2" className="text-gray-500">
-            {flightInfo.arrivalDate1.split("T")[0]}
+            {arrival1.date}
             <br />
-            {flightInfo.arrivalDate1
-              .split("T")[1]
-              .split(":")
-              .slice(0, 2)
-              .join(":")}
+            {arrival1.time}
           </Typography>
           <Typography variant="h6" component="div" className="font-bold">
             {flightInfo.destination.split(",")[0]}

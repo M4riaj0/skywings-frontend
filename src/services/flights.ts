@@ -116,7 +116,7 @@ export const createFlight = async (flightData: FlightForm) => {
     const dataToSend: FlightFormToSend = {
       ...flightData,
       creator: username,
-      departureDate1: new Date(`${flightData.departure.date}T${flightData.departure.time}`),
+      departureDate1: new Date(`${flightData.departure.date}T${flightData.departure.time}Z`),
       lastUpdateDate: new Date(),
     };
     console.log(dataToSend);
