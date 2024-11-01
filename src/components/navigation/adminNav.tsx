@@ -55,7 +55,7 @@ export default function AdminNav() {
                   {item.options.map((link) => (
                   <li key={link.href}>
                     <Link href={link.href}>
-                    <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300">
+                    <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300" onClick={() => toggleMenu(item.id)}>
                       {link.label}
                     </button>
                     </Link>

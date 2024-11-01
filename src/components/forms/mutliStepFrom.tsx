@@ -360,8 +360,6 @@ const MultiStepForm = ({ steps, user }) => {
                 <div className="mt-2">
                   <label className="block text-center">
                     Foto de Perfil (opcional)
-                    {/* aqui - {typeof(getValues().user_image)}
-                    {getValues().user_image} */}
                   </label>
                 </div>
                 {isEditingFoto && (
@@ -513,7 +511,7 @@ const MultiStepForm = ({ steps, user }) => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    {...(user ? { disabled: true } : {})}
+                    {...(user.dni ? { disabled: true } : {})}
                     label="DNI"
                     type="number"
                     variant="outlined"

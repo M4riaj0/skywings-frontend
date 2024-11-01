@@ -58,23 +58,19 @@ const FlightEditForm: React.FC<FlightEditFormProps> = ({
       alert("Error al modificar el vuelo\nLos datos ingresados corresponden a los datos actuales")
     } else {
       const { success, data, error } = flightUpdateSchema.safeParse({...values});
-      console.log(values);
       if (success) {
         setErrors({});
-        console.log(data);
         onSave({
           priceEconomyClass: data.priceEconomyClass,
           priceFirstClass: data.priceFirstClass,
         });
       } else {
-        console.log(error.issues)
         const newErrors = error.issues.reduce((acc, iError) => {
           acc[iError.path[0]] = iError.message; // Mapear errores en base al primer elemento del path
           return acc;
         }, {} as { [key: string]: string });
         setErrors(newErrors);
       }
-      console.log(success);
     }
   };
 
@@ -166,7 +162,7 @@ const FlightEditForm: React.FC<FlightEditFormProps> = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
+        <Button onClick={onClose} color="error" variant="outlined">
           Cancelar
         </Button>
         <Button onClick={handleSave} color="primary" variant="contained">

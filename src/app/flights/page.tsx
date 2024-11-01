@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Typography, Button, IconButton } from "@mui/material";
+import { Typography, Button, IconButton, Alert } from "@mui/material";
 import FlightTable from "@/components/flights/flightTable";
-import { getAvaliableFlights, updateFlight, deleteFlight } from "@/services/flights";
+import {
+  getAvaliableFlights,
+  updateFlight,
+  deleteFlight,
+} from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
 import { FlightFormUpdate } from "@/app/schemas/flightFormSchema";
 
@@ -12,6 +16,8 @@ export const dynamic = "force-dynamic";
 
 const FlightManager = () => {
   const [flights, setFlights] = useState([]);
+  const [errorMessage, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const fetchFlights = async () => {
@@ -22,18 +28,20 @@ const FlightManager = () => {
   }, []);
 
   const handleUpdateFlight = async (updatedFlight: FlightFormUpdate) => {
-    console.log(updatedFlight);
+    // console.log(updatedFlight);
     const res = await updateFlight(updatedFlight);
-    console.log(res);
-    alert("Vuelo actualizado exitosamente");
+    // console.log(res);
+    if (res.code) setSuccess("Vuelo actualizado exitosamente");
+    else setError(`Error al actualizar el vuelo: ${res?.message}`);
     setFlights(await getAvaliableFlights());
-  }
+  };
 
   const handleDeleteFlight = async (code: string) => {
-    console.log(code);
+    // console.log(code);
     const res = await deleteFlight(code);
-    console.log(res);
-    alert(`Vuelo ${code} eliminado exitosamente`);
+    // console.log(res);
+    if (res == true) setSuccess(`Vuelo ${code} eliminado exitosamente`);
+    else setError(`Error al eliminar el vuelo: ${res?.message}`);
     setFlights(await getAvaliableFlights());
   };
 
@@ -44,7 +52,9 @@ const FlightManager = () => {
           Gestionar Vuelos
         </Typography>
 
-        <div className="hidden md:flex">
+        <div className="hidden md:flex items-center space-x-2">
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          {success && <Alert severity="success">{success}</Alert>}
           <Link href="/flights/create">
             <Button
               variant="contained"
@@ -56,7 +66,6 @@ const FlightManager = () => {
             </Button>
           </Link>
         </div>
-
         <div className="md:hidden">
           <IconButton
             color="primary"
@@ -69,7 +78,11 @@ const FlightManager = () => {
         </div>
       </div>
 
-      <FlightTable flights={flights} onSaveFlight={handleUpdateFlight} onDeleteFlight={handleDeleteFlight} />
+      <FlightTable
+        flights={flights}
+        onSaveFlight={handleUpdateFlight}
+        onDeleteFlight={handleDeleteFlight}
+      />
     </div>
   );
 };

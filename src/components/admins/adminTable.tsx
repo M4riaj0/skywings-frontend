@@ -15,12 +15,12 @@ interface Admin {
   }
   
   const AdminTable: React.FC<AdminTableProps> = ({ admins, onDeleteAdmin }) => {
-    const numAdmin = admins.length || 0;
+    const numAdmin = (admins && admins.length) || 0;
     return (
       <div className="overflow-x-auto md:overflow-visible">
         {/*pantallas pequeñas */}
         <div className="md:hidden">
-          {admins.length === 0 ? (
+          {numAdmin === 0 ? (
             <p className="text-center text-gray-500">No hay administradores disponibles.</p>
           ) : (
             admins.map((admin, index) => (
@@ -50,7 +50,7 @@ interface Admin {
             </tr>
           </thead>
           <tbody>
-            {admins.length === 0 ? (
+            {numAdmin === 0 ? (
               <tr>
                 <td colSpan={4} className="text-center text-gray-500 py-4">
                   No hay administradores disponibles.
