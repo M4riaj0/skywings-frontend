@@ -40,7 +40,7 @@ function Navbar() {
 
   return (
     <nav
-      className="p-0 m-0 shadow-md w-full h-[13vh] flex items-center justify-between"
+      className="py-2 shadow-md w-full flex items-center justify-between"
       style={{ backgroundColor: theme.palette.primary.main }}
     >
       <div className="flex items-center ml-4 md:w-[25%]">

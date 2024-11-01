@@ -37,13 +37,13 @@ export default function FligthCard(flightInfo: FlightData) {
   return (
     <Card className="bg-slate-50 rounded-lg border border-slate-200">
       <CardActionArea className="text-center flex justify-between h-full">
-        <CardContent className="flex flex-col items-center w-[20%]">
+        <CardContent className="flex flex-col items-center w-[25%] md:w-[20%]">
           <Typography variant="body2" className="text-gray-500">
             {departure1.date}
             <br />
             {departure1.time}
           </Typography>
-          <Typography variant="h6" component="div" className="font-bold">
+          <Typography className="text-lg md:text-xl font-bold">
             {flightInfo.origin.split(",")[0]}
           </Typography>
         </CardContent>
@@ -51,22 +51,22 @@ export default function FligthCard(flightInfo: FlightData) {
           flexItem
           className="hidden md:block w-[15%] mb-14 mx-3 border-b-2 border-slate-500 border-dashed"
         />
-        <FlightIcon className="text-5xl transform rotate-90" />
+        <FlightIcon className="text-3xl md:text-5xl transform rotate-90" />
         <Divider
           flexItem
           className="hidden md:block w-[15%] mb-14 mx-3 border-b-2 border-slate-500 border-dashed"
         />
-        <CardContent className="flex flex-col items-center w-[20%]">
+        <CardContent className="flex flex-col items-center w-[25%] md:w-[20%]">
           <Typography variant="body2" className="text-gray-500">
             {arrival1.date}
             <br />
             {arrival1.time}
           </Typography>
-          <Typography variant="h6" component="div" className="font-bold">
+          <Typography className="text-lg md:text-xl font-bold">
             {flightInfo.destination.split(",")[0]}
           </Typography>
         </CardContent>
-        <CardContent className="flex flex-col items-center w-[20%] py-7 bg-gray-200">
+        <CardContent className="flex flex-col items-center w-[30%] md:w-[20%] py-7 bg-gray-200">
           <Typography variant="body1" className="text-gray-500">
             Desde
           </Typography>

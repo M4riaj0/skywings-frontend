@@ -191,6 +191,7 @@ function FlightForm() {
               type="date"
               variant="outlined"
               fullWidth
+              InputLabelProps={{ shrink: true }}
               error={!!errors.departure?.date}
               helperText={errors.departure?.date?.message}
             />
@@ -206,6 +207,7 @@ function FlightForm() {
               type="time"
               variant="outlined"
               fullWidth
+              InputLabelProps={{ shrink: true }}
               error={!!errors.departure?.time}
               helperText={errors.departure?.time?.message}
             />
