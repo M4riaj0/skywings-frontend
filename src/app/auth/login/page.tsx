@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Link, Stack, TextField, Typography } from "@mui/material";
+import { Button, Link, Stack, TextField, Typography, Alert } from "@mui/material";
 import NextLink from "next/link";
 import ResetPassword from "@/components/resetPassword";
 import { handleLogin } from "@/services/auth";
@@ -11,6 +11,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -23,19 +24,23 @@ export default function Login() {
   const router = useRouter();
 
   const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault(); // Evita el comportamiento por defecto de enviar el formulario
+    event.preventDefault();
     const data = { username, password };
     const res = await handleLogin(data);
     const token = res?.access_token;
     const role = res?.role;
-    console.log(token);
     if (token) {
-      document.cookie = `token=${token}; path=/;`;
+      // Guardar el token en el local storage y redirigir al usuario
+      document.cookie = `token=${token}; path=/;`; //Debe cambiarse el guardado por cookies
       localStorage && localStorage.setItem("token", token);
       localStorage && localStorage.setItem("role", role);
+      if (role == "ROOT") router.push("/admins");
+      else if (role == "ADMIN") router.push("/flights");
+      else router.push("/profile");
+    } else {
+      setErrorMessage("Usuario o contraseña incorrectos");
+      setPassword("");
     }
-    if (role == "ROOT") router.push("/admins");
-    else router.push("/profile");
   };
 
   return (
@@ -44,6 +49,9 @@ export default function Login() {
         <Typography variant="h4" component="h1" align="center">
           Inicio de Sesión
         </Typography>
+        {errorMessage && ( // Renderiza el Alert si hay un mensaje de error
+          <Alert severity="error">{errorMessage}</Alert>
+        )}
         <TextField
           label="Nombre de usuario"
           variant="outlined"

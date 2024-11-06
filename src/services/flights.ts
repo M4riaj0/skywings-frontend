@@ -1,4 +1,4 @@
-import { FlightForm, FlightFormToSend } from "@/app/schemas/flightFormSchema";
+import { FlightForm, FlightFormToSend, FlightFormUpdate } from "@/app/schemas/flightFormSchema";
 
 const international = {
   colombia: [
@@ -60,9 +60,8 @@ export const getLocations = async (type: string) => {
   else return national;
 };
 
-export const getAllFlights = async () => {
+export const getAvaliableFlights = async () => {
   try {
-
     const response = await fetch(`${backend_url}/flights`, {
       method: "GET",
       headers: {
@@ -76,6 +75,36 @@ export const getAllFlights = async () => {
   }
 };
 
+export const getRealizedFlights = async () => {
+  try {
+    const response = await fetch(`${backend_url}/flights/realized`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+export const getAllFligthNews = async () => {
+  try {
+    const response = await fetch(`${backend_url}/flights/news`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
 export const createFlight = async (flightData: FlightForm) => {
   const token = localStorage.getItem("token");
   let username;
@@ -87,12 +116,12 @@ export const createFlight = async (flightData: FlightForm) => {
     const dataToSend: FlightFormToSend = {
       ...flightData,
       creator: username,
-      departure: new Date(`${flightData.departure.date}T${flightData.departure.time}`),
+      departureDate1: new Date(`${flightData.departure.date}T${flightData.departure.time}Z`),
       lastUpdateDate: new Date(),
     };
     console.log(dataToSend);
 
-    const response = await fetch(`${backend_url}/flights`, {
+    const response = await fetch(`${backend_url}/flights/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,14 +136,32 @@ export const createFlight = async (flightData: FlightForm) => {
   }
 }
 
+export const updateFlight = async (flightData: FlightFormUpdate) => {
+  try {
+    const response = await fetch(`${backend_url}/flights/update`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(flightData),
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
 export const deleteFlight = async (code: string) => {
   try {
-    const response = await fetch(`${backend_url}/flights/${code}`, {
+    const response = await fetch(`${backend_url}/flights/delete`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      body: JSON.stringify({ flightCode: code }),
     });
 
     return response.json();

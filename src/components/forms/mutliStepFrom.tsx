@@ -187,9 +187,6 @@ const MultiStepForm = ({ steps, user }) => {
   // const [user_image, setuser_image] = useState('');
   const [isEditingFoto, setIsEditingFoto] = useState(true);
 
-  const handlephotoUrlUpload = (url: string) => {
-    setuser_image(url);
-  };
 
   useEffect(() => {
     const fetchTokenData = async () => {
@@ -286,23 +283,6 @@ const MultiStepForm = ({ steps, user }) => {
     }
   }, [user, setValue, token]);
 
-  // useEffect(() => {
-  //   if (user) {
-  //     setValue("username", user.username);
-  //     setValue("email", user.email);
-  //     setValue("name1", user.name1);
-  //     setValue("name2", user.name2);
-  //     setValue("surname1", user.surname1);
-  //     setValue("surname2", user.surname2);
-  //     setValue("dni", user.dni);
-  //     if (user.birthDate) {
-  //       const birthDate = new Date(user.birthDate).toISOString().split("T")[0];
-  //       setValue("birthDate", birthDate);
-  //     }
-  //     setValue("gender", user.gender);
-  //   }
-  // }, [user, setValue]);
-
   const nextStep = async () => {
     const validateStep = await trigger();
     if (validateStep) {
@@ -322,18 +302,19 @@ const MultiStepForm = ({ steps, user }) => {
         address: `${data.address.street} ${data.address.numberStreet} # ${data.address.number}, ${data.address.city}, ${data.address.state}, ${data.address.country}`,
         birthPlace: `${data.birthplace.city}, ${data.birthplace.state}, ${data.birthplace.country}`,
         birthDate: new Date(data.birthDate),
-        // user_image: data.user_image.toString(),
+        user_image: data.user_image.toString(),
       };
       console.log("this is the user", formDataToSend);
       let res;
       if (user) {
         res = await updateUser(formDataToSend);
+        console.log("Update user\n", res)
         if (!res.error ) {
           console.log(res);
           alert("Usuario actualizado exitosamente");
           router.push("/");
         } else {
-          alert("Error al actualizar el usuario");
+          alert(`Error al actualizar el usuario:\n${res.message}`);
           console.log(res);
         }
       } else {
@@ -342,7 +323,7 @@ const MultiStepForm = ({ steps, user }) => {
           alert("Usuario registrado exitosamente");
           router.push("/auth/login");
         } else {
-          alert("Error al registrar el usuario");
+          alert(`Error al registrar el usuario:\n${res.message}`);
         }
       }
     }

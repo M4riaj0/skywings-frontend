@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Typography, Button, IconButton } from "@mui/material";
 import FlightTable from "@/components/flights/flightTable";
-import { getAvaliableFlights, updateFlight, deleteFlight } from "@/services/flights";
+import { getRealizedFlights } from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
-import { FlightFormUpdate } from "@/app/schemas/flightFormSchema";
 
 export const dynamic = "force-dynamic";
 
@@ -15,33 +14,17 @@ const FlightManager = () => {
 
   useEffect(() => {
     const fetchFlights = async () => {
-      setFlights(await getAvaliableFlights());
+      setFlights(await getRealizedFlights());
     };
 
     fetchFlights();
   }, []);
 
-  const handleUpdateFlight = async (updatedFlight: FlightFormUpdate) => {
-    console.log(updatedFlight);
-    const res = await updateFlight(updatedFlight);
-    console.log(res);
-    alert("Vuelo actualizado exitosamente");
-    setFlights(await getAvaliableFlights());
-  }
-
-  const handleDeleteFlight = async (code: string) => {
-    console.log(code);
-    const res = await deleteFlight(code);
-    console.log(res);
-    alert(`Vuelo ${code} eliminado exitosamente`);
-    setFlights(await getAvaliableFlights());
-  };
-
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <Typography variant="h4" component="h1" className="font-bold">
-          Gestionar Vuelos
+          Historial de Vuelos
         </Typography>
 
         <div className="hidden md:flex">
@@ -69,7 +52,7 @@ const FlightManager = () => {
         </div>
       </div>
 
-      <FlightTable flights={flights} onSaveFlight={handleUpdateFlight} onDeleteFlight={handleDeleteFlight} />
+      <FlightTable flights={flights} />
     </div>
   );
 };

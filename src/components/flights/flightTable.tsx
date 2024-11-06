@@ -2,53 +2,17 @@ import React, { useState } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { Delete, Edit } from '@mui/icons-material';
-import { FlightData } from '@/app/schemas/flightFormSchema';
+import { FlightData, FlightFormUpdate } from '@/app/schemas/flightFormSchema';
 import FlightDetailsDialog from '@/components/flights/flightDetailsDialog';
 import FlightEditForm from './flightEditForm';
 
 interface FlightTableProps {
   flights: FlightData[];
-  onDeleteFlight: (code: string) => void;
-  onSaveFlight: (updatedFlight: FlightData) => void; // Nuevo prop para guardar cambios
+  onDeleteFlight?: (code: string) => void;
+  onSaveFlight?: (updatedFlight: FlightFormUpdate) => void; // Nuevo prop para guardar cambios
 }
 
-const flightsData = [
-  {
-      code: "SW472BOGMED",
-      creator: "admin1",
-      type: "national",
-      origin: "Bogotá, Colombia",
-      destination: "Medellín, Colombia",
-      priceFirstClass: 400000,
-      priceEconomyClass: 200000,
-      departureDate1: "2024-11-20T07:30:00.000Z",
-      arrivalDate1: "2024-11-20T09:30:00.000Z",
-      departureDate2: "2024-11-25T07:30:00.000Z",
-      arrivalDate2: "2024-11-20T09:30:00.000Z",
-      creationDate: "2024-10-13T08:00:00.000Z",
-      lastUpdateDate: "2024-10-14T14:45:00.000Z",
-      erased: false
-  },
-  {
-      code: "SW486BOGMAD",
-      creator: "admin1",
-      type: "international",
-      origin: "Bogotá, Colombia",
-      destination: "Madrid, España",
-      priceFirstClass: 400000,
-      priceEconomyClass: 200000,
-      departureDate1: "2024-11-20T07:30:00.000Z",
-      arrivalDate1: "2024-11-22T09:30:00.000Z",
-      departureDate2: "2024-11-29T07:30:00.000Z",
-      arrivalDate2: "2024-11-29T09:30:00.000Z",
-      creationDate: "2024-10-13T08:00:00.000Z",
-      lastUpdateDate: "2024-10-14T14:45:00.000Z",
-      erased: false
-  }
-];
-
 const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSaveFlight }) => {
-  flights = flightsData;
   const [selectedFlight, setSelectedFlight] = useState<FlightData | null>(null);
   const [isDetailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
@@ -75,11 +39,13 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
 
   const handleSave = (updatedFlight: { priceEconomyClass: number; priceFirstClass: number }) => {
     if (selectedFlight) {
-      onSaveFlight({
-        ...selectedFlight,
+      onSaveFlight && onSaveFlight({
+        flightCode: selectedFlight.code,
         priceEconomyClass: updatedFlight.priceEconomyClass,
         priceFirstClass: updatedFlight.priceFirstClass,
+        lastUpdateDate: new Date(),
       });
+      console.log("Guardando cambios en vuelo", updatedFlight);
       handleCloseEditDialog();
     }
   };
@@ -87,12 +53,8 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
   return (
     <div className="overflow-x-auto md:overflow-visible">
       <FlightDetailsDialog open={isDetailsDialogOpen} onClose={handleCloseDetailsDialog} flight={selectedFlight} />
-
-      {isEditDialogOpen && selectedFlight && (
-        <FlightEditForm
-          flight={selectedFlight}
-          onSave={handleSave}
-          onClose={handleCloseEditDialog} open={true}        />
+      {selectedFlight && (
+        <FlightEditForm open={isEditDialogOpen} flight={selectedFlight} onSave={handleSave} onClose={handleCloseEditDialog} />
       )}
 
       {/* Vista en Cards para pantallas pequeñas */}
@@ -111,16 +73,18 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
                       <InfoIcon />
                     </IconButton>
                   </Tooltip>
+                  {onSaveFlight &&
                   <Tooltip title="Editar">
                     <IconButton color="primary" size="small" aria-label="editar" onClick={() => handleOpenEditDialog(flight)}>
                       <Edit />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip>}
+                  {onDeleteFlight &&
                   <Tooltip title="Borrar">
                     <IconButton color="error" size="small" aria-label="borrar" onClick={() => onDeleteFlight(flight.code)}>
                       <Delete />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip>}
                 </div>
               </div>
 
@@ -164,16 +128,18 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
                       <InfoIcon />
                     </IconButton>
                   </Tooltip>
+                  {onSaveFlight &&
                   <Tooltip title="Editar">
                     <IconButton color="primary" size="small" aria-label="editar" onClick={() => handleOpenEditDialog(flight)}>
                       <Edit />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip>}
+                  {onDeleteFlight &&
                   <Tooltip title="Borrar">
                     <IconButton color="error" size="small" aria-label="borrar" onClick={() => onDeleteFlight(flight.code)}>
                       <Delete />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip>}
                 </td>
               </tr>
             ))

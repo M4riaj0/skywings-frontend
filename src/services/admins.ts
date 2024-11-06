@@ -34,12 +34,13 @@ export const addAdmin = async (newAdmin: Admin) => {
       },
       body: JSON.stringify(newAdmin),
     });
-
+    const data = await res.json();
     if (res.ok) {
       console.log("Administrador creado exitosamente");
-      return await res.json();
+      return data;
     } else {
       console.error("Error al crear el administrador");
+      return data;
     }
   } catch (error) {
     console.error("Error:", error);

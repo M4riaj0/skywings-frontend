@@ -28,6 +28,7 @@ export async function getUser () {
 };
 
 export async function updateUser (data: RegisterData) {
+  console.log("Data en updateUser:", data);
   try {
     const response = await fetch(`${backendUrl}/users/updateuser`, {
       method: "PUT",
@@ -37,7 +38,10 @@ export async function updateUser (data: RegisterData) {
       },
       body: JSON.stringify(data),
     });
+    console.log("Respuesta de la actualización del usuario:", response);
     const result = await response.json();
+    console.log("Resultado de la actualización del usuario:");
+    console.log(result);
     return result;
   } catch (error) {
     console.error("Error actualizando la información del usuario:", error);

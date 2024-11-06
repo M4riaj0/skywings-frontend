@@ -3,10 +3,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
-import { flightFormSchema, ReceivingData } from "@/app/schemas/flightFormSchema";
+import {
+  flightFormSchema,
+  ReceivingData,
+} from "@/app/schemas/flightFormSchema";
 import type { FlightForm, CitiesSchema } from "@/app/schemas/flightFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, Typography, MenuItem } from "@mui/material";
+import { TextField, Typography, MenuItem, Autocomplete, Alert } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { createFlight, getLocations } from "@/services/flights";
 
@@ -17,11 +20,14 @@ function FlightForm() {
     []
   );
   const [destinationCities, setDestinationCities] = useState<CitiesSchema>([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState("");
 
   const {
     handleSubmit,
     control,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<FlightForm>({
     defaultValues: {
@@ -61,7 +67,26 @@ function FlightForm() {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    createFlight(data);
+    const departureCode =
+      nationalCities.find((city) => city.city === data.origin)?.code ||
+      internationalCities.find((city) => city.city === data.origin)?.code;
+    const destinationCode = destinationCities.find(
+      (city) => city.city === data.destination
+    )?.code;
+    data.origin = departureCode || "";
+    data.destination = destinationCode || "";
+    const res = await createFlight(data);
+    if (res.statusCode === 500) {
+      setErrorMessage(res.message);
+      setSuccess("");
+    } else if (res.creator) {
+      setSuccess("Vuelo creado exitosamente");
+      setErrorMessage("");
+      reset();
+    } else {
+      setErrorMessage("Error inesperado al crear el vuelo");
+      setSuccess("");
+    }
   });
 
   return (
@@ -74,6 +99,12 @@ function FlightForm() {
       >
         Crear vuelo
       </Typography>
+      {errorMessage && (
+        <Alert severity="error">{errorMessage}</Alert>
+      )}
+      {success && (
+        <Alert severity="success">{success}</Alert>
+      )}
       <Controller
         name="type"
         control={control}
@@ -107,67 +138,47 @@ function FlightForm() {
           name="origin"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              select
-              label="Origen"
-              variant="outlined"
-              value={field.value || ""}
-              error={!!errors.origin}
-              helperText={errors.origin?.message}
-              onChange={(e) => {
-                field.onChange(e);
-                getCities(e.target.value);
+            <Autocomplete
+              options={[...nationalCities, ...internationalCities]}
+              getOptionLabel={(option) => option.city}
+              noOptionsText="No hay opciones"
+              onChange={(event, value) => {
+                field.onChange(value?.city || "");
+                getCities(value?.city || "");
               }}
-            >
-              {nationalCities.length > 0 && internationalCities.length > 0 ? (
-                [
-                  ...nationalCities.map((city) => (
-                    <MenuItem key={city.code} value={city.city}>
-                      {city.city}
-                    </MenuItem>
-                  )),
-                  ...internationalCities.map((city) => (
-                    <MenuItem key={city.code} value={city.city}>
-                      {city.city}
-                    </MenuItem>
-                  )),
-                ]
-              ) : nationalCities.length > 0 ? (
-                nationalCities.map((city) => (
-                  <MenuItem key={city.code} value={city.city}>
-                    {city.city}
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem disabled>Cargando ciudades...</MenuItem>
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Origen"
+                  variant="outlined"
+                  error={!!errors.origin}
+                  helperText={errors.origin?.message}
+                />
               )}
-            </TextField>
+            />
           )}
         />
         <Controller
           name="destination"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              select
-              label="Destino"
-              variant="outlined"
-              value={field.value || ""}
-              error={!!errors.destination}
-              helperText={errors.destination?.message}
-            >
-              {destinationCities.length > 0 ? (
-                destinationCities.map((city) => (
-                  <MenuItem key={city.city} value={city.city}>
-                    {city.city}
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem disabled>Cargando ciudades...</MenuItem>
+            <Autocomplete
+              options={destinationCities}
+              getOptionLabel={(option) => option.city}
+              noOptionsText="No hay opciones"
+              onChange={(event, value) => {
+                field.onChange(value?.city || "");
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Destino"
+                  variant="outlined"
+                  error={!!errors.destination}
+                  helperText={errors.destination?.message}
+                />
               )}
-            </TextField>
+            />
           )}
         />
         <Controller
@@ -250,7 +261,7 @@ function FlightForm() {
         />
       </div>
       <div className="flex justify-between">
-        <Link href='/flights'>
+        <Link href="/flights">
           <button
             className="px-4 py-2 text-white rounded shadow-lg"
             style={{ backgroundColor: theme.palette.primary.light }}
