@@ -15,7 +15,6 @@ const AdminManager = () => {
   const [warning, setWarning] = useState("");
   const [open, setOpen] = useState(false);
 
-  // Función para obtener la lista de administradores desde el backend
   const fetchAdmins = async () => {
     try {
       const adminsList = await getAdmins();
@@ -27,7 +26,7 @@ const AdminManager = () => {
   };
 
   useEffect(() => {
-    fetchAdmins(); // Cargar la lista al cargar el componente
+    fetchAdmins(); 
   }, []);
 
   const handleClickOpen = () => {
