@@ -511,7 +511,7 @@ const MultiStepForm = ({ steps, user }) => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    {...(user.dni ? { disabled: true } : {})}
+                    {...(user && user.dni ? { disabled: true } : {})}
                     label="DNI"
                     type="number"
                     variant="outlined"

@@ -21,11 +21,13 @@ export const flightFormSchema = z
     }),
     priceFirstClass: z
       .number()
+      .int("El precio debe ser un número entero")
       .refine((value) => value > 0 && value <= 10000000, {
         message: "El precio debe ser un número entre 1 y 10.000.000",
       }),
     priceEconomyClass: z
       .number()
+      .int("El precio debe ser un número entero")
       .refine((value) => value > 0 && value <= 10000000, {
         message: "El precio debe ser un número entre 1 y 10.000.000",
       }),
@@ -128,12 +130,7 @@ export interface FlightFormToSend {
   lastUpdateDate: Date;
 }
 
-export interface FlightFormUpdate {
-  flightCode: string;
-  priceFirstClass: number;
-  priceEconomyClass: number;
-  lastUpdateDate: Date;
-}
+export interface FlightFormUpdate extends Partial<FlightFormToSend> {}
 
 interface City {
   city: string;
@@ -151,6 +148,7 @@ export type CitiesSchema = City[];
 export interface FlightData {
   code: string;
   creator: string;
+  updater: string;
   type: string;
   origin: string;
   destination: string;
@@ -160,5 +158,17 @@ export interface FlightData {
   arrivalDate1: string;
   creationDate: string;
   lastUpdateDate: string;
+  erased: boolean;
+}
+
+export interface FlightSeatData {
+  flightCode: string;
+  totalSeats: number;
+  totalFirst: number;
+  totalTourist: number;
+  avaliableFirst: string;
+  avaliableTourist: string;
+  busyFirst: string;
+  busyTourist: string;
   erased: boolean;
 }

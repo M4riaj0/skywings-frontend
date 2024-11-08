@@ -40,7 +40,7 @@ const FlightEditForm: React.FC<FlightEditFormProps> = ({
   const previusPrices = [flight.priceEconomyClass, flight.priceFirstClass];
 
   const handleDiscount = () => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const discount = Number(e.target.value);
+    const discount = parseInt(e.target.value);
     const economyPrice =
       flight.priceEconomyClass - (flight.priceEconomyClass * discount) / 100;
     const firstPrice =
@@ -122,7 +122,7 @@ const FlightEditForm: React.FC<FlightEditFormProps> = ({
               onChange={(e) =>
                 setValues({
                   ...values,
-                  priceEconomyClass: Number(e.target.value),
+                  priceEconomyClass: parseInt(e.target.value),
                 })
               }
               error={!!errors.priceEconomyClass}
@@ -138,7 +138,7 @@ const FlightEditForm: React.FC<FlightEditFormProps> = ({
               onChange={(e) =>
                 setValues({
                   ...values,
-                  priceFirstClass: Number(e.target.value),
+                  priceFirstClass: parseInt(e.target.value),
                 })
               }
               error={!!errors.priceFirstClass}
