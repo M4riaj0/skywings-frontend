@@ -9,23 +9,26 @@ import { getAdmins, addAdmin, deleteAdmin } from "@/services/admins";
 export const dynamic = "force-dynamic";
 
 const AdminManager = () => {
-
-  // Mantener la lista de administradores en el estado
   const [admins, setAdmins] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState("");
   const [warning, setWarning] = useState("");
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchAdmins = async () => {
+  // Función para obtener la lista de administradores desde el backend
+  const fetchAdmins = async () => {
+    try {
       const adminsList = await getAdmins();
       setAdmins(adminsList);
-    };
+    } catch (error) {
+      setErrorMessage("Error al obtener la lista de administradores");
+      console.error(error);
+    }
+  };
 
-    fetchAdmins();
+  useEffect(() => {
+    fetchAdmins(); // Cargar la lista al cargar el componente
   }, []);
-
-  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -38,33 +41,39 @@ const AdminManager = () => {
   interface Admin {
     username: string;
     email: string;
-    password: string;
   }
 
-  //Cambiar al conectar con el back
   const handleAddAdmin = async (newAdmin: Admin) => {
-    const res = await addAdmin(newAdmin);
-    if (res && res.username) {
-      setSuccess(`Administrador creado: ${res.username}`);
-      setErrorMessage("");
-      setWarning("");
-      setAdmins(await getAdmins());
-      handleClose();
-    } else {
-      console.log("Error al crear el administrador:", res);
-      setErrorMessage("Error al crear el administrador:\n" + res.message);
-      setSuccess("");
-      setWarning("");
+    try {
+      const res = await addAdmin(newAdmin);
+      if (res && res.username) {
+        setSuccess(`Administrador creado: ${res.username}`);
+        setErrorMessage("");
+        setWarning("");
+        await fetchAdmins(); 
+        handleClose();
+      } else {
+        setErrorMessage("Error al crear el administrador:\n" + res.message);
+        setSuccess("");
+        setWarning("");
+      }
+    } catch (error) {
+      setErrorMessage("Error al crear el administrador");
+      console.error(error);
     }
   };
 
   const handleDeleteAdmin = async (username: string) => {
-    console.log(username);
-    const res = await deleteAdmin(username);
-    setWarning(`Administrador eliminado: ${res.username}`);
-    setSuccess("");
-    setErrorMessage("");
-    setAdmins(await getAdmins());
+    try {
+      const res = await deleteAdmin(username);
+      setWarning(`Administrador eliminado: ${res.username}`);
+      setSuccess("");
+      setErrorMessage("");
+      await fetchAdmins(); 
+    } catch (error) {
+      setErrorMessage("Error al eliminar el administrador");
+      console.error(error);
+    }
   };
 
   return (
@@ -73,13 +82,13 @@ const AdminManager = () => {
         <Typography variant="h4" component="h1" className="font-bold">
           Gestionar Administradores
         </Typography>
-        {errorMessage && ( // Renderiza el Alert si hay un mensaje de error
+        {errorMessage && (
           <Alert severity="error">{errorMessage}</Alert>
         )}
-        {success && ( // Renderiza el Alert si hay un mensaje de error
+        {success && (
           <Alert severity="success">{success}</Alert>
         )}
-        {warning && ( // Renderiza el Alert si hay un mensaje de error
+        {warning && (
           <Alert severity="warning">{warning}</Alert>
         )}
 
