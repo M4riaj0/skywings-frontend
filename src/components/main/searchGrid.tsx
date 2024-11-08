@@ -29,7 +29,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
     filter: "",
   });
   const [searchOption, setSearchOption] = useState<string | null>("");
-  const [filteredData, setFilteredData] = useState<FlightData[]>(data);
+  const [filteredData, setFilteredData] = useState<FlightData[]>(data ?? []);
   const [page, setPage] = useState(1);
   const [reverseSearch, setReverseSearch] = useState(false);
   const itemsPerPage = 4;
