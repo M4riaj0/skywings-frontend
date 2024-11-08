@@ -20,7 +20,7 @@ const imageList = [
 ];
 
 const NewsCarousel: React.FC<NewsCarouselProps> = ({
-  newsItems,
+  newsItems = [],
   interval = 20000,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(2);

@@ -29,7 +29,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
     filter: "",
   });
   const [searchOption, setSearchOption] = useState<string | null>("");
-  const [filteredData, setFilteredData] = useState<FlightData[]>(data);
+  const [filteredData, setFilteredData] = useState<FlightData[]>(data ?? []);
   const [page, setPage] = useState(1);
   const [reverseSearch, setReverseSearch] = useState(false);
   const itemsPerPage = 4;
@@ -139,13 +139,13 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
         </Box>
       </Box>
       <Divider />
-      {filteredData.length === 0 && (
+      {(filteredData?.length ?? 0) === 0 && (
         <Box className="flex justify-center my-3 text-2xl">
           <p>No se encontraron vuelos disponibles</p>
         </Box>
       )}
       <Grid2 className="my-3 rounded" container columns={1} spacing={2}>
-        {filteredData
+        {(filteredData ?? [])
           .slice((page - 1) * itemsPerPage, page * itemsPerPage)
           .map((item, index) => (
             <Grid2 size={1} key={index}>
@@ -155,7 +155,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
       </Grid2>
       <Box className="flex justify-center my-3">
         <Pagination
-          count={Math.ceil(filteredData.length / itemsPerPage)}
+          count={Math.ceil((filteredData?.length ?? 0) / itemsPerPage)}
           page={page}
           onChange={(event, value) => setPage(value)}
         />
