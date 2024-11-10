@@ -13,7 +13,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { handleRegister } from "@/services/auth";
+import { checkUserAvailability, handleRegister } from "@/services/auth";
 import {
   fetchToken,
   fetchCountries,
@@ -286,7 +286,15 @@ const MultiStepForm = ({ steps, user }) => {
   const nextStep = async () => {
     const validateStep = await trigger();
     if (validateStep) {
-      setStep(step + 1);
+      const useravailability = await checkUserAvailability({
+        email: getValues().email,
+        dni: getValues().dni,
+        username: getValues().username,
+      });
+      if (useravailability[1])
+        setStep(step + 1);
+      else
+        alert(useravailability[0]);
     }
   };
 

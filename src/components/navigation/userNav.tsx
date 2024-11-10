@@ -30,8 +30,8 @@ export default function UserNav() {
       ],
     },
     { id: "navFinancial", label: "Área financiera", href: "/financial" },
-    { id: "navMessages", label: "Mensajes", href: "/messages" },
-    { id: "navNotifications", label: "Notificaciones", href: "/notifications" },
+    // { id: "navMessages", label: "Mensajes", href: "/messages" },
+    // { id: "navNotifications", label: "Notificaciones", href: "/notifications" },
   ];
 
   return (

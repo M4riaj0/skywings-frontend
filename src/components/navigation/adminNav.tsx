@@ -21,7 +21,7 @@ const menuItems = [
       { href: "/flights/history", label: "Historial" },
     ],
   },
-  { id: "navMessages", label: "Mensajes", href: "/messages" },
+  // { id: "navMessages", label: "Mensajes", href: "/messages" },
 ];
 
 export default function AdminNav() {
@@ -48,24 +48,27 @@ export default function AdminNav() {
               {openMenu === item.id && (
                 <ul
                   className={`${
-                  isSmallScreen ? "relative" : "absolute"
+                    isSmallScreen ? "relative" : "absolute"
                   } top-full mt-1 bg-white shadow-lg rounded z-50`}
                   style={{ minWidth: "180px" }}
                 >
                   {item.options.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href}>
-                    <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300" onClick={() => toggleMenu(item.id)}>
-                      {link.label}
-                    </button>
-                    </Link>
-                  </li>
+                    <li key={link.href}>
+                      <Link href={link.href}>
+                        <button
+                          className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300"
+                          onClick={() => toggleMenu(item.id)}
+                        >
+                          {link.label}
+                        </button>
+                      </Link>
+                    </li>
                   ))}
                 </ul>
               )}
             </>
           ) : (
-            <Link href={item.href}>
+            <Link href={item.options}>
               <button
                 className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
                 style={{ color: theme.palette.background.paper }}

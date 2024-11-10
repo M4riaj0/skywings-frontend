@@ -1,6 +1,13 @@
 import {RegisterData, LoginData} from '@/app/schemas/users'
+import { getAllUsers } from './admins';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+interface User {
+  email: string;
+  dni: string;
+  username: string;
+}
 
 export async function handleLogin(data: LoginData) {
   try {
@@ -20,6 +27,26 @@ export async function handleLogin(data: LoginData) {
   } catch (error) {
     console.error("Error de red:", error);
   }
+}
+
+export async function checkUserAvailability(data: { email: string, dni: string, username: string }) {
+  const allUser = await getAllUsers();
+  const user = allUser.find((user: User) => 
+    user.email === data.email || 
+    user.dni === data.dni || 
+    user.username === data.username
+  );
+
+  if (user) {
+    if (user.email === data.email) {
+      return ["El correo electrónico ya está en uso", false];
+    } else if (user.dni === data.dni) {
+      return ["El DNI ya está en uso", false];
+    } else if (user.username === data.username) {
+      return ["El nombre de usuario ya está en uso", false];
+    }
+  }
+  return ["Usuario disponible", true];
 }
 
 export async function handleRegister(data: RegisterData) {

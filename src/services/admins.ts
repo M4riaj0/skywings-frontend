@@ -69,7 +69,7 @@ export const deleteAdmin = async (username: string) => {
   }
 };
 
-export const getAllAdmins = async () => {
+export const getAllUsers = async () => {
   try {
     const res = await fetch(`${BACKEND_URL}/users/`, {
       cache: "no-cache",

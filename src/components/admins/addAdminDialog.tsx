@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
-import { getAllAdmins } from "@/services/admins";
+import { getAllUsers } from "@/services/admins";
 
 interface AddAdminDialogProps {
   open: boolean;
@@ -18,7 +18,7 @@ export default function AddAdminDialog({ open, onClose, onAddAdmin }: AddAdminDi
 
   useEffect(() => {
     const fetchAdmins = async () => {
-      const adminsList = await getAllAdmins();
+      const adminsList = await getAllUsers();
       setAdmins(adminsList);
     };
 
