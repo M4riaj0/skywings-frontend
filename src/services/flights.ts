@@ -64,13 +64,12 @@ export const getAllFligthNews = async () => {
 
 export const getFlightSeats = async (flightCode: string) => {
   try {
-    const response = await fetch(`${backend_url}/flights/seats`, {
-      method: "POST",
+    const response = await fetch(`${backend_url}/flights/seats/${flightCode}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ flightCode }),
     });
     return response.json();
   } catch (error) {

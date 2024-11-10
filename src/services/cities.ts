@@ -9,7 +9,8 @@ const cityTimeZoneMap: { [key: string]: string } = {
 
 export const formatDateAndTime = (city: string, dateTime: string) => {
   const modifiedCity = city.includes("Colombia") ? `Bogotá, Colombia` : city;
-  const timeZone = cityTimeZoneMap[modifiedCity];
+  let timeZone = cityTimeZoneMap[modifiedCity] ;
+  timeZone = timeZone ==  "Europe/London" ? 'UTC' : timeZone;
   const [date, time] = dateTime.split("T");
   const formattedTime = time
     ? new Date(`1970-01-01T${time}`).toLocaleTimeString("en-US", {

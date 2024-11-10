@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { getAvaliableFlights, getAllFligthNews } from '@/services/flights';
-import NewsCarousel from '@/components/main/newsCarousel';
-import SearchGrid from '@/components/main/searchGrid';
+import { useState, useEffect } from "react";
+import { getAvaliableFlights, getAllFligthNews } from "@/services/flights";
+import { CartProvider } from "@/services/cart";
+import NewsCarousel from "@/components/main/newsCarousel";
+import SearchGrid from "@/components/main/searchGrid";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   const [flights, setFlights] = useState([]);
@@ -18,7 +19,7 @@ export default function Home() {
 
     const fetchNews = async () => {
       setNews(await getAllFligthNews());
-    }
+    };
 
     fetchFlights();
     fetchNews();
@@ -26,8 +27,12 @@ export default function Home() {
 
   return (
     <main className="mt-5 w-full">
-      <h1 className="text-3xl font-bold text-center mb-4">Vuela con nosotros</h1>
-      <SearchGrid data={flights} />
+      <h1 className="text-3xl font-bold text-center mb-4">
+        Vuela con nosotros
+      </h1>
+      <CartProvider>
+        <SearchGrid data={flights} />
+      </CartProvider>
       <NewsCarousel newsItems={news} />
     </main>
   );

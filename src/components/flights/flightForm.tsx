@@ -129,12 +129,14 @@ function FlightForm() {
         flightExists?.origin || "",
         flightExists?.departureDate1 || ""
       );
+      console.log(date, time, getValues("departure.date"), getValues("departure.time"));
       if (
         flightExists &&
         date === getValues("departure.date") &&
         time === getValues("departure.time")
       ) {
         setErrorMessage("Ya existe un vuelo a la misma fecha y hora");
+        setSuccess("");
         setFlightExists(true);
       } else {
         setErrorMessage("");

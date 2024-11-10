@@ -22,13 +22,13 @@ export const flightFormSchema = z
     priceFirstClass: z
       .number()
       .int("El precio debe ser un número entero")
-      .refine((value) => value > 0 && value <= 10000000, {
+      .refine((value) => value > 999 && value <= 10000000, {
         message: "El precio debe ser un número entre 1 y 10.000.000",
       }),
     priceEconomyClass: z
       .number()
       .int("El precio debe ser un número entero")
-      .refine((value) => value > 0 && value <= 10000000, {
+      .refine((value) => value > 999 && value <= 10000000, {
         message: "El precio debe ser un número entre 1 y 10.000.000",
       }),
   })
