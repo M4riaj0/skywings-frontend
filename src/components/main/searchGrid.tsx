@@ -139,27 +139,31 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
         </Box>
       </Box>
       <Divider />
-      {(filteredData?.length ?? 0) === 0 && (
+      {!filteredData ? (
         <Box className="flex justify-center my-3 text-2xl">
           <p>No se encontraron vuelos disponibles</p>
         </Box>
+      ) : (
+        <>
+          <Grid2 className="my-3 rounded" container columns={1} spacing={2}>
+            {filteredData &&
+              filteredData
+                .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                .map((item, index) => (
+                  <Grid2 size={1} key={index}>
+                    <FligthCard {...item} />
+                  </Grid2>
+                ))}
+          </Grid2>
+          <Box className="flex justify-center my-3">
+            <Pagination
+              count={Math.ceil(filteredData.length / itemsPerPage)}
+              page={page}
+              onChange={(_, value) => setPage(value)}
+            />
+          </Box>
+        </>
       )}
-      <Grid2 className="my-3 rounded" container columns={1} spacing={2}>
-        {(filteredData ?? [])
-          .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-          .map((item, index) => (
-            <Grid2 size={1} key={index}>
-              <FligthCard {...item} />
-            </Grid2>
-          ))}
-      </Grid2>
-      <Box className="flex justify-center my-3">
-        <Pagination
-          count={Math.ceil((filteredData?.length ?? 0) / itemsPerPage)}
-          page={page}
-          onChange={(event, value) => setPage(value)}
-        />
-      </Box>
     </section>
   );
 };

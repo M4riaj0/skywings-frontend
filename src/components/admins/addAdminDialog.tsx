@@ -2,14 +2,40 @@ import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } 
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from "react";
+import { getAllUsers } from "@/services/admins";
 
 interface AddAdminDialogProps {
   open: boolean;
   onClose: () => void;
-  onAddAdmin: (newAdmin: { username: string; email: string; password: string }) => void;
+  onAddAdmin: (newAdmin: { username: string; email: string }) => void;
 }
 
 export default function AddAdminDialog({ open, onClose, onAddAdmin }: AddAdminDialogProps) {
+  const [admins, setAdmins] = useState<{ username: string; email: string }[]>([]);
+  const [usernameError, setUsernameError] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      const adminsList = await getAllUsers();
+      setAdmins(adminsList);
+    };
+
+    fetchAdmins();
+  }, []);
+
+  const validateAsync = async (value: string, field: 'username' | 'email') => {
+    if (field === 'username') {
+      const exists = admins.some(admin => admin.username === value);
+      setUsernameError(exists ? "Este nombre de usuario ya está en uso" : "");
+    } else if (field === 'email') {
+      // Comprobar si el correo ya está en uso
+      const exists = admins.some(admin => admin.email === value);
+      setEmailError(exists ? "Este correo ya está registrado" : "");
+    }
+  };
+
   const schema = z.object({
     username: z.string()
       .min(5, { message: "El nombre de usuario debe tener al menos 5 caracteres" })
@@ -17,22 +43,19 @@ export default function AddAdminDialog({ open, onClose, onAddAdmin }: AddAdminDi
       .regex(/^[a-zA-Z0-9_]+$/, { message: "El nombre de usuario solo puede contener letras, números y guiones bajos" }),
     email: z.string().email({ message: "El email no es válido" })
       .max(60, { message: "El email no puede tener más de 60 caracteres" })
-      .nonempty({ message: "El email no puede estar vacío" }),
-    password: z.string().min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
-      .max(20, { message: "La contraseña no puede tener más de 20 caracteres" })
-      .regex(/^\S*$/, { message: "La contraseña no puede contener espacios en blanco" })
+      .nonempty({ message: "El email no puede estar vacío" })
   });
 
   const { control, handleSubmit, getValues, formState: { errors }, reset, setError } = useForm({
     defaultValues: {
       username: "",
       email: "",
-      password: ""
     },
     resolver: zodResolver(schema)
   });
 
-  const onSubmit = (data: { username: string; email: string; password: string }) => {
+  const onSubmit = (data: { username: string; email: string }) => {
+    console.log("Handle submit", data); 
     onAddAdmin(data);
     onClose();
     reset();
@@ -58,8 +81,9 @@ export default function AddAdminDialog({ open, onClose, onAddAdmin }: AddAdminDi
                 label="Nombre de Usuario"
                 fullWidth
                 margin="dense"
-                error={!!errors.username}
-                helperText={errors.username ? errors.username.message : ""}
+                error={!!errors.username || !!usernameError}
+                helperText={errors.username ? errors.username.message : usernameError}
+                onBlur={() => validateAsync(field.value, 'username')}
               />
             )}
           />
@@ -73,39 +97,25 @@ export default function AddAdminDialog({ open, onClose, onAddAdmin }: AddAdminDi
                 label="Email"
                 fullWidth
                 margin="dense"
-                error={!!errors.email}
-                helperText={errors.email ? errors.email.message : ""}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            rules={{ required: "Este campo es obligatorio" }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Contraseña"
-                type="password"
-                fullWidth
-                margin="dense"
-                error={!!errors.password}
-                helperText={errors.password ? errors.password.message : ""}
+                error={!!errors.email || !!emailError}
+                helperText={errors.email ? errors.email.message : emailError}
+                onBlur={() => validateAsync(field.value, 'email')}
               />
             )}
           />
           <DialogActions>
-            <Button 
+            <Button
               onClick={handleClose}
-              variant="contained" 
+              variant="contained"
               className="bg-white text-red-500 hover:bg-red-500 hover:text-white transition duration-200"
             >
               Cancelar
             </Button>
-            <Button 
-              type="submit" 
-              color="primary" 
-              variant="contained" 
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              disabled={!!usernameError || !!emailError}
               style={{ opacity: 1 }}
             >
               Agregar

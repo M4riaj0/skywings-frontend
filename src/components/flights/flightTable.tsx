@@ -45,7 +45,6 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
         priceFirstClass: updatedFlight.priceFirstClass,
         lastUpdateDate: new Date(),
       });
-      console.log("Guardando cambios en vuelo", updatedFlight);
       handleCloseEditDialog();
     }
   };
@@ -59,7 +58,7 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
 
       {/* Vista en Cards para pantallas pequeñas */}
       <div className="md:hidden">
-        {flights.length === 0 ? (
+        {!flights ? (
           <p className="text-center text-gray-500">No hay vuelos disponibles.</p>
         ) : (
           flights.map((flight, index) => (
@@ -109,7 +108,7 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
           </tr>
         </thead>
         <tbody>
-          {flights.length === 0 ? (
+          {!flights ? (
             <tr>
               <td colSpan={5} className="text-center text-gray-500 py-4">
                 No hay vuelos disponibles.

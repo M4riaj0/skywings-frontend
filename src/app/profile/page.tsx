@@ -16,7 +16,6 @@ const Profile = () => {
     getUserData();
   }, []);
 
-  console.log(userData);
   const steps = ["Usuario", "Personal", "Dirección", "Nacimiento"];
 
   return (
@@ -24,9 +23,6 @@ const Profile = () => {
       <Typography variant="h4" component="h1" align="center">
         Editar información de Perfil
       </Typography>
-
-      {/* Stepper visual */}
-      {/* <Stepper steps={steps} currentStep={step + 1} /> */}
 
       {/* MultiStepForm pasa el control de los pasos y el manejo de datos */}
       <MultiStepForm steps={steps} user={userData} />
