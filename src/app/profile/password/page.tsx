@@ -89,6 +89,7 @@ const UpdatePasswordForm = () => {
       <Typography variant="h4" component="h1" align="center">
         Cambiar contraseña
       </Typography>
+      {}
       <div className="space-y-2 w-3/4 mx-auto">
         <TextField
           id="currentPassword"

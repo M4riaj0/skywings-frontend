@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Logout, Login, Menu } from "@mui/icons-material";
@@ -19,10 +19,16 @@ function Navbar() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const isAuthPage =
     pathname === "/auth/login" || pathname === "/auth/register";
-  const role =
-    typeof window !== "undefined" ? localStorage.getItem("role") : null;
-  const searchToken =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  // Estado para manejar los valores de localStorage
+  const [role, setRole] = useState<string | null>(null);
+  const [searchToken, setSearchToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Leer localStorage solo en el cliente
+    setRole(localStorage.getItem("role"));
+    setSearchToken(localStorage.getItem("token"));
+  }, []);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -31,10 +37,10 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    document.cookie = "token=; path=/;";
+    document.cookie = "token=; path=/;"; // Eliminar token de las cookies
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    router.push("/");
+    router.push("/"); // Redirigir a la página de inicio
     router.refresh();
   };
 
@@ -43,7 +49,7 @@ function Navbar() {
       className="py-2 shadow-md w-full flex items-center justify-between"
       style={{ backgroundColor: theme.palette.primary.main }}
     >
-      <div className="flex items-center ml-4 md:w-[25%]">
+      <div className="flex items-center ml-4 md:w-[25%]" id="logo_image">
         <Link href="/" className="flex items-center">
           <Image src="/images/logo.png" alt="Logo" width={64} height={64} />
           <span
@@ -55,7 +61,7 @@ function Navbar() {
         </Link>
       </div>
 
-      <div className="flex items-center justify-end md:w-[75%]">
+      <div className="flex items-center justify-end md:w-[75%]" id="navbar_options">
         {!searchToken && !isAuthPage && (
           <Link href="/auth/login">
             <button
@@ -88,7 +94,7 @@ function Navbar() {
                     className="p-4 w-64 h-full"
                     style={{ backgroundColor: theme.palette.primary.main }}
                   >
-                    <ul className="flex flex-col space-y-2">
+                    <ul className="flex flex-col space-y-2" id="drawer_menu">
                       {role === "USER" && <UserNav />}
                       {role === "ROOT" && <RootNav />}
                       {role === "ADMIN" && <AdminNav />}
@@ -106,7 +112,7 @@ function Navbar() {
               </>
             ) : (
               // Menú horizontal para pantallas grandes
-              <ul className="w-full flex items-center justify-between space-x-4 mr-6">
+              <ul className="w-full flex items-center justify-between space-x-4 mr-6" id="nav_menu">
                 {role === "USER" && <UserNav />}
                 {role === "ROOT" && <RootNav />}
                 {role === "ADMIN" && <AdminNav />}

@@ -13,7 +13,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { handleRegister } from "@/services/auth";
+import { checkUserAvailability, handleRegister } from "@/services/auth";
 import {
   fetchToken,
   fetchCountries,
@@ -286,7 +286,15 @@ const MultiStepForm = ({ steps, user }) => {
   const nextStep = async () => {
     const validateStep = await trigger();
     if (validateStep) {
-      setStep(step + 1);
+      const useravailability = await checkUserAvailability({
+        email: getValues().email,
+        dni: getValues().dni,
+        username: getValues().username,
+      });
+      if (useravailability[1])
+        setStep(step + 1);
+      else
+        alert(useravailability[0]);
     }
   };
 
@@ -360,8 +368,6 @@ const MultiStepForm = ({ steps, user }) => {
                 <div className="mt-2">
                   <label className="block text-center">
                     Foto de Perfil (opcional)
-                    {/* aqui - {typeof(getValues().user_image)}
-                    {getValues().user_image} */}
                   </label>
                 </div>
                 {isEditingFoto && (
@@ -513,7 +519,7 @@ const MultiStepForm = ({ steps, user }) => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    {...(user ? { disabled: true } : {})}
+                    {...(user && user.dni ? { disabled: true } : {})}
                     label="DNI"
                     type="number"
                     variant="outlined"
