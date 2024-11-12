@@ -1,52 +1,60 @@
-import React from "react";
-import { IconButton, Menu, MenuItem } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Typography, IconButton, Menu, MenuItem } from "@mui/material";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useState } from "react";
 
 interface CardProps {
-  title: string;
-  description: string;
-  cardId: string;
-  onDelete: (id: string) => void;
+  cardData: {
+    id: string;
+    dni: string;
+    cardNumber: string;
+    cvv: string;
+    balance: number;
+    type: string;
+    expirationDate: string;
+  };
+  onEditCard: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, description, cardId, onDelete }) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+const Card: React.FC<CardProps> = ({ cardData, onEditCard }) => {
+  const { cardNumber, type } = cardData;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
 
-  const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
+  const handleCloseMenu = () => setAnchorEl(null);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center space-x-4">
-      <div className="flex-1">
-        <h3 className="font-semibold text-lg">{title}</h3>
-        <p className="text-sm text-gray-500">{description}</p>
-      </div>
+    <div className="bg-gray-100 p-4 rounded-lg shadow-md relative text-gray-800 w-full md:w-72 h-40">
+      <div className="absolute right-2 bottom-9 w-12 h-12 bg-blue-800 rounded-full opacity-50"></div>
+      <div className="absolute right-8 bottom-9 w-12 h-12 bg-blue-600 rounded-full opacity-50"></div>
 
-      <div className="relative">
-        <IconButton onClick={handleClickMenu}>
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={openMenu}
-          onClose={handleCloseMenu}
-          PaperProps={{
-            style: {
-              maxHeight: 220,
-              width: '20ch',
-            },
-          }}
-        >
-          <MenuItem onClick={() => { handleCloseMenu(); }}>Editar</MenuItem>
-          <MenuItem onClick={() => { onDelete(cardId); handleCloseMenu(); }}>Eliminar</MenuItem>
-        </Menu>
-      </div>
+      <div className="absolute left-4 bottom-10 w-8 h-5 bg-yellow-400 rounded-sm"></div>
+
+      <Typography variant="body2" className="font-semibold mt-4">
+        Tarjeta {type === "debit" ? "Débito" : "Crédito"}
+      </Typography>
+      <Typography variant="h6" className="my-2">
+        **** **** **** {cardNumber.slice(-4)}
+      </Typography>
+
+      <IconButton className="absolute bottom-2 right-2" onClick={handleMenuClick}>
+        <MoreHorizIcon />
+      </IconButton>
+      <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
+        <MenuItem onClick={() => { handleCloseMenu(); onEditCard(); }}>
+          <EditIcon className="mr-2" />
+          Editar
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseMenu()}>
+          <DeleteIcon className="mr-2" />
+          Eliminar
+        </MenuItem>
+      </Menu>
     </div>
   );
 };
