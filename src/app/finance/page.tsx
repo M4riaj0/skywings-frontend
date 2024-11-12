@@ -1,92 +1,87 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Typography, Button, IconButton, Alert } from "@mui/material";
+import { useState } from "react";
+import { AppBar, Toolbar, Button, Drawer, Typography, Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import AddCardDialog from "@/components/finance/addCardDialog"; 
-import CardList from "@/components/finance/cardList"; 
+import CardList from "@/components/finance/cardList";
+import AddCardDialog from "@/components/finance/addCardDialog";
 
-export const dynamic = "force-dynamic";
+interface CardType {
+  id: string;
+  dni: string;
+  cardNumber: string;
+  cvv: string;
+  balance: number;
+  type: "debit" | "credit";
+  expirationDate: string;
+}
 
 const CardManager = () => {
-  const [cards, setCards] = useState<any[]>([]); 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [success, setSuccess] = useState("");
-  const [warning, setWarning] = useState("");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
 
-  useEffect(() => {
-    setCards([
-      { id: "1", title: "Visa Classic", description: "Tarjeta de crédito para compras online" },
-      { id: "2", title: "Mastercard Gold", description: "Tarjeta de crédito con beneficios exclusivos" },
-    ]);
-  }, []);
+  const cards: CardType[] = [
+    { id: "1", dni: "1234567890", cardNumber: "1234567890123456", cvv: "123", balance: 5000, type: "debit", expirationDate: "12/25" },
+    { id: "2", dni: "0987654321", cardNumber: "9876543210987654", cvv: "321", balance: 7000, type: "credit", expirationDate: "11/24" },
+  ];
 
-  const [open, setOpen] = useState(false); 
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleAddCardOpen = () => {
+    setSelectedCard(null); 
+    setDialogOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false); 
+  const handleEditCard = (card: CardType) => {
+    setSelectedCard(card); 
+    setDialogOpen(true);
   };
 
-  const handleAddCard = (newCard: { title: string; description: string }) => {
-    setCards([...cards, { id: (cards.length + 1).toString(), ...newCard }]);
-    setSuccess(`Tarjeta creada: ${newCard.title}`);
-    setErrorMessage("");
-    setWarning("");
-    handleClose(); 
-  };
-
-  const handleDeleteCard = (cardId: string) => {
-    const updatedCards = cards.filter((card) => card.id !== cardId);
-    setCards(updatedCards);
-    setWarning(`Tarjeta eliminada: ${cardId}`);
-    setSuccess("");
-    setErrorMessage("");
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedCard(null); 
   };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <Typography variant="h4" component="h1" className="font-bold">
-          Gestionar Tarjetas
-        </Typography>
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        {success && <Alert severity="success">{success}</Alert>}
-        {warning && <Alert severity="warning">{warning}</Alert>}
+    <>
+      <AppBar position="static" color="default">
+        <Toolbar>
+          <Button color="primary" onClick={toggleDrawer}>
+            Gestionar Tarjetas
+          </Button>
+        </Toolbar>
+      </AppBar>
 
-        <div className="hidden md:flex">
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={toggleDrawer}
+        className="md:w-1/2 w-full"
+      >
+        <Box p={4}>
+          <Typography variant="h5">Gestionar Tarjetas</Typography>
           <Button
             variant="contained"
             color="primary"
-            onClick={handleClickOpen}
-            className="flex items-center"
+            onClick={handleAddCardOpen}
             startIcon={<AddIcon />}
+            className="mt-4"
           >
             Agregar Tarjeta
           </Button>
-        </div>
+          <Box mt={4}> 
+            <CardList cards={cards} onEditCard={handleEditCard} />
+          </Box>
+        </Box>
+      </Drawer>
 
-        {/* Botón circular para agregar tarjeta - Pantallas pequeñas */}
-        <div className="md:hidden">
-          <IconButton
-            color="primary"
-            onClick={handleClickOpen}
-            className="bg-blue-500 text-white hover:bg-blue-700 transition duration-300"
-            aria-label="add"
-            size="large"
-          >
-            <AddIcon />
-          </IconButton>
-        </div>
-      </div>
-
-      <CardList cards={cards} onDeleteCard={handleDeleteCard} />
-
-      <AddCardDialog open={open} onClose={handleClose} onAddCard={handleAddCard} />
-    </div>
+      <AddCardDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        initialData={selectedCard || undefined} 
+      />
+    </>
   );
 };
 
