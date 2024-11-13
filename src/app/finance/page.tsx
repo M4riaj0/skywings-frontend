@@ -29,18 +29,21 @@ const CardManager = () => {
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
   const handleAddCardOpen = () => {
-    setSelectedCard(null); 
+    setSelectedCard(null);
+    console.log("Selected card set to null");
     setDialogOpen(true);
   };
 
   const handleEditCard = (card: CardType) => {
-    setSelectedCard(card); 
+    setSelectedCard(card);
+    console.log("Selected card set to:", card);
     setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
+    setSelectedCard(null);
+    console.log("Dialog closed, selected card set to null");
     setDialogOpen(false);
-    setSelectedCard(null); 
   };
 
   return (
