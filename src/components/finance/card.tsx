@@ -6,19 +6,20 @@ import { useState } from "react";
 
 interface CardProps {
   cardData: {
-    id: string;
-    dni: string;
-    cardNumber: string;
+    propietary: string;
+    number: string;
     cvv: string;
     balance: number;
     type: string;
     expirationDate: string;
+    erased?: boolean;
   };
   onEditCard: () => void;
+  onDeleteCard: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ cardData, onEditCard }) => {
-  const { cardNumber, type } = cardData;
+const Card: React.FC<CardProps> = ({ cardData, onEditCard, onDeleteCard }) => {
+  const { number, type, erased } = cardData;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
 
@@ -27,6 +28,10 @@ const Card: React.FC<CardProps> = ({ cardData, onEditCard }) => {
   };
 
   const handleCloseMenu = () => setAnchorEl(null);
+
+  if (erased) {
+    return null;
+  }
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg shadow-md relative text-gray-800 w-full md:w-72 h-40">
@@ -39,7 +44,7 @@ const Card: React.FC<CardProps> = ({ cardData, onEditCard }) => {
         Tarjeta {type === "debit" ? "Débito" : "Crédito"}
       </Typography>
       <Typography variant="h6" className="my-2">
-        **** **** **** {cardNumber.slice(-4)}
+        **** **** **** {number ? number.slice(-4) : "****"}
       </Typography>
 
       <IconButton className="absolute bottom-2 right-2" onClick={handleMenuClick}>
@@ -50,7 +55,7 @@ const Card: React.FC<CardProps> = ({ cardData, onEditCard }) => {
           <EditIcon className="mr-2" />
           Editar
         </MenuItem>
-        <MenuItem onClick={() => handleCloseMenu()}>
+        <MenuItem onClick={() => {handleCloseMenu(); onDeleteCard();} }>
           <DeleteIcon className="mr-2" />
           Eliminar
         </MenuItem>
