@@ -1,50 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppBar, Toolbar, Button, Drawer, Typography, Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CardList from "@/components/finance/cardList";
 import AddCardDialog from "@/components/finance/addCardDialog";
+import { getCards, addCard, updateCard, deleteCard } from "@/services/cards";
 
 interface CardType {
-  id: string;
-  dni: string;
-  cardNumber: string;
+  propietary: string;
+  number: string;
   cvv: string;
   balance: number;
   type: "debit" | "credit";
   expirationDate: string;
+  erased?: boolean;
 }
 
 const CardManager = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+  const [cards, setCards] = useState<CardType[]>([]);
+  const [editingCard, setEditingCard] = useState(false);
 
-  const cards: CardType[] = [
-    { id: "1", dni: "1234567890", cardNumber: "1234567890123456", cvv: "123", balance: 5000, type: "debit", expirationDate: "12/25" },
-    { id: "2", dni: "0987654321", cardNumber: "9876543210987654", cvv: "321", balance: 7000, type: "credit", expirationDate: "11/24" },
-  ];
+  const fetchCards = async () => {
+    try {
+      const cardsList = await getCards();
+      setCards(cardsList);
+    } catch (error) {
+      setErrorMessage("Error al obtener la lista de administradores");
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCards();
+  }, []);
 
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
   const handleAddCardOpen = () => {
     setSelectedCard(null);
-    console.log("Selected card set to null");
+    setEditingCard(false);
     setDialogOpen(true);
   };
 
   const handleEditCard = (card: CardType) => {
     setSelectedCard(card);
-    console.log("Selected card set to:", card);
+    setEditingCard(true);
     setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setSelectedCard(null);
-    console.log("Dialog closed, selected card set to null");
+    setEditingCard(false);
     setDialogOpen(false);
   };
+
+  const handleDialogSubmit = async (data: CardType) => {
+      if (editingCard) {
+        const { number, balance } = data;
+        await updateCard({ number, balance });
+      } else {
+        await addCard(data);
+      }
+      setDialogOpen(false);
+      fetchCards();
+    };
 
   return (
     <>
@@ -73,8 +96,20 @@ const CardManager = () => {
           >
             Agregar Tarjeta
           </Button>
-          <Box mt={4}> 
-            <CardList cards={cards} onEditCard={handleEditCard} />
+          <Box mt={4}>
+          <CardList
+          cards={cards}
+          onEditCard={handleEditCard}
+          onDeleteCard={async (card: CardType) => {
+          try {
+            await deleteCard(card.number);
+            fetchCards();
+          } catch (error) {
+            setErrorMessage("Error al eliminar la tarjeta");
+            console.error(error);
+          }
+          }}
+        />
           </Box>
         </Box>
       </Drawer>
@@ -82,10 +117,17 @@ const CardManager = () => {
       <AddCardDialog
         open={dialogOpen}
         onClose={handleDialogClose}
-        initialData={selectedCard || undefined} 
+        initialData={selectedCard || undefined}
+        editing={editingCard}
+        onSubmit={handleDialogSubmit}
       />
     </>
   );
 };
 
 export default CardManager;
+
+
+function setErrorMessage(arg0: string) {
+  throw new Error("Function not implemented.");
+}
