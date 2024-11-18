@@ -35,7 +35,8 @@ export default function Login() {
       localStorage && localStorage.setItem("token", token);
       localStorage && localStorage.setItem("role", role);
       if (role == "ROOT") router.push("/admins");
-      else if (role == "ADMIN") router.push("/flights");
+      else if (role == "ADMIN") router.push("/profile/password");
+      // else if (role == "ADMIN") router.push("/flights");
       else router.push("/profile");
     } else {
       setErrorMessage("Usuario o contraseña incorrectos");
