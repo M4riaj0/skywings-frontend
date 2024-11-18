@@ -286,15 +286,28 @@ const MultiStepForm = ({ steps, user }) => {
   const nextStep = async () => {
     const validateStep = await trigger();
     if (validateStep) {
-      const useravailability = await checkUserAvailability({
-        email: getValues().email,
-        dni: getValues().dni,
-        username: getValues().username,
-      });
-      if (useravailability[1])
-        setStep(step + 1);
-      else
-        alert(useravailability[0]);
+      if (!user) { // Only check availability if not in edit mode
+        const useravailability = await checkUserAvailability({
+          email: getValues().email,
+          dni: getValues().dni,
+          username: getValues().username,
+        });
+        if (!useravailability[1]) {
+          alert(useravailability[0]);
+          return;
+        }
+      } else {
+        const useravailability = await checkUserAvailability({
+          email: getValues().email,
+          dni: getValues().dni,
+          username: getValues().username,
+        }, user);
+        if (!useravailability[1]) {
+          alert(useravailability[0]);
+          return;
+        }
+      }
+      setStep(step + 1);
     }
   };
 
