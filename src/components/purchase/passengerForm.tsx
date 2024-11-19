@@ -15,16 +15,12 @@ const passengerSchema = z.object({
     .string()
     .min(3, "Nombre es requerido")
     .regex(/^\S+$/, "El nombre no debe contener espacios en blanco"),
-  name2: z
-    .string()
-    .optional(),
+  name2: z.string().optional(),
   surname1: z
     .string()
     .min(3, "Apellido es requerido")
     .regex(/^\S+$/, "El apellido no debe contener espacios en blanco"),
-  surname2: z
-    .string()
-    .optional(),
+  surname2: z.string().optional(),
   email: z.string().email("Email inválido"),
   phone: z
     .string()
@@ -54,12 +50,13 @@ const passengerSchema = z.object({
 const PassengerForm: React.FC<{
   ticket: ITicket;
   handleSubmit: (data: IPassenger) => void;
-}> = ({ticket, handleSubmit }) => {
+}> = ({ ticket, handleSubmit }) => {
   const {
     control,
     handleSubmit: handleFormSubmit,
     formState: { errors },
   } = useForm<IPassenger>({
+    defaultValues: ticket.passenger,
     resolver: zodResolver(passengerSchema),
   });
 
@@ -68,13 +65,16 @@ const PassengerForm: React.FC<{
   };
 
   return (
-    <form onSubmit={handleFormSubmit(onSubmit)} className="border rounded-lg shadow-md my-4 py-6">
-      <Box className='flex justify-between items-center w-[85%] mb-4 mx-auto'>
+    <form
+      onSubmit={handleFormSubmit(onSubmit)}
+      className="border-2 rounded-lg shadow-md my-4 py-6"
+    >
+      <Box className="flex justify-between items-center w-[85%] mb-4 mx-auto">
         <Typography variant="h5" className="my-3">
           Datos del pasajero
         </Typography>
         <Typography variant="h6" className="my-3">
-          {ticket.class == 'Primera' ? 'Primera Clase' : 'Clase Económica'}
+          {ticket.class == "Primera" ? "Primera Clase" : "Clase Económica"}
         </Typography>
         <Typography variant="h6" className="my-3">
           $ {ticket.price}
@@ -83,7 +83,13 @@ const PassengerForm: React.FC<{
           Guardar
         </Button>
       </Box>
-      <Grid2 container spacing={3} columns={4} justifyContent="center" alignItems="center">
+      <Grid2
+        container
+        spacing={3}
+        columns={4}
+        justifyContent="center"
+        alignItems="center"
+      >
         <Grid2 className="w-56">
           <Controller
             name="dni"
@@ -207,6 +213,7 @@ const PassengerForm: React.FC<{
           <Controller
             name="birthDate"
             control={control}
+            defaultValue={new Date()} // Add this line to ensure consistency
             render={({ field }) => (
               <TextField
                 {...field}

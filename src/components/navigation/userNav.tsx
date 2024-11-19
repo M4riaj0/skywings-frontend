@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
-import { useTheme, useMediaQuery } from "@mui/material";
+import { useTheme, useMediaQuery, IconButton } from "@mui/material";
+import { ShoppingCart } from "@mui/icons-material";
 
 export default function UserNav() {
   const theme = useTheme();
@@ -57,7 +58,10 @@ export default function UserNav() {
                   {item.links.map((link) => (
                     <li key={link.href}>
                       <Link href={link.href}>
-                        <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300" onClick={() => toggleMenu(item.id)}>
+                        <button
+                          className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300"
+                          onClick={() => toggleMenu(item.id)}
+                        >
                           {link.label}
                         </button>
                       </Link>
@@ -78,6 +82,17 @@ export default function UserNav() {
           )}
         </li>
       ))}
+      <li>
+        <Link href="/cart">
+          <IconButton
+            className="mr-6"
+            style={{ color: theme.palette.background.paper }}
+          >
+            {/* Enable change number in icon */}
+            <ShoppingCart style={{ fontSize: "2rem" }} />
+          </IconButton>
+        </Link>
+      </li>
     </>
   );
 }
