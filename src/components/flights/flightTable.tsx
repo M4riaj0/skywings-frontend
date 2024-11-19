@@ -11,44 +11,6 @@ interface FlightTableProps {
   onDeleteFlight?: (code: string) => void;
   onSaveFlight?: (updatedFlight: FlightFormUpdate) => void; // Nuevo prop para guardar cambios
 }
-  onDeleteFlight: (code: string) => void;
-  onSaveFlight: (updatedFlight: FlightData) => void; // Nuevo prop para guardar cambios
-}
-
-const flightsData = [
-  {
-      code: "SW472BOGMED",
-      creator: "admin1",
-      type: "national",
-      origin: "Bogotá, Colombia",
-      destination: "Medellín, Colombia",
-      priceFirstClass: 400000,
-      priceEconomyClass: 200000,
-      departureDate1: "2024-11-20T07:30:00.000Z",
-      arrivalDate1: "2024-11-20T09:30:00.000Z",
-      departureDate2: "2024-11-25T07:30:00.000Z",
-      arrivalDate2: "2024-11-20T09:30:00.000Z",
-      creationDate: "2024-10-13T08:00:00.000Z",
-      lastUpdateDate: "2024-10-14T14:45:00.000Z",
-      erased: false
-  },
-  {
-      code: "SW486BOGMAD",
-      creator: "admin1",
-      type: "international",
-      origin: "Bogotá, Colombia",
-      destination: "Madrid, España",
-      priceFirstClass: 400000,
-      priceEconomyClass: 200000,
-      departureDate1: "2024-11-20T07:30:00.000Z",
-      arrivalDate1: "2024-11-22T09:30:00.000Z",
-      departureDate2: "2024-11-29T07:30:00.000Z",
-      arrivalDate2: "2024-11-29T09:30:00.000Z",
-      creationDate: "2024-10-13T08:00:00.000Z",
-      lastUpdateDate: "2024-10-14T14:45:00.000Z",
-      erased: false
-  }
-];
 
 const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSaveFlight }) => {
   const [selectedFlight, setSelectedFlight] = useState<FlightData | null>(null);
@@ -78,7 +40,6 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
   const handleSave = (updatedFlight: { priceEconomyClass: number; priceFirstClass: number }) => {
     if (selectedFlight) {
       onSaveFlight && onSaveFlight({
-        flightCode: selectedFlight.code,
         priceEconomyClass: updatedFlight.priceEconomyClass,
         priceFirstClass: updatedFlight.priceFirstClass,
         lastUpdateDate: new Date(),
