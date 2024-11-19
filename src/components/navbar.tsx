@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Logout, Login, Menu, ShoppingCart } from "@mui/icons-material";
+import { Logout, Login, Menu } from "@mui/icons-material";
 import { useTheme, useMediaQuery, IconButton, Drawer } from "@mui/material";
 import { useRouter, usePathname } from "next/navigation";
 import AdminNav from "./navigation/adminNav";
@@ -122,15 +122,6 @@ function Navbar() {
                 {role === "ROOT" && <RootNav />}
                 {role === "ADMIN" && <AdminNav />}
                 <li>
-                  <Link href="/cart">
-                    <IconButton
-                      className="mr-6"
-                      style={{ color: theme.palette.background.paper }}
-                    >
-                      {/* Enable change number in icon */}
-                      <ShoppingCart style={{ fontSize: "2rem" }} />
-                    </IconButton>
-                  </Link>
                   <button
                     onClick={handleLogout}
                     className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"

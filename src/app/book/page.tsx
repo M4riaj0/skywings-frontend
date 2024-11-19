@@ -14,19 +14,20 @@ import { getAvaliableFlights } from "@/services/flights";
 import { FlightData } from "../schemas/flightFormSchema";
 import FlightsList from "@/components/purchase/flightsList";
 import PassengerData from "@/components/purchase/passengerData";
+import PurchaseSummary from "@/components/purchase/summary";
 
 const filterFlights = (
   flights: FlightData[],
   searchParams: URLSearchParams
 ): FlightData[] => {
-  const origin = searchParams.get("origin");
-  const destination = searchParams.get("destination");
-  const date = searchParams.get("date");
+  const origin = searchParams.get("departure");
+  const destination = searchParams.get("arrival");
+  const date = searchParams.get("departureDate")?.split("T")[0];
 
   return flights.filter((flight) => {
     return (
-      (!origin || flight.origin === origin) &&
-      (!destination || flight.destination === destination) &&
+      flight.origin === origin &&
+      flight.destination === destination &&
       (!date || flight.departureDate1.split("T")[0] === date)
     );
   });
@@ -54,9 +55,9 @@ const BookPage = () => {
   const handleReturn = async () => {
     const allFlights = await getAvaliableFlights();
     const invertedSearchParams = new URLSearchParams(searchParams.toString());
-    invertedSearchParams.set("origin", searchParams.get("destination") || "");
-    invertedSearchParams.set("destination", searchParams.get("origin") || "");
-    invertedSearchParams.set("date", returnDate || "");
+    invertedSearchParams.set("departure", searchParams.get("arrival") || "");
+    invertedSearchParams.set("arrival", searchParams.get("departure") || "");
+    invertedSearchParams.set("departureDate", returnDate || "");
     const filteredReturnFlights = filterFlights(
       allFlights,
       invertedSearchParams
@@ -65,7 +66,7 @@ const BookPage = () => {
   };
 
   return (
-    <>
+    <main className="px-3 pb-6">
       {step === 1 && (
         <>
           <section>
@@ -145,16 +146,25 @@ const BookPage = () => {
             Resumen de compra
           </Typography>
           <Divider />
+          <PurchaseSummary />
         </section>
       )}
       <Box className="flex justify-between">
-        <Button variant="contained" color="secondary"
-          onClick={() =>
-            step === 1 ? router.push("/") : setStep(step - 1)
-          }
-          >
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => (step === 1 ? router.push("/") : setStep(step - 1))}
+        >
           Volver
         </Button>
+        {step === 3 && (
+          <Button
+            variant="contained"
+            onClick={() => router.push("/book/confirm")}
+          >
+            Reservar
+          </Button>
+        )}
         <Button
           variant="contained"
           onClick={() =>
@@ -164,7 +174,7 @@ const BookPage = () => {
           {step === 3 ? "Ir al carrito" : "Continuar"}
         </Button>
       </Box>
-    </>
+    </main>
   );
 };
 

@@ -13,6 +13,7 @@ export interface IPassenger {
 }
 
 export interface ITicket {
+  flightCode: string;
   type: string;
   class: string;
   price: number;

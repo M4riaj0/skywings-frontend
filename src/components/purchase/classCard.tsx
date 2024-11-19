@@ -40,6 +40,7 @@ const ClassCard: React.FC<ClassCardProps> = ({ flight, type, classType, price })
       },
       tickets: [
         {
+          flightCode: flight.code,
           type: type,
           class: classType,
           price: price,

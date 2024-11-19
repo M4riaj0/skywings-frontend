@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { CartContext } from "@/context/cart";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import PassengerForm from "@/components/purchase/passengerForm";
 import { IPassenger, ITicket } from "@/app/schemas/cartSchemas";
 
@@ -11,50 +11,42 @@ const PassengerData: React.FC = () => {
     throw new Error("CartContext must be used within a CartProvider");
   }
 
-  const { state } = cartContext;
-  const [passengers, setPassengers] = useState<IPassenger[]>([]);
+  const { dispatch, state } = cartContext;
+  const passengers = state.cart
+    .map((item) => item.tickets)
+    .flat()
+    .filter((ticket) => ticket.type === "Ida")
+    .map((ticket) => ticket.passenger);
   const [tickets, setTickets] = useState<ITicket[]>([]);
 
   useEffect(() => {
     // Update the passenger count and tickets based on the cart context
-    const count = state.cart.reduce(
-      (total, item) => total + item.tickets.length,
-      0
-    );
-    setPassengers(
-      Array(count).fill({
-        dni: "",
-        name1: "",
-        name2: "",
-        surname1: "",
-        surname2: "",
-        birthDate: new Date(),
-        gender: "",
-        phone: "",
-        email: "",
-        contactName: "",
-        contactPhone: "",
-      })
-    );
     setTickets(state.cart.map((item) => item.tickets).flat());
   }, [state.cart]);
 
-  const handleInputChange = (index: number, data: IPassenger) => {
-    const newPassengers = [...passengers];
-    newPassengers[index] = data;
-    setPassengers(newPassengers);
-    console.log(passengers);
+  const handleInputChange = (index: number, type: string, data: IPassenger) => {
+    const newTickets = tickets.filter((ticket) => ticket.type === type);
+    newTickets[index] = { ...newTickets[index], passenger: data };
+    dispatch({
+      type: "ADD_PASSENGERS",
+      payload: {
+        flightCode: newTickets[index].flightCode,
+        tickets: [newTickets[index]],
+      },
+    });
+    setTickets(newTickets);
   };
 
   const assignPreviousPassenger = (index: number, passenger: IPassenger) => {
-    handleInputChange(index, passenger);
+    console.log("assigning previous passenger", passenger, index);
+    handleInputChange(index, "Vuelta", passenger);
   };
 
   const renderPassengerForm = (ticket: ITicket, index: number) => (
     <PassengerForm
       key={index}
       ticket={ticket}
-      handleSubmit={(data: IPassenger) => handleInputChange(index, data)}
+      handleSubmit={(data: IPassenger) => handleInputChange(index, "Ida", data)}
     />
   );
 
@@ -76,20 +68,25 @@ const PassengerData: React.FC = () => {
           .filter((ticket) => ticket.type === "Vuelta")
           .map((ticket, index) => (
             <div key={index}>
+              <Box className='flex space-x-4'>
+                <Typography variant="h6">
+                  Seleccionar pasajero anterior
+                </Typography>
+                {passengers.map(
+                  (passenger, passengerIndex) =>
+                    passenger && (
+                      <Button
+                        key={passengerIndex}
+                        onClick={() =>
+                          assignPreviousPassenger(index, passenger)
+                        }
+                      >
+                        {passenger.name1} {passenger.surname1}
+                      </Button>
+                    )
+                )}
+              </Box>
               {renderPassengerForm(ticket, index)}
-              <Typography variant="h6" className="my-3">
-                Select Previous Passenger
-              </Typography>
-              {passengers.map((passenger, passengerIndex) => (
-                <Box
-                  key={passengerIndex}
-                  onClick={() => assignPreviousPassenger(index, passenger)}
-                >
-                  <Typography>
-                    {passenger.name1} {passenger.surname1}
-                  </Typography>
-                </Box>
-              ))}
             </div>
           ))}
       </Box>

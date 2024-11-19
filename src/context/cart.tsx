@@ -13,7 +13,7 @@ interface State {
 
 type Action =
   | { type: "ADD_TO_CART"; payload: ICartItem }
-  | { type: "ADD_PASSENGERS"; payload: { flight: ICartItem["flight"], tickets: ITicket[] } }
+  | { type: "ADD_PASSENGERS"; payload: { flightCode: string, tickets: ITicket[] } }
   | { type: "REMOVE_FROM_CART"; payload: string }
   | { type: "CLEAR_CART" }
   | { type: "CHECK_CART" };
@@ -44,13 +44,14 @@ const reducer = (state: typeof initialState, action: Action) => {
         };
       }
     case "ADD_PASSENGERS":
+      console.log(action.payload);
       return {
         ...state,
         cart: state.cart.map((item: ICartItem) =>
-          item.flight.code === action.payload.flight.code
+          item.flight.code === action.payload.flightCode
             ? {
-                ...item,
-                tickets: [...item.tickets, ...action.payload.tickets],
+                flight: item.flight,
+                tickets: action.payload.tickets,
               }
             : item
         ),
