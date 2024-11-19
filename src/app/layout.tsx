@@ -8,6 +8,7 @@ import "./globals.css";
 import customTheme from "@/theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Container } from "@mui/material";
+import { CartProvider } from "@/context/cart";
 // import { FormProvider } from "@/context/useFormContext";
 
 const geistSans = localFont({
@@ -44,9 +45,9 @@ export default function RootLayout({
             <CssBaseline/>
             <Navbar />
             <Container>
-              {/* <FormProvider> */}
+              <CartProvider>
                 {children}
-              {/* </FormProvider> */}
+              </CartProvider>
             </Container>
           </ThemeProvider>
         {/* </AppRouterCacheProvider> */}

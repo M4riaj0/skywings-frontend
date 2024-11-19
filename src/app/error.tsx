@@ -22,7 +22,7 @@ export default function Error({
       <p className="text-gray-500 mt-2">
         No pudimos cargar la información solicitada. Por favor, intenta de nuevo o regresa más tarde.
       </p>
-      <Button variant="contained" color="primary"
+      <Button variant="contained" color="primary" className='my-4'
         onClick={
           // Attempt to recover by trying to re-render the invoices route
           () => reset()
