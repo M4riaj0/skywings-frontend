@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Logout, Login, Menu } from "@mui/icons-material";
+import { Logout, Login, Menu, ShoppingCart } from "@mui/icons-material";
 import { useTheme, useMediaQuery, IconButton, Drawer } from "@mui/material";
 import { useRouter, usePathname } from "next/navigation";
 import AdminNav from "./navigation/adminNav";
@@ -25,10 +25,9 @@ function Navbar() {
   const [searchToken, setSearchToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Leer localStorage solo en el cliente
     setRole(localStorage.getItem("role"));
     setSearchToken(localStorage.getItem("token"));
-  }, []);
+  }, [pathname]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -40,8 +39,8 @@ function Navbar() {
     document.cookie = "token=; path=/;"; // Eliminar token de las cookies
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    router.push("/"); // Redirigir a la página de inicio
     router.refresh();
+    router.push("/"); // Redirigir a la página de inicio
   };
 
   return (
@@ -61,7 +60,10 @@ function Navbar() {
         </Link>
       </div>
 
-      <div className="flex items-center justify-end md:w-[75%]" id="navbar_options">
+      <div
+        className="flex items-center justify-end md:w-[75%]"
+        id="navbar_options"
+      >
         {!searchToken && !isAuthPage && (
           <Link href="/auth/login">
             <button
@@ -81,7 +83,7 @@ function Navbar() {
                 <IconButton
                   onClick={toggleDrawer(true)}
                   className="mr-6"
-                  style={{ color: theme.palette.background.paper}}
+                  style={{ color: theme.palette.background.paper }}
                 >
                   <Menu style={{ fontSize: "2rem" }} />
                 </IconButton>
@@ -112,17 +114,29 @@ function Navbar() {
               </>
             ) : (
               // Menú horizontal para pantallas grandes
-              <ul className="w-full flex items-center justify-between space-x-4 mr-6" id="nav_menu">
+              <ul
+                className="w-full flex items-center justify-between space-x-4 mr-6"
+                id="nav_menu"
+              >
                 {role === "USER" && <UserNav />}
                 {role === "ROOT" && <RootNav />}
                 {role === "ADMIN" && <AdminNav />}
                 <li>
+                  <Link href="/cart">
+                    <IconButton
+                      className="mr-6"
+                      style={{ color: theme.palette.background.paper }}
+                    >
+                      {/* Enable change number in icon */}
+                      <ShoppingCart style={{ fontSize: "2rem" }} />
+                    </IconButton>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
                     style={{ color: theme.palette.background.paper }}
                   >
-                    Cerrar sesión <Logout />
+                     <Logout />
                   </button>
                 </li>
               </ul>

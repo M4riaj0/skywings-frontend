@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { getAvaliableFlights, getAllFligthNews } from "@/services/flights";
-import { CartProvider } from "@/services/cart";
 import NewsCarousel from "@/components/main/newsCarousel";
 import SearchGrid from "@/components/main/searchGrid";
 
@@ -27,13 +26,11 @@ export default function Home() {
 
   return (
     <main className="mt-5 w-full">
-      <h1 className="text-3xl font-bold text-center mb-4">
-        Vuela con nosotros
-      </h1>
-      <CartProvider>
+        <h1 className="text-3xl font-bold text-center mb-4">
+          Vuela con nosotros
+        </h1>
         <SearchGrid data={flights} />
-      </CartProvider>
-      <NewsCarousel newsItems={news} />
+        <NewsCarousel newsItems={news} />
     </main>
   );
 }
