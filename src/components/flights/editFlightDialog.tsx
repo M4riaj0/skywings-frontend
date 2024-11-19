@@ -13,7 +13,7 @@ export default function EditFlightDialog({ open, onClose, onEditFlight }: EditFl
   const schema = z.object({
   });
 
-  const { control, handleSubmit, getValues, formState: { errors }, reset, setError } = useForm({
+  const { control, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
       code: "",
       priceFirstClass: 0,

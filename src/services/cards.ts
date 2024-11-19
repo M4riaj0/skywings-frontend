@@ -1,5 +1,4 @@
 import { Card, changeBalance } from "@/app/schemas/cards";
-import { log } from "console";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
