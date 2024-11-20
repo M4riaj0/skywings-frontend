@@ -27,7 +27,6 @@ export const metadata: Metadata = {
   description: "Reserva de vuelos de Skywings",
 };
 
-
 // const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -41,18 +40,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <AppRouterCacheProvider> */}
-          <ThemeProvider theme={customTheme}>
-            <CssBaseline/>
+        <ThemeProvider theme={customTheme}>
+          <CssBaseline />
+          <CartProvider>
             <Navbar />
-            <Container>
-              <CartProvider>
-                {children}
-              </CartProvider>
-            </Container>
-          </ThemeProvider>
+            <Container>{children}</Container>
+          </CartProvider>
+        </ThemeProvider>
         {/* </AppRouterCacheProvider> */}
-        
-        
       </body>
     </html>
   );
