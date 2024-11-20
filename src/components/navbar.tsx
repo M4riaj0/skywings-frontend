@@ -124,7 +124,7 @@ function Navbar() {
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
+                    className="font-bold py-[20px] w-12 border-b-2 border-transparent hover:border-gray-50"
                     style={{ color: theme.palette.background.paper }}
                   >
                      <Logout />
