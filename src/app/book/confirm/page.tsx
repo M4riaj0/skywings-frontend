@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import { Alert, Box, Button, Typography } from "@mui/material";
-import { CartContext } from "@/context/cart";
+import { useCartContext } from "@/context/cart";
 import { createBook } from "@/services/purchase";
 
 interface BookTicket {
@@ -21,30 +21,24 @@ function ConfirmPage() {
   const [bookTickets, setBookTickets] = useState<BookTicket[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const cart = useContext(CartContext);
-  if (!cart) {
-    throw new Error("Cart context is not set");
-  }
-  const { state, dispatch } = cart;
+  const { state, dispatch } = useCartContext();
 
   async function handleReservation() {
-    if (cart) {
-      const res = await createBook(state.cart);
-      console.log(res);
-      if (res?.statusCode == 400 || res?.statusCode == 500) {
-        console.error("Error creating book:", res);
-        setError(
-          `Error en la reserva. Por favor, inténtelo de nuevo. ${res?.message}`
-        );
-        return;
-      } else if (res?.message) {
-        setError(res.message);
-        return;
-      }
-      setBookTickets(res);
-      dispatch({ type: "CLEAR_CART" });
-      setLoading(false);
+    const res = await createBook(state.cart);
+    console.log(res);
+    if (res?.statusCode == 400 || res?.statusCode == 500) {
+      console.error("Error creating book:", res);
+      setError(
+        `Error en la reserva. Por favor, inténtelo de nuevo. ${res?.message}`
+      );
+      return;
+    } else if (res?.message) {
+      setError(res.message);
+      return;
     }
+    setBookTickets(res);
+    dispatch({ type: "CLEAR_CART" });
+    setLoading(false);
   }
 
   return (
@@ -53,7 +47,11 @@ function ConfirmPage() {
         Confirmación de reserva
       </Typography>
       <Box display={loading ? "block" : "none"}>
-        <Button onClick={handleReservation} variant="outlined" className="mx-4 mb-4">
+        <Button
+          onClick={handleReservation}
+          variant="outlined"
+          className="mx-4 mb-4"
+        >
           Haz click para confirmar la reserva
         </Button>
       </Box>

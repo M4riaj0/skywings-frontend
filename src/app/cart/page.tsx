@@ -1,16 +1,11 @@
 "use client";
 
-import React, { useContext } from "react";
-import { CartContext } from "@/context/cart";
+import { useCartContext } from "@/context/cart";
 import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import { Delete, Flight } from "@mui/icons-material";
 
 const CartPage = () => {
-  const cartContext = useContext(CartContext);
-  if (!cartContext) {
-    throw new Error("CartContext must be used within a CartProvider");
-  }
-  const { state, dispatch } = cartContext;
+  const { state, dispatch } = useCartContext();
   return (
     <Box className="m-6">
       <Typography variant="h5">Carrito de compras</Typography>

@@ -1,18 +1,16 @@
 import Link from "next/link";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useTheme, useMediaQuery, IconButton, Badge } from "@mui/material";
 import { ShoppingCart } from "@mui/icons-material";
-import { CartContext } from "@/context/cart";
+import { useCartContext } from "@/context/cart";
+import { useFinanceDrawer } from "@/context/cardManager";
 
 export default function UserNav() {
   const theme = useTheme();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const cartContext = useContext(CartContext);
-  if (!cartContext) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  const { state } = cartContext;
+  const { state } = useCartContext();
+  const { toggleDrawer } = useFinanceDrawer();
 
   const toggleMenu = (menuId: string): void => {
     setOpenMenu(openMenu === menuId ? null : menuId);
@@ -77,14 +75,15 @@ export default function UserNav() {
               )}
             </>
           ) : (
-            <Link href={item.href}>
+            // <Link href={item.href}>
               <button
                 className="font-bold py-[20px] border-b-2 border-transparent hover:border-gray-50"
                 style={{ color: theme.palette.background.paper }}
+                onClick={() => toggleDrawer()}
               >
                 {item.label}
               </button>
-            </Link>
+            // </Link>
           )}
         </li>
       ))}

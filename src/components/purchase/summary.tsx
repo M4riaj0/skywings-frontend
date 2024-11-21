@@ -1,13 +1,9 @@
-import { useContext } from "react";
-import { CartContext } from "@/context/cart";
+import { useCartContext } from "@/context/cart";
 import { ICartItem } from "@/app/schemas/cartSchemas";
 import { Box, Typography } from "@mui/material";
 
 const PurchaseSummary = () => {
-  const cartContext = useContext(CartContext);
-  if (!cartContext)
-    throw new Error("CartContext must be used within a CartProvider");
-  const { state } = cartContext;
+  const { state } = useCartContext();
   const items = state.cart as ICartItem[];
 
   return (

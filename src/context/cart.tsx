@@ -1,9 +1,9 @@
 "use client";
 
 import { ICartItem, ITicket } from "@/app/schemas/cartSchemas";
-import { useReducer, createContext } from "react";
+import { useReducer, createContext, useContext } from "react";
 
-export const CartContext = createContext<
+const CartContext = createContext<
   { state: State; dispatch: React.Dispatch<Action> } | undefined
 >(undefined);
 
@@ -71,6 +71,14 @@ const reducer = (state: typeof initialState, action: Action) => {
     case "CHECK_CART":
       return state;
   }
+};
+
+export const useCartContext = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error("Cart context is not available. Make sure you use CartProvider to wrap your components.");
+  }
+  return context;
 };
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {

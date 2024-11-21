@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { CartContext } from "@/context/cart";
+import React, { useState, useEffect } from "react";
+import { useCartContext } from "@/context/cart";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import PassengerForm from "@/components/purchase/passengerForm";
 import { IPassenger, ITicket } from "@/app/schemas/cartSchemas";
@@ -9,10 +9,7 @@ interface PassengerDataProps {
 }
 
 const PassengerData: React.FC<PassengerDataProps> = ({ enableReturn }) => {
-  const cartContext = useContext(CartContext);
-  if (!cartContext)
-    throw new Error("CartContext must be used within a CartProvider");
-  const { dispatch, state } = cartContext;
+  const { state, dispatch } = useCartContext();
 
   const passengers = state.cart
     .map((item) => item.tickets)
