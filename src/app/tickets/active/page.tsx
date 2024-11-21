@@ -65,9 +65,7 @@ export default function ActiveTicketsPage() {
         try {
             const response = await cancelTicket({ flightCode, passengerDni });
     
-            // Verifica si la cancelación fue exitosa
             if (response.success) {
-                // Si es exitosa, elimina el tiquete de la lista
                 setTickets((prevTickets) =>
                     prevTickets.filter(
                         (ticket) => ticket.flightCode !== flightCode || ticket.passengerDni !== passengerDni
@@ -76,7 +74,6 @@ export default function ActiveTicketsPage() {
                 setSnackBarMessage("Tiquete cancelado correctamente.");
                 setSnackBarSeverity("success");
             } else {
-                // Si no fue exitosa, muestra el mensaje de error
                 setSnackBarMessage(response.message || "Error al cancelar el tiquete.");
                 setSnackBarSeverity("error");
             }
@@ -92,7 +89,6 @@ export default function ActiveTicketsPage() {
 
     return (
         <Box>
-            {/* Snackbar para mostrar notificaciones */}
             <Snackbar
                 open={snackBarOpen}
                 autoHideDuration={6000}

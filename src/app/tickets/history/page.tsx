@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Pagination, Snackbar, Alert } from "@mui/material"; // Importa Snackbar y Alert
-import TicketCard from "@/components/tickets/ticketCard"; // Asegúrate de que la ruta sea correcta
-import { getTicketsHistory } from "@/services/tickets"; // Asegúrate de que la ruta sea correcta
+import { Typography, Box, Pagination, Snackbar, Alert } from "@mui/material";
+import TicketCard from "@/components/tickets/ticketCard"; 
+import { getTicketsHistory } from "@/services/tickets"; 
 
 interface Ticket {
   flightCode: string;
@@ -21,22 +21,19 @@ export default function TicketHistoryPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // Para el mensaje de éxito
-  const [errorMessage, setErrorMessage] = useState(""); // Para el mensaje de error
+  const [successMessage, setSuccessMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState(""); 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Calcular los índices para paginación
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedTickets = tickets.slice(startIndex, endIndex);
 
-  // Manejar cambio de página
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };
 
-  // Llamar a la API para obtener el historial de tiquetes
   useEffect(() => {
     const fetchTicketHistory = async () => {
       try {
@@ -45,15 +42,15 @@ export default function TicketHistoryPage() {
         const response = await getTicketsHistory();
         if (response.success && response.data) {
           setTickets(response.data);
-          setSuccessMessage("Historial cargado exitosamente."); // Mostrar mensaje de éxito
+          setSuccessMessage("Historial cargado exitosamente.");
         } else {
           setError(true);
-          setErrorMessage(response.message || "Error al cargar el historial."); // Mostrar mensaje de error
+          setErrorMessage(response.message || "Error al cargar el historial.");
         }
-        setSuccessMessage("Historial cargado exitosamente."); // Mostrar mensaje de éxito
+        setSuccessMessage("Historial cargado exitosamente.");
       } catch (err) {
         setError(true);
-        setErrorMessage("Error al cargar el historial."); // Mostrar mensaje de error
+        setErrorMessage("Error al cargar el historial.");
       } finally {
         setLoading(false);
       }
@@ -62,7 +59,6 @@ export default function TicketHistoryPage() {
     fetchTicketHistory();
   }, []);
 
-  // Función para cerrar las alertas
   const handleCloseSnackbar = () => {
     setSuccessMessage("");
     setErrorMessage("");
@@ -83,7 +79,7 @@ export default function TicketHistoryPage() {
           ))}
           <Box className="my-2">
             <Pagination
-              count={Math.ceil(tickets.length / itemsPerPage)} // Total de páginas
+              count={Math.ceil(tickets.length / itemsPerPage)} 
               page={currentPage}
               onChange={handlePageChange}
               color="primary"
@@ -93,7 +89,6 @@ export default function TicketHistoryPage() {
         </Box>
       )}
 
-      {/* Snackbar para el mensaje de éxito */}
       <Snackbar
         open={!!successMessage}
         autoHideDuration={6000}
@@ -104,7 +99,6 @@ export default function TicketHistoryPage() {
         </Alert>
       </Snackbar>
 
-      {/* Snackbar para el mensaje de error */}
       <Snackbar
         open={!!errorMessage}
         autoHideDuration={6000}

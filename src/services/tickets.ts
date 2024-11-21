@@ -130,7 +130,6 @@ export const cancelTicket = async (ticketData: CancelTicket) => {
       console.log("Tiquete eliminado exitosamente");
       return { success: true, message: "Tiquete eliminado exitosamente", data: await res.json() };
     } else {
-      // Aquí maneja el error de forma más precisa
       const errorData = await res.json();
       console.error("Error al eliminar el Tiquete", errorData);
       return { success: false, message: errorData.message || "Error al eliminar el Tiquete" };
