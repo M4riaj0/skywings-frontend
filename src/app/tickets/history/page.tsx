@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Typography, Box, Pagination, Snackbar, Alert } from "@mui/material";
 import TicketCard from "@/components/tickets/ticketCard"; 
 import { getTicketsHistory } from "@/services/tickets"; 
+import NoItemsAvailable from "@/components/noItems";
 
 interface Ticket {
   flightCode: string;
@@ -66,12 +67,12 @@ export default function TicketHistoryPage() {
 
   return (
     <Box>
-      <Typography variant="h5" align="center" className="my-4">
+      <Typography variant="h4" component="h1" className="font-bold my-4">
         Historial de Tiquetes
       </Typography>
       {loading && <Typography variant="body1">Cargando...</Typography>}
       {error && <Typography variant="body1" color="error">Error al cargar el historial.</Typography>}
-      {!loading && !error && tickets.length === 0 && <Typography>No tienes historial de tiquetes.</Typography>}
+      {!loading && !error && tickets.length === 0 &&   <Box className="min-h-screen items-center justify-center"><NoItemsAvailable message="No tienes historial de tiquetes." /></Box>}
       {!loading && !error && tickets.length > 0 && (
         <Box>
           {paginatedTickets.map((ticket, index) => (

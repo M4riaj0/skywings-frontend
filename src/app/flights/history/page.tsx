@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Typography, Button, IconButton } from "@mui/material";
+import { Typography, Button, IconButton, Box } from "@mui/material";
 import FlightTable from "@/components/flights/flightTable";
 import { getRealizedFlights } from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
+import NoItemsAvailable from "@/components/noItems";
 
 export const dynamic = "force-dynamic";
 
@@ -51,8 +52,14 @@ const FlightManager = () => {
           </IconButton>
         </div>
       </div>
-
-      <FlightTable flights={flights} />
+      {flights.length === 0 && (
+        <Box className="min-h-screen items-center justify-center">
+            <NoItemsAvailable message="Sin vuelos registrados." />
+        </Box>
+      )}
+      {flights.length > 0 && (
+        <FlightTable flights={flights} />
+      )}
     </div>
   );
 };

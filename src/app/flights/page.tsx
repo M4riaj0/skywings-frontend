@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Typography, Button, IconButton, Alert } from "@mui/material";
+import { Typography, Button, IconButton, Alert, Box } from "@mui/material";
 import FlightTable from "@/components/flights/flightTable";
 import {
   getAvaliableFlights,
@@ -11,6 +11,7 @@ import {
 } from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
 import { FlightFormUpdate } from "@/app/schemas/flightFormSchema";
+import NoItemsAvailable from "@/components/noItems";
 
 export const dynamic = "force-dynamic";
 
@@ -77,12 +78,18 @@ const FlightManager = () => {
           </IconButton>
         </div>
       </div>
-
-      <FlightTable
-        flights={flights}
-        onSaveFlight={handleUpdateFlight}
-        onDeleteFlight={handleDeleteFlight}
-      />
+      {flights.length === 0 && (
+        <Box className="min-h-screen items-center justify-center">
+            <NoItemsAvailable message="No tienes vuelos activos en este momento. " />
+        </Box>
+      )}
+      {flights.length > 0 && (
+        <FlightTable
+          flights={flights}
+          onSaveFlight={handleUpdateFlight}
+          onDeleteFlight={handleDeleteFlight}
+        />
+      )}
     </div>
   );
 };

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Typography, Box, Pagination, Snackbar, Alert } from "@mui/material";
 import TicketCard from "@/components/tickets/ticketCard"; 
 import { getActiveTickets, cancelTicket } from "@/services/tickets";
+import NoItemsAvailable from "@/components/noItems";
 
 interface Ticket {
     flightCode: string;
@@ -133,7 +134,9 @@ export default function ActiveTicketsPage() {
             )}
 
             {!loading && !error && tickets.length === 0 && (
-                <p className="text-center text-gray-500">No tienes tiquetes activos.</p>
+                <Box className="min-h-screen items-center justify-center">
+                    <NoItemsAvailable message="No tienes tiquetes activos." />
+                </Box>
             )}
 
             {!loading && !error && tickets.length > 0 && (

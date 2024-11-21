@@ -27,8 +27,10 @@ export default function Login() {
     event.preventDefault();
     const data = { username, password };
     const res = await handleLogin(data);
+    console.log("res:: ", res);
     const token = res?.access_token;
     const role = res?.role;
+    const access = res?.numberLogins;
     if (token) {
       // Guardar el token en el local storage y redirigir al usuario
       document.cookie = `token=${token}; path=/;`; //Debe cambiarse el guardado por cookies
@@ -36,9 +38,9 @@ export default function Login() {
       localStorage && localStorage.setItem("role", role);
       router.refresh();
       if (role == "ROOT") router.push("/admins");
-      else if (role == "ADMIN") router.push("/profile/password");
+      else if (role == "ADMIN" && access == 1) router.push("/profile/password");
       // else if (role == "ADMIN") router.push("/flights");
-      else router.push("/profile");
+      else router.push("/");
     } else {
       setErrorMessage("Usuario o contraseña incorrectos");
       setPassword("");
