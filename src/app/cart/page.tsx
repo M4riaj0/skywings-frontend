@@ -12,7 +12,7 @@ const CartPage = () => {
   }
   const { state, dispatch } = cartContext;
   return (
-    <Box className="my-4">
+    <Box className="m-6">
       <Typography variant="h5">Carrito de compras</Typography>
       <p className="my-2">
         Total items:{" "}

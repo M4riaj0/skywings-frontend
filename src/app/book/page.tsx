@@ -96,7 +96,7 @@ const BookPage = () => {
   };
 
   return (
-    <main className="px-3 pb-6">
+    <>
       {stepError && (
         <Alert severity="error" className="my-3">
           {stepError}
@@ -211,7 +211,7 @@ const BookPage = () => {
           {step === 3 ? "Ir al carrito" : "Continuar"}
         </Button>
       </Box>
-    </main>
+    </>
   );
 };
 
