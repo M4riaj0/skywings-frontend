@@ -131,7 +131,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
             <Typography variant="body1" className="font-medium text-gray-700">
               Check-In:{" "}
               <span className="font-bold">
-                {checkIn ? new Date(checkIn).toLocaleString() : "Pendiente"}
+                {checkIn ? new Date(checkIn).toLocaleString() : "No"}
               </span>
             </Typography>
           </Box>
