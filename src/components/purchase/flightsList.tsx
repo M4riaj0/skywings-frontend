@@ -49,13 +49,13 @@ const FlightsList: React.FC<FlightsListProps> = ({type, flights }) => {
                 <ClassCard
                   flight={flight}
                   type={type}
-                  classType="Ecónomica"
+                  classType="Tourist"
                   price={flight.priceEconomyClass}
                 />
                 <ClassCard
                   flight={flight}
                   type={type}
-                  classType="Primera"
+                  classType="First"
                   price={flight.priceFirstClass}
                 />
               </AccordionDetails>

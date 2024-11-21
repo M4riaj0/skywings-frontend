@@ -24,6 +24,12 @@ export default function FligthCard(flightInfo: FlightData) {
 
   // Handle route click
   const handleRouteClick = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/auth/login");
+      return;
+    }
+
     const query = new URLSearchParams({
       departure: flightInfo.origin,
       arrival: flightInfo.destination,
