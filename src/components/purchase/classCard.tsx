@@ -90,14 +90,14 @@ const ClassCard: React.FC<ClassCardProps> = ({ flight, type, classType, price })
       <CardContent>
         {cartMessage && (
           <Alert
-            severity={`${cartMessage.startsWith("¡No") ? "error" : "info"}`}
+            severity={`${cartMessage.startsWith("¡No") ? "error" : "success"}`}
             className="mb-3"
           >
             {cartMessage}
           </Alert>
         )}
         <Typography variant="h5" component="div">
-          {classType == "Primera" ? "Primera Clase" : "Clase Económica"}
+          {classType == "First" ? "Primera Clase" : "Clase Económica"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Precio: ${price}

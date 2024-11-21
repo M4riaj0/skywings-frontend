@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Alert,
   Box,
   Button,
   Divider,
@@ -8,13 +9,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getAvaliableFlights } from "@/services/flights";
 import { FlightData } from "../schemas/flightFormSchema";
 import FlightsList from "@/components/purchase/flightsList";
 import PassengerData from "@/components/purchase/passengerData";
 import PurchaseSummary from "@/components/purchase/summary";
+import { CartContext } from "@/context/cart";
 
 const filterFlights = (
   flights: FlightData[],
@@ -40,7 +42,14 @@ const BookPage = () => {
   const [enableReturn, setEnableReturn] = useState(false);
   const [returnDate, setReturnDate] = useState<string | null>(null);
   const [step, setStep] = useState(1);
+  const [stepError, setStepError] = useState("");
   const router = useRouter();
+
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error("CartContext must be used within a CartProvider");
+  }
+  const { state } = context;
 
   useEffect(() => {
     const loadFlights = async () => {
@@ -51,6 +60,27 @@ const BookPage = () => {
 
     loadFlights();
   }, [searchParams]);
+
+  const validateStep = (step: number) => {
+    if (step === 1) {
+      const valid = state.cart[0] != null;
+      if (!valid) setStepError("Debe seleccionar al menos un vuelo");
+      else setStepError("");
+      return valid;
+    } else if (step === 2) {
+      const valid = state.cart.every((item) =>
+        item.tickets.every((ticket) => ticket.passenger?.dni !== "")
+      );
+      console.log(state.cart[0].tickets[0].passenger);
+      console.log(valid);
+      if (!valid)
+        setStepError("Debe ingresar los datos de todos los pasajeros");
+      else setStepError("");
+      return valid;
+    } else {
+      return true;
+    }
+  };
 
   const handleReturn = async () => {
     const allFlights = await getAvaliableFlights();
@@ -67,6 +97,11 @@ const BookPage = () => {
 
   return (
     <main className="px-3 pb-6">
+      {stepError && (
+        <Alert severity="error" className="my-3">
+          {stepError}
+        </Alert>
+      )}
       {step === 1 && (
         <>
           <section>
@@ -137,7 +172,7 @@ const BookPage = () => {
             Datos de pasajeros
           </Typography>
           <Divider />
-          <PassengerData />
+          <PassengerData enableReturn={enableReturn} />
         </section>
       )}
       {step === 3 && (
@@ -168,7 +203,9 @@ const BookPage = () => {
         <Button
           variant="contained"
           onClick={() =>
-            step === 3 ? router.push("/cart") : setStep(step + 1)
+            step === 3
+              ? router.push("/cart")
+              : validateStep(step) && setStep(step + 1)
           }
         >
           {step === 3 ? "Ir al carrito" : "Continuar"}

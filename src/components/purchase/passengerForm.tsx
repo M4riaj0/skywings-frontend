@@ -45,14 +45,22 @@ const passengerSchema = z.object({
       birthDate <= today
     );
   }, "Debes tener entre 18 y 90 años, y la fecha de nacimiento no puede estar en el futuro"),
+  gender: z.string().min(1, "Género es requerido"),
+  contactName: z.string().min(3, "Nombre de contacto es requerido"),
+  contactPhone: z
+    .string()
+    .min(10, "El teléfono de contacto debe tener al menos 10 dígitos")
+    .regex(/^\d+$/, "El teléfono de contacto solo debe contener números"),
 });
 
 const PassengerForm: React.FC<{
   ticket: ITicket;
   handleSubmit: (data: IPassenger) => void;
-}> = ({ ticket, handleSubmit }) => {
+  shouldRefresh: boolean;
+}> = ({ ticket, handleSubmit, shouldRefresh }) => {
   const {
     control,
+    setValue,
     handleSubmit: handleFormSubmit,
     formState: { errors },
   } = useForm<IPassenger>({
@@ -63,6 +71,17 @@ const PassengerForm: React.FC<{
   const onSubmit = (data: IPassenger) => {
     handleSubmit(data);
   };
+
+  if (shouldRefresh) {
+    if (ticket.passenger) {
+      Object.keys(ticket.passenger).forEach((key) => {
+        setValue(
+          key as keyof IPassenger,
+          ticket.passenger![key as keyof IPassenger]
+        );
+      });
+    }
+  }
 
   return (
     <form
@@ -79,9 +98,6 @@ const PassengerForm: React.FC<{
         <Typography variant="h6" className="my-3">
           $ {ticket.price}
         </Typography>
-        <Button type="submit" variant="contained" color="primary">
-          Guardar
-        </Button>
       </Box>
       <Grid2
         container
@@ -90,23 +106,6 @@ const PassengerForm: React.FC<{
         justifyContent="center"
         alignItems="center"
       >
-        <Grid2 className="w-56">
-          <Controller
-            name="dni"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="DNI"
-                variant="outlined"
-                fullWidth
-                error={!!errors.dni}
-                helperText={errors.dni ? errors.dni.message : ""}
-              />
-            )}
-          />
-        </Grid2>
         <Grid2 className="w-56">
           <Controller
             name="name1"
@@ -177,6 +176,23 @@ const PassengerForm: React.FC<{
         </Grid2>
         <Grid2 className="w-56">
           <Controller
+            name="dni"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="DNI"
+                variant="outlined"
+                fullWidth
+                error={!!errors.dni}
+                helperText={errors.dni ? errors.dni.message : ""}
+              />
+            )}
+          />
+        </Grid2>
+        <Grid2 className="w-56">
+          <Controller
             name="email"
             control={control}
             defaultValue=""
@@ -227,6 +243,81 @@ const PassengerForm: React.FC<{
               />
             )}
           />
+        </Grid2>
+        <Grid2 className="w-56">
+          <Controller
+            name="gender"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                select
+                label="Género"
+                variant="outlined"
+                fullWidth
+                error={!!errors.gender}
+                helperText={errors.gender ? errors.gender.message : ""}
+                SelectProps={{
+                  native: true,
+                }}
+              >
+                <option value=""></option>
+                <option value="Hombre">Hombre</option>
+                <option value="Mujer">Mujer</option>
+                <option value="Otro">Otro</option>
+                <option value="Prefiero no decir">Prefiero no decir</option>
+              </TextField>
+            )}
+          />
+        </Grid2>
+        <Grid2 className="w-56">
+          <Controller
+            name="contactName"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Nombre de Contacto"
+                variant="outlined"
+                fullWidth
+                error={!!errors.contactName}
+                helperText={
+                  errors.contactName ? errors.contactName.message : ""
+                }
+              />
+            )}
+          />
+        </Grid2>
+        <Grid2 className="w-56">
+          <Controller
+            name="contactPhone"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Teléfono de Contacto"
+                variant="outlined"
+                fullWidth
+                error={!!errors.contactPhone}
+                helperText={
+                  errors.contactPhone ? errors.contactPhone.message : ""
+                }
+              />
+            )}
+          />
+        </Grid2>
+        <Grid2 className="w-56 flex justify-center">
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            className="w-3/5"
+          >
+            Guardar
+          </Button>
         </Grid2>
       </Grid2>
     </form>
