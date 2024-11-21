@@ -46,7 +46,7 @@ export default function AddAdminDialog({ open, onClose, onAddAdmin }: AddAdminDi
       .nonempty({ message: "El email no puede estar vacío" })
   });
 
-  const { control, handleSubmit, getValues, formState: { errors }, reset, setError } = useForm({
+  const { control, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
       username: "",
       email: "",

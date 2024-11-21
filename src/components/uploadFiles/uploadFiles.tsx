@@ -7,7 +7,6 @@ interface UploadFilesProps {
 
 const UploadFiles: React.FC<UploadFilesProps> = ({ onUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState("");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -28,8 +27,6 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ onUpload }) => {
         formData
       );
       const uploadedUrl = response.data.secure_url;
-      console.log(uploadedUrl);
-      setFileUrl(uploadedUrl);
 
       if (onUpload) {
         onUpload(uploadedUrl);

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // console.log("Request to", request.nextUrl);
+  console.log("Request to", request.nextUrl);
 //   if (request.nextUrl.pathname.includes("/home/")) {
 //     const token = request.cookies.get("token");
 //     // console.log(token)

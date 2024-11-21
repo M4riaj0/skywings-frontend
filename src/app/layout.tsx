@@ -8,6 +8,7 @@ import "./globals.css";
 import customTheme from "@/theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Container } from "@mui/material";
+import { CartProvider } from "@/context/cart";
 // import { FormProvider } from "@/context/useFormContext";
 
 const geistSans = localFont({
@@ -26,7 +27,6 @@ export const metadata: Metadata = {
   description: "Reserva de vuelos de Skywings",
 };
 
-
 // const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -40,18 +40,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <AppRouterCacheProvider> */}
-          <ThemeProvider theme={customTheme}>
-            <CssBaseline/>
+        <ThemeProvider theme={customTheme}>
+          <CssBaseline />
+          <CartProvider>
             <Navbar />
-            <Container>
-              {/* <FormProvider> */}
-                {children}
-              {/* </FormProvider> */}
-            </Container>
-          </ThemeProvider>
+            <Container>{children}</Container>
+          </CartProvider>
+        </ThemeProvider>
         {/* </AppRouterCacheProvider> */}
-        
-        
       </body>
     </html>
   );

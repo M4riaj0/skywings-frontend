@@ -1,11 +1,18 @@
 import Link from "next/link";
-import { useState } from "react";
-import { useTheme, useMediaQuery } from "@mui/material";
+import { useState, useContext } from "react";
+import { useTheme, useMediaQuery, IconButton, Badge } from "@mui/material";
+import { ShoppingCart } from "@mui/icons-material";
+import { CartContext } from "@/context/cart";
 
 export default function UserNav() {
   const theme = useTheme();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const cartContext = useContext(CartContext);
+  if (!cartContext) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  const { state } = cartContext;
 
   const toggleMenu = (menuId: string): void => {
     setOpenMenu(openMenu === menuId ? null : menuId);
@@ -57,7 +64,10 @@ export default function UserNav() {
                   {item.links.map((link) => (
                     <li key={link.href}>
                       <Link href={link.href}>
-                        <button className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300" onClick={() => toggleMenu(item.id)}>
+                        <button
+                          className="w-full font-bold py-1 px-5 rounded border-2 border-transparent hover:border-gray-300"
+                          onClick={() => toggleMenu(item.id)}
+                        >
                           {link.label}
                         </button>
                       </Link>
@@ -78,6 +88,18 @@ export default function UserNav() {
           )}
         </li>
       ))}
+      <li>
+        <Link
+          href="/cart"
+          className="font-bold ml-auto py-[20px] border-b-2 border-transparent hover:border-gray-50"
+        >
+            <Badge badgeContent={state.cart.reduce((acc, item) => acc + item.tickets.length, 0)} color="secondary">
+            <IconButton style={{ color: theme.palette.background.paper }}>
+              <ShoppingCart style={{ fontSize: "2rem" }} />
+            </IconButton>
+            </Badge>
+        </Link>
+      </li>
     </>
   );
 }

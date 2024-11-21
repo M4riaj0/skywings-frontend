@@ -1,5 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from "@mui/material";
-import { useState } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import Image from "next/image";
 
 interface ResetPasswordProps {
@@ -8,18 +7,6 @@ interface ResetPasswordProps {
 }
 
 export default function ResetPassword({ open, onClose }: ResetPasswordProps) {
-  const [adminData, setAdminData] = useState({ name: "", email: "" });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAdminData({ ...adminData, [name]: value });
-  };
-
-  const handleSubmit = () => {
-    // console.log("Agregar admin:", adminData);
-    onClose();
-  };
-
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Recuperar contraseña</DialogTitle>
