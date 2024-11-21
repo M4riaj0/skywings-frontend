@@ -13,7 +13,7 @@ const CardList: React.FC<CardListProps> = ({ cards, onEditCard, onDeleteCard }) 
 
   return (
     <div className="space-y-4">
-      {cards.map((card) => (
+      {cards && cards.map((card) => (
         <Card key={card.number} cardData={card} onEditCard={() => onEditCard(card)} onDeleteCard={() => onDeleteCard(card)}/>
       ))}
     </div>

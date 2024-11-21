@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppBar, Toolbar, Button, Drawer, Typography, Box } from "@mui/material";
+import { Button, Drawer, Typography, Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CardList from "@/components/finance/cardList";
-import AddCardDialog from "@/components/finance/addCardDialog";
+import CardList from "./cardList";
+import AddCardDialog from "./addCardDialog";
 import { getCards, addCard, updateCard, deleteCard } from "@/services/cards";
 
 interface CardType {
@@ -17,8 +17,12 @@ interface CardType {
   erased?: boolean;
 }
 
-const CardManager = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+interface CardManagerProps {
+  drawerOpen: boolean;
+  toggleDrawer: () => void;
+}
+
+const CardManager: React.FC<CardManagerProps> = ({ drawerOpen, toggleDrawer }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
   const [cards, setCards] = useState<CardType[]>([]);
@@ -37,8 +41,6 @@ const CardManager = () => {
   useEffect(() => {
     fetchCards();
   }, []);
-
-  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
   const handleAddCardOpen = () => {
     setSelectedCard(null);
@@ -59,26 +61,18 @@ const CardManager = () => {
   };
 
   const handleDialogSubmit = async (data: CardType) => {
-      if (editingCard) {
-        const { number, balance } = data;
-        await updateCard({ number, balance });
-      } else {
-        await addCard(data);
-      }
-      setDialogOpen(false);
-      fetchCards();
-    };
+    if (editingCard) {
+      const { number, balance } = data;
+      await updateCard({ number, balance });
+    } else {
+      await addCard(data);
+    }
+    setDialogOpen(false);
+    fetchCards();
+  };
 
   return (
     <>
-      <AppBar position="static" color="default">
-        <Toolbar>
-          <Button color="primary" onClick={toggleDrawer}>
-            Gestionar Tarjetas
-          </Button>
-        </Toolbar>
-      </AppBar>
-
       <Drawer
         anchor="right"
         open={drawerOpen}
@@ -97,19 +91,19 @@ const CardManager = () => {
             Agregar Tarjeta
           </Button>
           <Box mt={4}>
-          <CardList
-          cards={cards}
-          onEditCard={handleEditCard}
-          onDeleteCard={async (card: CardType) => {
-          try {
-            await deleteCard(card.number);
-            fetchCards();
-          } catch (error) {
-            setErrorMessage("Error al eliminar la tarjeta");
-            console.error(error);
-          }
-          }}
-        />
+            <CardList
+              cards={cards}
+              onEditCard={handleEditCard}
+              onDeleteCard={async (card: CardType) => {
+                try {
+                  await deleteCard(card.number);
+                  fetchCards();
+                } catch (error) {
+                  setErrorMessage("Error al eliminar la tarjeta");
+                  console.error(error);
+                }
+              }}
+            />
           </Box>
         </Box>
       </Drawer>
@@ -126,7 +120,6 @@ const CardManager = () => {
 };
 
 export default CardManager;
-
 
 function setErrorMessage(arg0: string) {
   throw new Error(arg0);

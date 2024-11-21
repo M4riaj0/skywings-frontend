@@ -9,8 +9,8 @@ import {
   Typography,
 } from "@mui/material";
 import { FlightData } from "@/app/schemas/flightFormSchema";
-import { CartContext } from "@/context/cart";
-import { useContext, useState } from "react";
+import { useCartContext } from "@/context/cart";
+import { useState } from "react";
 
 interface ClassCardProps {
   flight: FlightData;
@@ -21,10 +21,7 @@ interface ClassCardProps {
 
 const ClassCard: React.FC<ClassCardProps> = ({ flight, type, classType, price }) => {
   const [cartMessage, setCartMessage] = useState<string>("");
-  const cartContext = useContext(CartContext);
-  if (!cartContext)
-    throw new Error("CartContext must be used within a CartProvider");
-  const { state, dispatch } = cartContext;
+  const { state, dispatch } = useCartContext();
 
   const handleAddToCart = () => {
     dispatch({

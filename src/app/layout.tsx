@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Navbar from "@/components/navbar";
+import { CartProvider } from "@/context/cart";
+import { FinanceDrawerProvider } from "@/context/cardManager";
+// import { FormProvider } from "@/context/useFormContext";
 
 // Styles
 import "./globals.css";
-// import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import customTheme from "@/theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Container } from "@mui/material";
-import { CartProvider } from "@/context/cart";
-// import { FormProvider } from "@/context/useFormContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,15 +39,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <AppRouterCacheProvider> */}
         <ThemeProvider theme={customTheme}>
           <CssBaseline />
           <CartProvider>
+            <FinanceDrawerProvider>
             <Navbar />
             <Container>{children}</Container>
+            </FinanceDrawerProvider>
           </CartProvider>
         </ThemeProvider>
-        {/* </AppRouterCacheProvider> */}
       </body>
     </html>
   );

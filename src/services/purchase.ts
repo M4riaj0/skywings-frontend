@@ -2,8 +2,6 @@ import { ICartItem, ITicket } from "@/app/schemas/cartSchemas";
 
 const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-// TODO: export interface for data to create a book
-
 const formatBookData = (cart: ICartItem[]) => {
   const token = localStorage.getItem("token");
   if (!token) {

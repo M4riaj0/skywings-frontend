@@ -9,14 +9,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getAvaliableFlights } from "@/services/flights";
 import { FlightData } from "../schemas/flightFormSchema";
 import FlightsList from "@/components/purchase/flightsList";
 import PassengerData from "@/components/purchase/passengerData";
 import PurchaseSummary from "@/components/purchase/summary";
-import { CartContext } from "@/context/cart";
+import { useCartContext } from "@/context/cart";
 
 const filterFlights = (
   flights: FlightData[],
@@ -45,11 +45,7 @@ const BookPage = () => {
   const [stepError, setStepError] = useState("");
   const router = useRouter();
 
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("CartContext must be used within a CartProvider");
-  }
-  const { state } = context;
+  const { state } = useCartContext();
 
   useEffect(() => {
     const loadFlights = async () => {
