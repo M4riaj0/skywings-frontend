@@ -158,6 +158,7 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
                             <TextField
                                 {...field}
                                 label="Número de Tarjeta"
+                                type="number"
                                 fullWidth
                                 required
                                 error={!!errors.number}
@@ -174,6 +175,7 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
                                 <TextField
                                     {...field}
                                     label="CVV"
+                                    type="number"
                                     fullWidth
                                     required
                                     error={!!errors.cvv}
@@ -200,8 +202,8 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
                                         const [year, month] =
                                             e.target.value.split("-");
                                         const isoDate = new Date(
-                                            year,
-                                            month - 1,
+                                            Number(year),
+                                            Number(month) - 1,
                                             1,
                                             0,
                                             0,
