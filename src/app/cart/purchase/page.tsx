@@ -7,33 +7,40 @@ import {
   Typography,
   Divider,
   Card,
-  CardActionArea,
   CardContent,
+  CircularProgress,
   useTheme,
 } from "@mui/material";
 import { IBookTicket } from "@/app/schemas/tickets";
-import NoItemsAvailable from "@/components/noItems";
 import { useRouter } from "next/navigation";
 import { createPurchase } from "@/services/purchase";
 import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
-import SelectCardDialog from "@/components/finance/selectCardDialog"; 
+import SelectCardDialog from "@/components/finance/selectCardDialog";
 
 const PurchasePage: React.FC = () => {
   const [tickets, setTickets] = useState<IBookTicket[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [openSuccess, setOpenSuccess] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false); // Estado para controlar la visibilidad del diálogo
+  const [openDialog, setOpenDialog] = useState(false);
   const router = useRouter();
   const theme = useTheme();
 
   useEffect(() => {
-    const storedTickets = localStorage.getItem("tickets");
-    if (storedTickets) {
-      setTickets(JSON.parse(storedTickets));
-    }
+    const fetchTickets = async () => {
+      setIsLoading(true);
+      const storedTickets = localStorage.getItem("tickets");
+      if (storedTickets) {
+        setTickets(JSON.parse(storedTickets));
+      }
+      setIsLoading(false);
+    };
+
+    fetchTickets();
   }, []);
 
   const handlePayment = async (cardDetails: { cardNumber: string; cvv: string }) => {
+    setOpenDialog(false);
     const paymentRes = await createPurchase({
       cardNumber: cardDetails.cardNumber,
       cvv: cardDetails.cvv,
@@ -56,11 +63,11 @@ const PurchasePage: React.FC = () => {
   };
 
   const handleOpenDialog = () => {
-    setOpenDialog(true); // Abrir el diálogo
+    setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false); // Cerrar el diálogo
+    setOpenDialog(false);
   };
 
   return (
@@ -95,32 +102,44 @@ const PurchasePage: React.FC = () => {
         >
           <Typography variant="h4">Resumen de compra</Typography>
           <Divider sx={{ my: 2 }} />
-          {tickets.length > 0 ? (
+
+          {/* Mostrar el indicador de carga */}
+          {isLoading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+              <CircularProgress />
+            </Box>
+          ) : tickets.length > 0 ? (
             <Box>
               {tickets.map((ticket, index) => (
                 <Card key={index} sx={{ marginBottom: 2, borderRadius: 2 }}>
-                    <CardContent sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <AirplaneTicketIcon sx={{ marginRight: 2, fontSize: "2rem" }} />
-                        <Typography sx={{ fontWeight: "bold", marginRight: 2 }}>
-                          {ticket.flightCode}
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <AirplaneTicketIcon sx={{ marginRight: 2, fontSize: "2rem" }} />
+                      <Typography sx={{ fontWeight: "bold", marginRight: 2 }}>
+                        {ticket.flightCode}
+                      </Typography>
+                    </Box>
+
+                    <Box className="flex items-center justify-center bg-gray-200 text-center px-6 rounded-lg">
+                      <div>
+                        <Typography variant="body2" className="text-gray-500 text-sm">
+                          Precio
                         </Typography>
-                      </Box>
-                      
-                        <Box className="flex items-center justify-center bg-gray-200 text-center px-6 rounded-lg">
-                          <div>
-                            <Typography variant="body2" className="text-gray-500 text-sm">
-                            Precio
-                            </Typography>
-                            <Typography variant="h6" className="font-bold text-gray-800">
-                            {ticket.price.toLocaleString()} COP
-                            </Typography>
-                          </div>
-                        </Box>
-                      </CardContent>
+                        <Typography variant="h6" className="font-bold text-gray-800">
+                          {ticket.price.toLocaleString()} COP
+                        </Typography>
+                      </div>
+                    </Box>
+                  </CardContent>
                 </Card>
               ))}
-              <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 6  ,}}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
                 <Typography
                   sx={{
                     padding: 1,
@@ -136,7 +155,7 @@ const PurchasePage: React.FC = () => {
               </Box>
             </Box>
           ) : (
-            <NoItemsAvailable message="Tu carrito está vacío." />
+            <Typography>No hay tickets disponibles en tu carrito.</Typography>
           )}
         </Box>
       </Box>
@@ -147,7 +166,8 @@ const PurchasePage: React.FC = () => {
           variant="contained"
           color="primary"
           sx={{ width: "200px" }}
-          onClick={handleOpenDialog} // Abrir el diálogo de selección de tarjeta
+          onClick={handleOpenDialog}
+          disabled={tickets.length === 0} // Deshabilitar si no hay tickets
         >
           Seleccionar tarjeta y pagar
         </Button>
@@ -156,8 +176,8 @@ const PurchasePage: React.FC = () => {
       {/* Diálogo de selección de tarjeta */}
       <SelectCardDialog
         open={openDialog}
-        onClose={handleCloseDialog} // Cerrar el diálogo
-        onConfirm={handlePayment} // Pasamos la función de pago como confirmación
+        onClose={handleCloseDialog}
+        onConfirm={handlePayment}
       />
     </>
   );

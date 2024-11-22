@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import FlightClassIcon from "@mui/icons-material/FlightClass";
 import LuggageIcon from "@mui/icons-material/Luggage";
-import PaidIcon from '@mui/icons-material/Paid';
+import PaidIcon from "@mui/icons-material/Paid";
 import { FlightData } from "@/app/schemas/flightFormSchema";
 import { useCartContext } from "@/context/cart";
 import { useState } from "react";
@@ -88,25 +88,35 @@ const ClassCard: React.FC<ClassCardProps> = ({
     }
     setCartMessage("¡Agregado al carrito!");
   };
+
+  // Asignación de estilos según la clase
+  const isFirstClass = classType === "First";
+  const cardStyles = {
+    backgroundColor: isFirstClass ?  "#f3e5f5": "#e3f2fd", // Fondo azul claro para primera clase, púrpura claro para económica
+    borderColor: isFirstClass ?  "#ab47bc" : "#42a5f5", // Borde azul para primera clase, púrpura para económica
+    borderWidth: "2px",
+    borderStyle: "solid",
+  };
+
   return (
     <Card
       className="border flex justify-between px-5 py-3"
-      sx={{ backgroundColor: "background.default" }}
+      sx={{ ...cardStyles }}
     >
       <CardContent>
-        <Typography variant="h5" component="div">
-          {classType == "First" ? "Primera Clase" : "Clase Económica"}
+        <Typography variant="h5" component="div" sx={{ fontWeight: "bold" }}>
+          {isFirstClass ? "Primera Clase" : "Clase Económica"}
         </Typography>
         <Box className="flex items-center space-x-3">
           <LuggageIcon className="text-4xl text-gray-600" />
           <Typography variant="body1" className="font-medium text-gray-700">
-            Maletas: 2
+            Maletas: {isFirstClass ? "2" : "1"}
           </Typography>
         </Box>
         <Box className="flex items-center space-x-3">
           <FlightClassIcon className="text-4xl text-gray-600" />
           <Typography variant="body1" className="font-medium text-gray-700">
-            Asiento: {classType == "First" ? "Comfort" : "Estándar"}
+            Asiento: {isFirstClass ? "Comfort" : "Estándar"}
           </Typography>
         </Box>
         <Box className="flex items-center space-x-3">

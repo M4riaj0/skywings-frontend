@@ -33,14 +33,22 @@ const CardManager: React.FC<CardManagerProps> = ({ drawerOpen, toggleDrawer }) =
       const cardsList = await getCards();
       setCards(cardsList);
     } catch (error) {
-      setErrorMessage("Error al obtener la lista de administradores");
+      setErrorMessage("Error al obtener la lista de tarjetas");
       console.error(error);
     }
   };
 
+  // Llama a fetchCards al montar el componente
   useEffect(() => {
     fetchCards();
   }, []);
+
+  // Llama a fetchCards cuando se abre el drawer
+  useEffect(() => {
+    if (drawerOpen) {
+      fetchCards();
+    }
+  }, [drawerOpen]);
 
   const handleAddCardOpen = () => {
     setSelectedCard(null);
