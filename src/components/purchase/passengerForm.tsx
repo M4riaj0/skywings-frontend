@@ -93,7 +93,7 @@ const PassengerForm: React.FC<{
           Datos del pasajero
         </Typography>
         <Typography variant="h6" className="my-3">
-          {ticket.class == "Primera" ? "Primera Clase" : "Clase Económica"}
+          {ticket.class == "First" ? "Primera Clase" : "Clase Económica"}
         </Typography>
         <Typography variant="h6" className="my-3">
           $ {ticket.price}

@@ -26,7 +26,7 @@ const PurchaseSummary = () => {
               {item.tickets.map((ticket, index) => (
                 <Box component="li" key={index} sx={{ marginBottom: 1 }}>
                   <Typography variant="body2">Pasajero: {ticket.passenger?.name1}</Typography>
-                  <Typography variant="body2">Edad: {ticket.passenger?.email}</Typography>
+                  <Typography variant="body2">Correo: {ticket.passenger?.email}</Typography>
                 </Box>
               ))}
             </Box>
