@@ -24,7 +24,7 @@ import FlightIcon from "@mui/icons-material/Flight";
 import FlightClassIcon from "@mui/icons-material/FlightClass";
 import PersonIcon from "@mui/icons-material/Person";
 import BadgeIcon from "@mui/icons-material/Badge";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
+// import CreditCardIcon from "@mui/icons-material/CreditCard";
 
 function ConfirmPage() {
   const [bookTickets, setBookTickets] = useState<IBookTicket[]>([]);
@@ -186,7 +186,11 @@ function ConfirmPage() {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => router.push("/")}
+            onClick={() => {
+              dispatch({ type: "CLEAR_CART" });
+              setDialogOpen(false);
+              router.push("/")
+            }}
             color="secondary"
             variant="outlined"
           >

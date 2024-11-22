@@ -30,6 +30,12 @@ export default function FligthCard(flightInfo: FlightData) {
       return;
     }
 
+    const userRole = localStorage.getItem("role");
+    if (userRole !== "user") {
+      router.push("/");
+      return;
+    }
+
     const query = new URLSearchParams({
       departure: flightInfo.origin,
       arrival: flightInfo.destination,

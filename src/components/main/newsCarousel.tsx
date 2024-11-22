@@ -31,13 +31,22 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(2);
 
+  
+
   useEffect(() => {
     if (!newsItems) return;
+
+    const assignImage = () => {
+      newsItems.map((item, index) => {
+        item.image = imageList[index % imageList.length];
+      });
+    };
 
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % newsItems.length);
     }, interval);
 
+    assignImage();
     return () => clearInterval(timer);
   }, [newsItems, interval]);
 

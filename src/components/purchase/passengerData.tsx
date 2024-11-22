@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCartContext } from "@/context/cart";
-import { Alert, Box, Button, Divider, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { FlightTakeoff, FlightLand } from "@mui/icons-material";  // Importar los iconos adecuados
 import PassengerForm from "@/components/purchase/passengerForm";
 import { IPassenger, ITicket } from "@/app/schemas/cartSchemas";
@@ -54,7 +54,7 @@ const PassengerData: React.FC<PassengerDataProps> = ({ enableReturn }) => {
       });
     } else {
       setPassengersError(
-        "El pasajero NO puede ser agregado dos veces en el mismo vuelo"
+        `El pasajero ${data.dni} NO puede ser agregado dos veces en el mismo vuelo`
       );
     }
   };
