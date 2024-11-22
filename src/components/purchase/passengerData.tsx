@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useCartContext } from "@/context/cart";
-import { Alert, Box, Button, Typography } from "@mui/material";
+import { Alert, Box, Button, Divider, Typography } from "@mui/material";
+import { FlightTakeoff, FlightLand } from "@mui/icons-material";  // Importar los iconos adecuados
 import PassengerForm from "@/components/purchase/passengerForm";
 import { IPassenger, ITicket } from "@/app/schemas/cartSchemas";
 
@@ -32,9 +33,7 @@ const PassengerData: React.FC<PassengerDataProps> = ({ enableReturn }) => {
   const handleInputChange = (index: number, type: string, data: IPassenger) => {
     if (!validatePassenger(type, data)) {
       const newTickets = [...tickets].filter((ticket) => ticket.type === type);
-      console.log(newTickets);
       newTickets[index] = { ...newTickets[index], passenger: data };
-      console.log(newTickets);
       dispatch({
         type: "ADD_PASSENGERS",
         payload: {
@@ -63,7 +62,7 @@ const PassengerData: React.FC<PassengerDataProps> = ({ enableReturn }) => {
   const assignPreviousPassenger = (index: number, passenger: IPassenger) => {
     handleInputChange(index, "Vuelta", passenger);
     setShouldRefreshForm(true);
-  }
+  };
 
   const renderPassengerForm = (ticket: ITicket, index: number) => (
     <PassengerForm
@@ -75,31 +74,39 @@ const PassengerData: React.FC<PassengerDataProps> = ({ enableReturn }) => {
   );
 
   return (
-    <section>
+    <section className="space-y-6">
       {passengersError && (
-        <Alert severity="error" className="my-3">
+        <Alert severity="error" className="my-4">
           {passengersError}
         </Alert>
       )}
       <Box>
-        <Typography variant="h5" className="my-3">
-          Ida
-        </Typography>
+        {/* Título de Ida */}
+        <Box className="flex items-center space-x-4 mt-4">
+          <Typography variant="h4" className="my-3 font-bold" style={{ color: "blue" }}>
+            Ida
+          </Typography>
+          <FlightTakeoff className="text-4xl md:text-6xl transform" style={{ color: "blue" }} />
+        </Box>
         {tickets
           .filter((ticket) => ticket.type === "Ida")
           .map(renderPassengerForm)}
       </Box>
       {enableReturn && (
         <Box>
-          <Typography variant="h5" className="my-3">
+          {/* Título de Vuelta */}
+          <Box className="flex items-center space-x-4 mt-4">
+          <Typography variant="h4" className="my-3 font-bold" style={{ color: "blue" }}>
             Vuelta
           </Typography>
+          <FlightLand className="text-4xl md:text-6xl transform" style={{ color: "blue" }} />
+        </Box>
           {tickets
             .filter((ticket) => ticket.type === "Vuelta")
             .map((ticket, index) => (
-              <div key={index}>
-                <Box className="flex space-x-4">
-                  <Typography variant="h6">
+              <div key={index} className="space-y-4">
+                <Box className="flex items-center space-x-4">
+                  <Typography variant="h6" className="text-md font-medium">
                     Seleccionar pasajero anterior
                   </Typography>
                   {passengers.map(
@@ -110,6 +117,8 @@ const PassengerData: React.FC<PassengerDataProps> = ({ enableReturn }) => {
                           onClick={() => {
                             assignPreviousPassenger(index, passenger);
                           }}
+                          variant="outlined"
+                          className="hover:bg-gray-100 transition-all"
                         >
                           {passenger.name1} {passenger.surname1}
                         </Button>

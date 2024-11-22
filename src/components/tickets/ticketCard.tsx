@@ -108,12 +108,12 @@ const TicketCard: React.FC<TicketCardProps> = ({
             </Typography>
           </Box>
 
-          {/* <Box className="flex items-center space-x-3">
+          <Box className="flex items-center space-x-3">
             <HailIcon className="text-4xl text-blue-600" />
             <Typography variant="body1" className="font-medium text-gray-700">
               Pasajero: {username}
             </Typography>
-          </Box> */}
+          </Box>
 
           <Box className="flex items-center space-x-3">
             <BadgeIcon className="text-4xl text-blue-600" />

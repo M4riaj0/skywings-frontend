@@ -1,206 +1,164 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import {
-  Alert,
   Box,
   Button,
-  Divider,
-  Input,
-  InputLabel,
-  TextField,
   Typography,
+  Divider,
+  Card,
+  CardActionArea,
+  CardContent,
   useTheme,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { Card } from "@/app/schemas/cards";
 import { IBookTicket } from "@/app/schemas/tickets";
-import React, { useEffect, useState } from "react";
-import { getCards } from "@/services/cards";
-import { createPurchase } from "@/services/purchase";
 import NoItemsAvailable from "@/components/noItems";
-
-interface PartialCard extends Partial<Card> {}
+import { useRouter } from "next/navigation";
+import { createPurchase } from "@/services/purchase";
+import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
+import SelectCardDialog from "@/components/finance/selectCardDialog"; 
 
 const PurchasePage: React.FC = () => {
   const [tickets, setTickets] = useState<IBookTicket[]>([]);
-  const [cards, setCards] = useState<PartialCard[]>([]);
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
-  const [cvv, setCvv] = useState<number>();
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false); // Estado para controlar la visibilidad del diálogo
   const router = useRouter();
   const theme = useTheme();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const storedTickets = localStorage.getItem("tickets");
-      console.log("tickets", storedTickets);
-      if (storedTickets) {
-        setTickets(JSON.parse(storedTickets));
-      }
-
-      const res = await getCards();
-      setCards(res);
-    };
-
-    fetchData();
+    const storedTickets = localStorage.getItem("tickets");
+    if (storedTickets) {
+      setTickets(JSON.parse(storedTickets));
+    }
   }, []);
 
-  const handleClose = () => {
-    setOpen(false);
-    router.push("/");
-  };
-
-  const handlePayment = async () => {
-    if (selectedCard === null) {
-      setError("Por favor, seleccione una tarjeta.");
-      return;
-    }
-
-    if (cvv?.toString().length !== 3) {
-      setError("Por favor, ingrese el CVV.");
-      return;
-    }
-
-    const selectedCardDetails = cards[selectedCard];
-    if (!selectedCardDetails.number) {
-      setError("Número de tarjeta no válido.");
-      return;
-    }
-
+  const handlePayment = async (cardDetails: { cardNumber: string; cvv: string }) => {
     const paymentRes = await createPurchase({
-      cardNumber: selectedCardDetails.number,
-      cvv: cvv.toString(),
-      tickets: tickets,
+      cardNumber: cardDetails.cardNumber,
+      cvv: cardDetails.cvv,
+      tickets,
     });
 
     if (paymentRes?.message) {
       setError(paymentRes.message);
       return;
     }
-    console.log("Payment successful", paymentRes);
 
-    localStorage && localStorage.removeItem("tickets");
+    localStorage.removeItem("tickets");
     setError("");
-    setOpen(true);
+    setOpenSuccess(true);
+  };
+
+  const handleCloseSuccess = () => {
+    setOpenSuccess(false);
+    router.push("/");
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true); // Abrir el diálogo
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Cerrar el diálogo
   };
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Compra Exitosa</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Su compra ha sido realizada con éxito. Gracias por su compra.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {error && (
-        <Alert severity="warning" className="mx-auto my-4">
-          {error}
-        </Alert>
+      {/* Success Dialog */}
+      {openSuccess && (
+        <Box>
+          <Typography variant="h6" color="success">
+            Compra exitosa. Gracias por su compra.
+            <Button onClick={handleCloseSuccess}>Cerrar</Button>
+          </Typography>
+        </Box>
       )}
+
+      {/* Error Alert */}
+      {error && (
+        <Box sx={{ margin: 2 }}>
+          <Typography color="error">{error}</Typography>
+        </Box>
+      )}
+
       <Box display="flex" justifyContent="space-between" padding="20px">
         <Box
           flex={1}
-          className="rounded-lg shadow-md pt-4 px-1 mr-12 border"
-          sx={{ backgroundColor: theme.palette.background.paper }}
+          sx={{
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: 2,
+            boxShadow: 2,
+            padding: 3,
+            marginRight: 2,
+          }}
         >
-          <Typography variant="h4" className="px-4">
-            Resumen de compra
-          </Typography>
-          <Divider className="py-2 mx-3" />
-          {tickets && tickets.length > 0 ? (
-            <>
-              <Box component="ul" className="p-3">
-                {tickets.map((ticket, index) => (
-                  <Box component="li" key={index}>
-                    <Typography>Ticket ID: {ticket.flightCode}</Typography>
-                    <Typography>Precio: ${ticket.price}</Typography>
-                  </Box>
-                ))}
-              </Box>
-              <Typography
-                className="p-3 m-1 rounded"
-                sx={{ backgroundColor: "#d5daf6" }}
-              >
-                Total: ${tickets.reduce((acc, ticket) => acc + ticket.price, 0)}
-              </Typography>
-            </>
-          ) : (
-            <Box className=" items-center justify-center">
-              <NoItemsAvailable message="Tu carrito está vacío." />
-            </Box>
-          )}
-        </Box>
-        <Box
-          flex={1}
-          className="rounded-lg shadow-md p-4 ml-12 border"
-          sx={{ backgroundColor: theme.palette.background.paper }}
-        >
-          <Typography variant="h4">Tarjetas registradas</Typography>
-          <Divider className="py-2" />
-          {cards.length > 0 ? (
+          <Typography variant="h4">Resumen de compra</Typography>
+          <Divider sx={{ my: 2 }} />
+          {tickets.length > 0 ? (
             <Box>
-              <Typography variant="h6">
-                Seleccione una tarjeta para el pago
-              </Typography>
-              {cards.map((card, index) => (
-                <Box key={index} display="flex" alignItems="center">
-                  <Input
-                    type="radio"
-                    id={`card-${index}`}
-                    name="selectedCard"
-                    value={index}
-                    onChange={() => setSelectedCard(index)}
-                  />
-                  <InputLabel
-                    htmlFor={`card-${index}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Typography marginLeft="10px">
-                      Tarjeta terminada en ****{" "}
-                      {card?.number ? card.number.slice(-4) : "N/A"}
-                    </Typography>
-                  </InputLabel>
-                </Box>
+              {tickets.map((ticket, index) => (
+                <Card key={index} sx={{ marginBottom: 2, borderRadius: 2 }}>
+                    <CardContent sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <AirplaneTicketIcon sx={{ marginRight: 2, fontSize: "2rem" }} />
+                        <Typography sx={{ fontWeight: "bold", marginRight: 2 }}>
+                          {ticket.flightCode}
+                        </Typography>
+                      </Box>
+                      
+                        <Box className="flex items-center justify-center bg-gray-200 text-center px-6 rounded-lg">
+                          <div>
+                            <Typography variant="body2" className="text-gray-500 text-sm">
+                            Precio
+                            </Typography>
+                            <Typography variant="h6" className="font-bold text-gray-800">
+                            {ticket.price.toLocaleString()} COP
+                            </Typography>
+                          </div>
+                        </Box>
+                      </CardContent>
+                </Card>
               ))}
-              {selectedCard !== null && (
-                <Box marginTop="10px" className="rounded">
-                  <TextField
-                    label="Enter CVV"
-                    type="password"
-                    id="cvv"
-                    defaultValue={cvv}
-                    className="rounded"
-                    slotProps={{ htmlInput: { maxLength: 3, minLength: 3 } }}
-                    onBlur={(e) =>
-                      setCvv(parseInt(e.target.value) || undefined)
-                    }
-                  />
-                </Box>
-              )}
+              <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 6  ,}}>
+                <Typography
+                  sx={{
+                    padding: 1,
+                    fontWeight: "bold",
+                    flexGrow: 1,
+                  }}
+                >
+                  Total
+                </Typography>
+                <Typography variant="h6" className="font-bold text-gray-800 align-right">
+                  {tickets.reduce((acc, ticket) => acc + ticket.price, 0)} COP
+                </Typography>
+              </Box>
             </Box>
           ) : (
-            <Typography className="py-2 mx-3">No hay tarjetas registradas</Typography>
+            <NoItemsAvailable message="Tu carrito está vacío." />
           )}
         </Box>
       </Box>
-      <Box position="fixed" bottom="80px" right="80px">
-        <Button variant="contained" color="primary" onClick={handlePayment}>
-          Pagar
+
+      {/* Botón de pago */}
+      <Box display="flex" justifyContent="flex-end" padding="20px">
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ width: "200px" }}
+          onClick={handleOpenDialog} // Abrir el diálogo de selección de tarjeta
+        >
+          Seleccionar tarjeta y pagar
         </Button>
       </Box>
+
+      {/* Diálogo de selección de tarjeta */}
+      <SelectCardDialog
+        open={openDialog}
+        onClose={handleCloseDialog} // Cerrar el diálogo
+        onConfirm={handlePayment} // Pasamos la función de pago como confirmación
+      />
     </>
   );
 };

@@ -2,18 +2,20 @@
 
 import { useCartContext } from "@/context/cart";
 import {
-  Alert,
   Box,
   Button,
   Divider,
+  Typography,
+  Card,
+  CardContent,
   IconButton,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { Delete, Flight } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createBook } from "@/services/purchase";
+import NoItemsAvailable from "@/components/noItems";
 
 const CartPage = () => {
   const { state, dispatch } = useCartContext();
@@ -44,8 +46,7 @@ const CartPage = () => {
       item.tickets.every((ticket) => ticket.passenger?.dni !== "")
     );
     if (valid) {
-      if (await handleTicketsCreation())
-        router.push("cart/purchase");
+      if (await handleTicketsCreation()) router.push("cart/purchase");
     } else {
       alert(
         "Por favor, ingrese los datos de todos los pasajeros\nSerá redirigido automáticamente al formulario de pasajeros"
@@ -56,67 +57,80 @@ const CartPage = () => {
 
   return (
     <Box className="m-6">
-      <Typography variant="h5">Carrito de compras</Typography>
-      <p className="my-2">
-        Total items:{" "}
-        {state.cart.reduce((acc, item) => acc + item.tickets.length, 0)}
-      </p>
-      <Divider />
-      <Box component={"ul"} className="my-6">
-        {state.cart.map((item) => (
-          <Box
-            component={"li"}
-            key={item.flight.code}
-            className="flex flex-col sm:flex-row justify-between items-center border-2 rounded-lg shadow-md p-4 my-2"
-          >
-            <Typography className="text-center">
-              {item.flight.code}
-              <br />
-              {item.flight.departure} <Flight className="mx-4 rotate-90" />{" "}
-              {item.flight.arrival}
-            </Typography>
-            <Box className="flex justify-between px-6 w-11/12 sm:w-1/2">
-              <Typography>
-                $ {item.tickets.reduce((acc, ticket) => acc + ticket.price, 0)}
-              </Typography>
-              <Typography>Tiquetes: {item.tickets.length}</Typography>
-            </Box>
-            <Tooltip title="Borrar">
-              <IconButton
-                color="error"
-                size="small"
-                aria-label="borrar"
-                onClick={() =>
-                  dispatch({
-                    type: "REMOVE_FROM_CART",
-                    payload: item.flight.code,
-                  })
-                }
+      <Typography variant="h4" className="font-bold mb-1">Carrito de compras</Typography>
+      <Box className="my-4">
+        {state.cart.length === 0 ? (
+          <NoItemsAvailable message="Tu carrito está vacío." />
+        ) : (
+          <>
+            <p>Cantidad de tiquetes: {state.cart.reduce((acc, item) => acc + item.tickets.length, 0)}</p>
+            <Divider className="my-2" />
+            {state.cart.map((item) => (
+              <Card
+                key={item.flight.code}
+                className="my-4 border rounded-2xl shadow-md p-4"
               >
-                <Delete />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        ))}
-      </Box>
-      <Box className="mt-16 flex justify-between">
-        {error && (
-          <Alert severity="error" className="my-3">
-            {error.split(".").map((err, i) => (
-              <Typography key={i}>{err}</Typography>
+                <CardContent className="flex justify-between items-center">
+                  <Box className="flex-1">
+                    <Typography variant="h6">{item.flight.code}</Typography>
+                    <Typography variant="body2">
+                      {item.flight.departure} <Flight className="mx-2 rotate-90" /> {item.flight.arrival}
+                    </Typography>
+                  </Box>
+                    <Box className="flex flex-col items-end mr-4 p-2 rounded">
+                    <Typography variant="h6" className="font-bold">
+                      {item.tickets.reduce((acc, ticket) => acc + ticket.price, 0)} COP
+                    </Typography>
+                    <Typography variant="body2">Tiquetes: {item.tickets.length}</Typography>
+                    </Box>
+                  <Tooltip title="Borrar">
+                    <IconButton
+                      color="error"
+                      size="small"
+                      aria-label="borrar"
+                      onClick={() =>
+                        dispatch({
+                          type: "REMOVE_FROM_CART",
+                          payload: item.flight.code,
+                        })
+                      }
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </CardContent>
+              </Card>
             ))}
-          </Alert>
+          </>
         )}
-        <Button
-          variant="outlined"
-          onClick={() => dispatch({ type: "CLEAR_CART" })}
-        >
-          Limpiar carrito
-        </Button>
-        <Button variant="contained" onClick={() => handlePaymentRoute()}>
-          Proceder al pago
-        </Button>
       </Box>
+      <Box className="mt-4 flex justify-between items-center">
+        {error && (
+          <Typography color="error" className="my-3">
+            {error.split("\n").map((err, i) => (
+              <p key={i}>{err}</p>
+            ))}
+          </Typography>
+        )}
+        {state.cart.length > 0 && (
+          <>
+            <Button
+              variant="outlined"
+              onClick={() => dispatch({ type: "CLEAR_CART" })}
+            >
+              Limpiar carrito
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handlePaymentRoute()}
+              disabled={state.cart.length === 0}
+            >
+              Proceder al pago
+            </Button>
+          </>
+        )}
+      </Box>
+
     </Box>
   );
 };

@@ -10,7 +10,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const schema = z.object({
   propietary: z.string().nonempty("El DNI es requerido"),
@@ -61,6 +61,7 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
   editing,
   onSubmit,
 }) => {
+  const [dniFromToken, setDniFromToken] = useState<string>("");
   const {
     control,
     handleSubmit,
@@ -68,34 +69,53 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
     reset,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: initialData || {},
+    defaultValues: initialData || {
+      propietary: "", // Valor predeterminado vacío
+      number: "",
+      cvv: "",
+      balance: 0,
+      type: "debit",
+      expirationDate: "",
+    },
     mode: "onChange",
   });
 
   useEffect(() => {
+    console.log("useEffect ejecutado");
+
     if (initialData) {
+      // Si hay initialData (estás editando), reseteamos con esos datos
       reset(initialData);
     } else {
+      // Si no hay initialData, obtenemos el DNI del token
       const token = localStorage.getItem("token");
-      let propietary = "";
+      console.log("Token del localStorage:", token);
+
       if (token) {
         try {
+          // Decodificamos el token y extraemos el DNI
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          propietary = decodedToken.dni || "";
+          console.log("Token decodificado:", decodedToken);
+          setDniFromToken(decodedToken.dni || "");
         } catch (error) {
           console.error("Error decoding token:", error);
         }
       }
-      reset({
-        propietary,
-        number: "",
-        cvv: "",
-        balance: 0,
-        type: "debit",
-        expirationDate: "",
-      });
     }
   }, [initialData, reset]);
+
+  useEffect(() => {
+    if (!initialData) {
+      reset({
+        propietary: dniFromToken, // Asignamos el DNI obtenido desde el token
+        number: "", // Campo vacío para el número de tarjeta
+        cvv: "",    // Campo vacío para el CVV
+        balance: 0, // Balance predeterminado
+        type: "debit", // Tipo de tarjeta predeterminado
+        expirationDate: "", // Fecha de expiración vacía
+      });
+    }
+  }, [dniFromToken, initialData, reset]);
 
   const handleFormSubmit = (data: z.infer<typeof schema>) => {
     onSubmit(data);
@@ -114,10 +134,7 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
         {editing ? "Editar Saldo" : "Agregar Tarjeta"}
       </DialogTitle>
       <DialogContent>
-        <form
-          onSubmit={handleSubmit(handleFormSubmit)}
-          className="space-y-4"
-        >
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div className="flex space-x-2">
             <Controller
               name="propietary"
@@ -181,7 +198,7 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
                   {...field}
                   label="CVV"
                   type="password"
-                  slotProps={{ htmlInput: {maxLength: 3, minLength: 3, inputMode: 'numeric', pattern: '[0-9]*'}}}
+                  slotProps={{ htmlInput: { maxLength: 3, minLength: 3, inputMode: "numeric", pattern: "[0-9]*" } }}
                   fullWidth
                   required
                   onChange={(e) => field.onChange(e.target.value.replace(/\D/g, ""))}
@@ -238,11 +255,11 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
         </Button>
         <Button
           onClick={handleSubmit(handleFormSubmit)}
-          color="primary"
           variant="contained"
+          color="primary"
           disabled={!isValid}
         >
-          {editing ? "Guardar Cambios" : "Agregar"}
+          {editing ? "Guardar Cambios" : "Agregar Tarjeta"}
         </Button>
       </DialogActions>
     </Dialog>
