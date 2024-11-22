@@ -1,15 +1,19 @@
 import { buyTickets, ICartItem, ITicket } from "@/app/schemas/cartSchemas";
+import { IPurchase } from "@/app/schemas/tickets";
 
 const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const formatBookData = (cart: ICartItem[]) => {
+const getUsername = () => {
   const token = localStorage.getItem("token");
   if (!token) {
     throw new Error("Token not found");
   }
-  
+  return JSON.parse(atob(token.split(".")[1])).username;
+}
+
+const formatBookData = (cart: ICartItem[]) => {
   const data = {
-    username: JSON.parse(atob(token.split(".")[1])).username,
+    username: getUsername(),
     listTickets: cart.flatMap((item) => adaptTicketsData(item.tickets))
   };
   
@@ -67,15 +71,18 @@ export const createBook = async (cart: ICartItem[]) => {
   }
 };
 
-export const purchaseService = async (cart: ICartItem) => {
+export const createPurchase = async (purchaseData: IPurchase) => {
   try {
-    const response = await fetch(`${backend_url}/purchase`, {
+    const response = await fetch(`${backend_url}/purchase/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(cart),
+      body: JSON.stringify({
+        username: getUsername(),
+        ...purchaseData,
+      }),
     });
     return response.json();
   } catch (error) {

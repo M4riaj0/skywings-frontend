@@ -28,22 +28,24 @@ const CartPage = () => {
       setError(
         `Error la generación de la compra.\n Por favor, inténtelo de nuevo.\n ${res?.message}`
       );
-      return;
+      return false;
     } else if (res?.message) {
       setError(res.message);
-      return;
+      return false;
     }
-    localStorage.setItem("tickets", JSON.stringify(res.tickets));
+    localStorage && localStorage.setItem("tickets", JSON.stringify(res));
+    console.log("Tickets created successfully", res);
     dispatch({ type: "CLEAR_CART" });
+    return true;
   }
 
-  const handlePaymentRoute = () => {
+  const handlePaymentRoute = async () => {
     const valid = state.cart.every((item) =>
       item.tickets.every((ticket) => ticket.passenger?.dni !== "")
     );
     if (valid) {
-      handleTicketsCreation();
-      router.push("cart/purchase");
+      if (await handleTicketsCreation())
+        router.push("cart/purchase");
     } else {
       alert(
         "Por favor, ingrese los datos de todos los pasajeros\nSerá redirigido automáticamente al formulario de pasajeros"

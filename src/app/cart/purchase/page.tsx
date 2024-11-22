@@ -14,6 +14,8 @@ import {
 import { Card } from "@/app/schemas/cards";
 import { IBookTicket } from "@/app/schemas/tickets";
 import React, { useEffect, useState } from "react";
+import { getCards } from "@/services/cards";
+import { createPurchase } from "@/services/purchase";
 
 interface PartialCard extends Partial<Card> {}
 
@@ -26,77 +28,50 @@ const PurchasePage: React.FC = () => {
   const theme = useTheme();
 
   useEffect(() => {
-    // Fetch tickets from local storage
-    // const storedTickets = localStorage.getItem('tickets');
-    // if (storedTickets) {
-    //   setTickets(JSON.parse(storedTickets));
-    // }
+    const fetchData = async () => {
+      const storedTickets = localStorage.getItem('tickets');
+      console.log("tickets", storedTickets);
+      if (storedTickets) {
+        setTickets(JSON.parse(storedTickets));
+      } 
 
-    // Set static tickets for initial state
-    const staticTickets: IBookTicket[] = [
-      {
-        flightCode: "FL123",
-        passengerDni: "123456789",
-        username: "Alice Johnson",
-        purchaseId: 1,
-        seatNumber: 12,
-        price: 200,
-        creationDate: new Date(),
-        numSuitcase: 1,
-      },
-      {
-        flightCode: "FL456",
-        passengerDni: "987654321",
-        username: "Bob Smith",
-        purchaseId: 2,
-        seatNumber: 14,
-        price: 150,
-        creationDate: new Date(),
-        numSuitcase: 2,
-      },
-    ];
-    setTickets(staticTickets);
+      const res = await getCards();
+      setCards(res);
+    };
 
-    // Fetch registered cards (mock data for now)
-    const userCards: PartialCard[] = [
-      {
-        number: "1234 5678 9012 3456",
-        expirationDate: "12/24",
-        propietary: "John Doe",
-        balance: 1000,
-      },
-      {
-        number: "9876 5432 1098 7654",
-        expirationDate: "11/23",
-        propietary: "Jane Smith",
-        balance: 500,
-      },
-    ];
-    setCards(userCards);
+    fetchData();
   }, []);
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (selectedCard === null) {
       setError("Por favor, seleccione una tarjeta.");
       return;
     }
-
+    
     if (cvv?.toString().length !== 3) {
       setError("Por favor, ingrese el CVV.");
       return;
     }
 
-    // Proceed with payment processing
     const selectedCardDetails = cards[selectedCard];
-    console.log({
-      cardnumber: selectedCardDetails.number,
-      cvv: cvv,
-      tickets: tickets,
-    })
+    if (!selectedCardDetails.number) {
+      setError("Número de tarjeta no válido.");
+      return;
+    }
 
-    // Here you would typically call an API to process the payment
-    // For now, we'll just log the payment details
-    alert("Pago realizado con éxito!");
+    const paymentRes = await createPurchase({
+      cardNumber: selectedCardDetails.number,
+      cvv: cvv.toString(),
+      tickets: tickets,
+    });
+    
+    if (paymentRes?.message) {
+      setError(paymentRes.message);
+      return;
+    }
+    console.log("Payment successful", paymentRes);
+
+    localStorage && localStorage.removeItem("tickets");
     setError("");
   };
 
@@ -113,7 +88,7 @@ const PurchasePage: React.FC = () => {
             Resumen de compra
           </Typography>
           <Divider className="py-2 mx-3" />
-          {tickets.length > 0 ? (
+          {tickets && tickets.length > 0 ? (
             <>
               <Box component="ul" className="p-3">
                 {tickets.map((ticket, index) => (
@@ -172,10 +147,10 @@ const PurchasePage: React.FC = () => {
                     type="password"
                     id="cvv"
                     name="cvv"
-                    value={cvv}
+                    defaultValue={cvv}
                     className="rounded"
-                    inputProps={{ maxLength: 3, minLength: 3 }}
-                    onChange={(e) =>
+                    slotProps={{ htmlInput: { maxLength: 3, minLength: 3 } }}
+                    onBlur={(e) =>
                       setCvv(parseInt(e.target.value) || undefined)
                     }
                   />

@@ -27,3 +27,9 @@ export interface IBookTicket {
   checkIn?: Date;
   numSuitcase: number;
 }
+
+export interface IPurchase {
+  cardNumber: string;
+  cvv: string;
+  tickets: IBookTicket[];
+}
