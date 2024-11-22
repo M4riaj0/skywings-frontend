@@ -16,6 +16,7 @@ import { IBookTicket } from "@/app/schemas/tickets";
 import React, { useEffect, useState } from "react";
 import { getCards } from "@/services/cards";
 import { createPurchase } from "@/services/purchase";
+import NoItemsAvailable from "@/components/noItems";
 
 interface PartialCard extends Partial<Card> {}
 
@@ -106,7 +107,9 @@ const PurchasePage: React.FC = () => {
               </Typography>
             </>
           ) : (
-            <Typography>No tickets to display</Typography>
+            <Box className=" items-center justify-center">
+              <NoItemsAvailable message="Tu carrito está vacío." />
+            </Box>
           )}
         </Box>
         <Box
