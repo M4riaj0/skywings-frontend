@@ -7,7 +7,11 @@ import {
   CardContent,
   CardActions,
   Typography,
+  Box,
 } from "@mui/material";
+import FlightClassIcon from "@mui/icons-material/FlightClass";
+import LuggageIcon from "@mui/icons-material/Luggage";
+import PaidIcon from '@mui/icons-material/Paid';
 import { FlightData } from "@/app/schemas/flightFormSchema";
 import { useCartContext } from "@/context/cart";
 import { useState } from "react";
@@ -19,7 +23,12 @@ interface ClassCardProps {
   price: number;
 }
 
-const ClassCard: React.FC<ClassCardProps> = ({ flight, type, classType, price }) => {
+const ClassCard: React.FC<ClassCardProps> = ({
+  flight,
+  type,
+  classType,
+  price,
+}) => {
   const [cartMessage, setCartMessage] = useState<string>("");
   const { state, dispatch } = useCartContext();
 
@@ -85,6 +94,29 @@ const ClassCard: React.FC<ClassCardProps> = ({ flight, type, classType, price })
       sx={{ backgroundColor: "background.default" }}
     >
       <CardContent>
+        <Typography variant="h5" component="div">
+          {classType == "First" ? "Primera Clase" : "Clase Económica"}
+        </Typography>
+        <Box className="flex items-center space-x-3">
+          <LuggageIcon className="text-4xl text-gray-600" />
+          <Typography variant="body1" className="font-medium text-gray-700">
+            Maletas: 2
+          </Typography>
+        </Box>
+        <Box className="flex items-center space-x-3">
+          <FlightClassIcon className="text-4xl text-gray-600" />
+          <Typography variant="body1" className="font-medium text-gray-700">
+            Asiento: {classType == "First" ? "Comfort" : "Estándar"}
+          </Typography>
+        </Box>
+        <Box className="flex items-center space-x-3">
+          <PaidIcon className="text-4xl text-gray-600" />
+          <Typography variant="body1" className="font-medium text-gray-700">
+            Precio: ${price}
+          </Typography>
+        </Box>
+      </CardContent>
+      <CardActions className="flex flex-col justify-center">
         {cartMessage && (
           <Alert
             severity={`${cartMessage.startsWith("¡No") ? "error" : "success"}`}
@@ -93,14 +125,6 @@ const ClassCard: React.FC<ClassCardProps> = ({ flight, type, classType, price })
             {cartMessage}
           </Alert>
         )}
-        <Typography variant="h5" component="div">
-          {classType == "First" ? "Primera Clase" : "Clase Económica"}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Precio: ${price}
-        </Typography>
-      </CardContent>
-      <CardActions>
         <Button
           color="primary"
           variant="outlined"

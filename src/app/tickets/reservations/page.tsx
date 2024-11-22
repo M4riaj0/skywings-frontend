@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Pagination, Snackbar, Alert, Button } from "@mui/material";
+import { Typography, Box, Pagination, Snackbar, Alert } from "@mui/material";
 import TicketCard from "@/components/tickets/ticketCard"; 
 import { cancelTicket, getReservationTickets } from "@/services/tickets";
 import NoItemsAvailable from "@/components/noItems";

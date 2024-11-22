@@ -31,7 +31,7 @@ export default function FligthCard(flightInfo: FlightData) {
     }
 
     const userRole = localStorage.getItem("role");
-    if (userRole !== "user") {
+    if (userRole !== "USER") {
       router.push("/");
       return;
     }
