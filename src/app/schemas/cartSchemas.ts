@@ -30,3 +30,10 @@ export interface ICartItem {
   };
   tickets: ITicket[];
 }
+
+export interface buyTickets {
+  flightCode: string;
+  passengerDni: string;
+  cardNumber: string;
+  cvv: string;
+}

@@ -62,6 +62,36 @@ export const getActiveTickets = async () => {
   }
 };
 
+export const getReservationTickets = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found");
+    return { success: false, message: "No token found" };
+  }
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const username = payload.username;
+  try {
+    const res = await fetch(`${BACKEND_URL}/tickets/reservations/${username}`, {
+      cache: "no-cache",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      return { success: true, data: await res.json() };
+    } else {
+      console.error("Error al obtener los tiquetes activos");
+      return { success: false, message: "Error al obtener los tiquetes activos" };
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return { success: false, message: "No pudimos obtener los datos" };
+  }
+};
+
 export const getTicketsHistory = async () => {
   const token = localStorage.getItem("token");
   if (!token) {
