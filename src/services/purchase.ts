@@ -134,11 +134,3 @@ export const purchaseCreate = async (item: buyTickets) => {
   }
 };
 
-function setSnackBarMessage(arg0: string) {
-  throw new Error("Function not implemented.");
-}
-
-function setSnackBarSeverity(arg0: string) {
-  throw new Error("Function not implemented.");
-}
-
