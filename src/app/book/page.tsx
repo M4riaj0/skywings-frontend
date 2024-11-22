@@ -136,6 +136,16 @@ const BookPage = () => {
                 variant="outlined"
                 type="date"
                 InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  htmlInput: {
+                    min: new Date().toISOString().split("T")[0],
+                    max: new Date(
+                      new Date().setDate(new Date().getDate() + 365)
+                    )
+                      .toISOString()
+                      .split("T")[0],
+                  },
+                }}
                 value={returnDate?.split("T")[0] || ""}
                 disabled={!enableReturn}
                 className="mx-3 w-[20%]"
