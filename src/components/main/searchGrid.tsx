@@ -9,8 +9,6 @@ import {
   Box,
   Pagination,
   Button,
-  Switch,
-  FormControlLabel,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FligthCard from "./card4Flights";
@@ -31,7 +29,6 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
   const [searchOption, setSearchOption] = useState<string | null>("");
   const [filteredData, setFilteredData] = useState<FlightData[]>(data ?? []);
   const [page, setPage] = useState(1);
-  const [reverseSearch, setReverseSearch] = useState(false);
   const itemsPerPage = 4;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,18 +57,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
             .toLowerCase()
             .includes(searchTerms.destino.toLowerCase())
         : true;
-      const matchesReverse = reverseSearch
-        ? item.origin
-            .toLowerCase()
-            .includes(searchTerms.destino.toLowerCase()) &&
-          item.destination
-            .toLowerCase()
-            .includes(searchTerms.origen.toLowerCase())
-        : true;
-      return !reverseSearch
-        ? matchesSearchOption && matchesOrigin && matchesDestination
-        : matchesSearchOption &&
-            ((matchesOrigin && matchesDestination) || matchesReverse);
+      return matchesSearchOption && matchesOrigin && matchesDestination;
     });
 
     setFilteredData(filtered);
@@ -116,18 +102,7 @@ const SearchGrid: React.FC<SearchGridProps> = ({ data }) => {
             onChange={handleSearchChange}
           />
         </Box>
-        <Box className="flex flex-col md:flex-row items-center">
-          <FormControlLabel
-            control={
-              <Switch
-                checked={reverseSearch}
-                onChange={(event) => setReverseSearch(event.target.checked)}
-                color="primary"
-              />
-            }
-            labelPlacement="top"
-            label="Vuelta"
-          />
+        <Box className="flex flex-col md:flex-row ml-8 items-center">
           <Button
             variant="contained"
             color="primary"

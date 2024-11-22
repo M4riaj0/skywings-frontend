@@ -14,9 +14,15 @@ interface NewsCarouselProps {
 }
 
 const imageList = [
-  "/images/destination.png",
   "/images/family.png",
+  "/images/destination.png",
+  "/images/forest.jpg",
   "/images/traveler.png",
+  "/images/happiness.jpeg",
+  "/images/couple.jpeg",
+  "/images/landscape.jpg",
+  "/images/family-trip.jpeg",
+  "/images/city.jpeg",
 ];
 
 const NewsCarousel: React.FC<NewsCarouselProps> = ({

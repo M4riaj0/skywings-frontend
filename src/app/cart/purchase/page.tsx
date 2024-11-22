@@ -10,7 +10,13 @@ import {
   TextField,
   Typography,
   useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { Card } from "@/app/schemas/cards";
 import { IBookTicket } from "@/app/schemas/tickets";
 import React, { useEffect, useState } from "react";
@@ -25,15 +31,17 @@ const PurchasePage: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [cvv, setCvv] = useState<number>();
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const theme = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
-      const storedTickets = localStorage.getItem('tickets');
+      const storedTickets = localStorage.getItem("tickets");
       console.log("tickets", storedTickets);
       if (storedTickets) {
         setTickets(JSON.parse(storedTickets));
-      } 
+      }
 
       const res = await getCards();
       setCards(res);
@@ -42,12 +50,17 @@ const PurchasePage: React.FC = () => {
     fetchData();
   }, []);
 
+  const handleClose = () => {
+    setOpen(false);
+    router.push("/");
+  };
+
   const handlePayment = async () => {
     if (selectedCard === null) {
       setError("Por favor, seleccione una tarjeta.");
       return;
     }
-    
+
     if (cvv?.toString().length !== 3) {
       setError("Por favor, ingrese el CVV.");
       return;
@@ -64,7 +77,7 @@ const PurchasePage: React.FC = () => {
       cvv: cvv.toString(),
       tickets: tickets,
     });
-    
+
     if (paymentRes?.message) {
       setError(paymentRes.message);
       return;
@@ -73,11 +86,29 @@ const PurchasePage: React.FC = () => {
 
     localStorage && localStorage.removeItem("tickets");
     setError("");
+    setOpen(true);
   };
 
   return (
     <>
-      {error && <Alert severity="warning" className="mx-auto my-4">{error}</Alert>}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Compra Exitosa</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Su compra ha sido realizada con éxito. Gracias por su compra.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {error && (
+        <Alert severity="warning" className="mx-auto my-4">
+          {error}
+        </Alert>
+      )}
       <Box display="flex" justifyContent="space-between" padding="20px">
         <Box
           flex={1}
@@ -106,7 +137,7 @@ const PurchasePage: React.FC = () => {
               </Typography>
             </>
           ) : (
-            <Typography>No tickets to display</Typography>
+            <Typography className="py-2 mx-3">No hay tiquetes para mostrar</Typography>
           )}
         </Box>
         <Box
@@ -135,7 +166,8 @@ const PurchasePage: React.FC = () => {
                     style={{ textDecoration: "none" }}
                   >
                     <Typography marginLeft="10px">
-                      Card ending in **** {card?.number ? card.number.slice(-4) : "N/A"}
+                      Tarjeta terminada en ****{" "}
+                      {card?.number ? card.number.slice(-4) : "N/A"}
                     </Typography>
                   </InputLabel>
                 </Box>
@@ -157,7 +189,7 @@ const PurchasePage: React.FC = () => {
               )}
             </Box>
           ) : (
-            <Typography>No hay tarjetas registradas</Typography>
+            <Typography className="py-2 mx-3">No hay tarjetas registradas</Typography>
           )}
         </Box>
       </Box>
