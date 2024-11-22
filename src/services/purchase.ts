@@ -133,3 +133,4 @@ export const purchaseCreate = async (item: buyTickets) => {
     throw error;
   }
 };
+
