@@ -43,6 +43,9 @@ function Navbar() {
     localStorage.removeItem("role");
     router.refresh();
     router.push("/"); // Redirigir a la página de inicio
+    if (pathname === "/") {
+      window.location.reload();
+    }
   };
 
   return (
