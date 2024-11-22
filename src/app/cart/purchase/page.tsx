@@ -146,7 +146,6 @@ const PurchasePage: React.FC = () => {
                     label="Enter CVV"
                     type="password"
                     id="cvv"
-                    name="cvv"
                     defaultValue={cvv}
                     className="rounded"
                     slotProps={{ htmlInput: { maxLength: 3, minLength: 3 } }}

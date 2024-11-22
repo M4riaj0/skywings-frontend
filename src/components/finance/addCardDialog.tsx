@@ -180,9 +180,11 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
                 <TextField
                   {...field}
                   label="CVV"
-                  type="number"
+                  type="password"
+                  slotProps={{ htmlInput: {maxLength: 3, minLength: 3, inputMode: 'numeric', pattern: '[0-9]*'}}}
                   fullWidth
                   required
+                  onChange={(e) => field.onChange(e.target.value.replace(/\D/g, ""))}
                   error={!!errors.cvv}
                   helperText={errors.cvv?.message}
                   disabled={editing}
@@ -201,28 +203,10 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
                   required
                   error={!!errors.expirationDate}
                   helperText={errors.expirationDate?.message}
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   disabled={editing}
-                  onChange={(e) => {
-                    const [year, month] =
-                      e.target.value.split("-");
-                    const isoDate = new Date(
-                      Number(year),
-                      Number(month) - 1,
-                      1,
-                      0,
-                      0,
-                      0
-                    ).toISOString(); // Establece día 1 y hora 00:00
-                    field.onChange(isoDate);
-                  }}
-                  value={
-                    field.value
-                      ? new Date(field.value)
-                          .toISOString()
-                          .slice(0, 7) // Muestra solo año y mes
-                      : ""
-                  }
+                  onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value).toISOString() : "")}
+                  value={field.value ? field.value.slice(0, 7) : ""}
                 />
               )}
             />
