@@ -140,13 +140,16 @@ const TicketCard: React.FC<TicketCardProps> = ({
 
           {onCancel && !erased && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <Button
+                <Button
                 variant="contained"
                 className="bg-white text-red-500 hover:bg-red-500 hover:text-white transition duration-200"
-                onClick={onCancel}
-              >
+                onClick={() => {
+                  onCancel();
+                  setExpanded(false);
+                }}
+                >
                 Cancelar Tiquete
-              </Button>
+                </Button>
             </Box>
           )}
 
@@ -155,7 +158,10 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 <Button
                 variant="contained"
                 className="bg-blue-500 text-white hover:bg-blue-700 transition duration-200"
-                onClick={onBuy}
+                onClick={() => {
+                  onBuy();
+                  setExpanded(false);
+                }}
                 >
                 Comprar Tiquete
                 </Button>

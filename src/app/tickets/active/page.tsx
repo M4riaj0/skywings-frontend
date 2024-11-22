@@ -67,25 +67,25 @@ export default function ActiveTicketsPage() {
             const response = await cancelTicket({ flightCode, passengerDni });
     
             if (response.success) {
-                setTickets((prevTickets) =>
-                    prevTickets.filter(
-                        (ticket) => ticket.flightCode !== flightCode || ticket.passengerDni !== passengerDni
-                    )
-                );
                 setSnackBarMessage("Tiquete cancelado correctamente.");
                 setSnackBarSeverity("success");
+    
+                // Recargar los datos desde el servidor
+                const updatedData = await getActiveTickets();
+                setTickets(updatedData.data || []);
             } else {
                 setSnackBarMessage(response.message || "Error al cancelar el tiquete.");
                 setSnackBarSeverity("error");
             }
-            setSnackBarOpen(true);
         } catch (err) {
             console.error("Error al cancelar el tiquete:", err);
             setSnackBarMessage("Error al cancelar el tiquete.");
             setSnackBarSeverity("error");
+        } finally {
             setSnackBarOpen(true);
         }
     };
+    
     
 
     return (

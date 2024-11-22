@@ -65,42 +65,36 @@ export default function ReservationsTicketsPage() {
         fetchActiveTickets();
     }, []);
 
+    const handleBuyTicket = (ticket: Ticket) => {
+        setSelectedTicket(ticket); // Establece el tiquete seleccionado
+        setDialogOpen(true); // Abre el diálogo
+    };
+    
     const handleCancelTicket = async (flightCode: string, passengerDni: string): Promise<void> => {
         try {
             const response = await cancelTicket({ flightCode, passengerDni });
-
+    
             if (response.success) {
-                setTickets((prevTickets) =>
-                    prevTickets.filter(
-                        (ticket) => ticket.flightCode !== flightCode || ticket.passengerDni !== passengerDni
-                    )
-                );
                 setSnackBarMessage("Tiquete cancelado correctamente.");
                 setSnackBarSeverity("success");
             } else {
                 setSnackBarMessage(response.message || "Error al cancelar el tiquete.");
                 setSnackBarSeverity("error");
             }
-            setSnackBarOpen(true);
         } catch (err) {
             console.error("Error al cancelar el tiquete:", err);
             setSnackBarMessage("Error al cancelar el tiquete.");
             setSnackBarSeverity("error");
-            setSnackBarOpen(true);
         } finally {
-            fetchActiveTickets(); // Llama a fetchActiveTickets después de cancelar
+            setSnackBarOpen(true);
+            await fetchActiveTickets(); // Recargar los datos desde el servidor
         }
     };
-
-    const handleBuyTicket = (ticket: Ticket) => {
-        setSelectedTicket(ticket); // Establece el tiquete seleccionado
-        setDialogOpen(true); // Abre el diálogo
-    };
-
+    
     const handleConfirmCard = async ({ cardNumber, cvv }: { cardNumber: string; cvv: string }) => {
         setDialogOpen(false);
         if (!selectedTicket) return;
-
+    
         try {
             const response = await purchaseCreate({
                 flightCode: selectedTicket.flightCode,
@@ -108,9 +102,7 @@ export default function ReservationsTicketsPage() {
                 cardNumber,
                 cvv,
             });
-
-            console.log("Respuesta de la compra:", response);
-
+    
             if (response.purchase) {
                 setSnackBarMessage("Tiquete comprado correctamente.");
                 setSnackBarSeverity("success");
@@ -123,8 +115,8 @@ export default function ReservationsTicketsPage() {
             setSnackBarMessage("No se pudo realizar la compra.");
             setSnackBarSeverity("error");
         } finally {
-            setSnackBarOpen(true); 
-            fetchActiveTickets(); 
+            setSnackBarOpen(true);
+            await fetchActiveTickets(); // Recargar los datos desde el servidor
         }
     };
 
