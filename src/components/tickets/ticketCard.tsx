@@ -26,6 +26,7 @@ interface TicketCardProps {
   numSuitcase: number;
   erased?: boolean;
   onCancel?: () => void; // Función opcional para cancelar el tiquete
+  onBuy?: () => void;
 }
 
 const TicketCard: React.FC<TicketCardProps> = ({
@@ -39,6 +40,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
   numSuitcase,
   erased,
   onCancel, // Recibimos la función de cancelación como prop
+  onBuy,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -106,18 +108,17 @@ const TicketCard: React.FC<TicketCardProps> = ({
             </Typography>
           </Box>
 
-          {/* <Box className="flex items-center space-x-3">
+          <Box className="flex items-center space-x-3">
             <HailIcon className="text-4xl text-blue-600" />
             <Typography variant="body1" className="font-medium text-gray-700">
               Pasajero: {username}
             </Typography>
-          </Box> */}
+          </Box>
 
           <Box className="flex items-center space-x-3">
-            {/* <BadgeIcon className="text-4xl text-blue-600" /> */}
-            <HailIcon className="text-4xl text-blue-600" />
+            <BadgeIcon className="text-4xl text-gray-600" />
             <Typography variant="body1" className="font-medium text-gray-700">
-              DNI Pasajero: {passengerDni.trim()}
+              DNI: {passengerDni.trim()}
             </Typography>
           </Box>
 
@@ -148,6 +149,18 @@ const TicketCard: React.FC<TicketCardProps> = ({
               </Button>
             </Box>
           )}
+
+          {onBuy && !erased && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                <Button
+                variant="contained"
+                className="bg-blue-500 text-white hover:bg-blue-700 transition duration-200"
+                onClick={onBuy}
+                >
+                Comprar Tiquete
+                </Button>
+            </Box>
+          )}  
         </CardContent>
       </Collapse>
 

@@ -62,7 +62,7 @@ export default function ActiveTicketsPage() {
         fetchActiveTickets();
     }, []);
 
-    const handleCancelTicket = async (flightCode: string, passengerDni: string) => {
+    const handleCancelTicket = async (flightCode: string, passengerDni: string): Promise<void> => {
         try {
             const response = await cancelTicket({ flightCode, passengerDni });
     

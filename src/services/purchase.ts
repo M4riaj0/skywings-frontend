@@ -1,4 +1,4 @@
-import { ICartItem, ITicket } from "@/app/schemas/cartSchemas";
+import { buyTickets, ICartItem, ITicket } from "@/app/schemas/cartSchemas";
 
 const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -82,3 +82,56 @@ export const purchaseService = async (cart: ICartItem) => {
     console.error("Error:", error);
   }
 };
+
+
+export const purchaseCreate = async (item: buyTickets) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found");
+    return { success: false, message: "No token found" };
+  }
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const username = payload.username;
+  const requestData = {
+    username: username,
+    cardNumber: item.cardNumber,
+    cvv: item.cvv,
+    tickets: [
+      {
+        flightCode: item.flightCode,
+        passengerDni: item.passengerDni,
+      },
+    ]
+  }
+  try {
+    const response = await fetch(`${backend_url}/purchase/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log("Compra realizada:", responseData);
+      return responseData;
+    } else {
+      console.error("Error en la respuesta:", response.status, response.statusText);
+      return { success: false, message: "Error al realizar la compra" };
+    }
+  } catch (error) {
+    console.error("Error creating purchase:", error);
+    throw error;
+  }
+};
+
+function setSnackBarMessage(arg0: string) {
+  throw new Error("Function not implemented.");
+}
+
+function setSnackBarSeverity(arg0: string) {
+  throw new Error("Function not implemented.");
+}
+
