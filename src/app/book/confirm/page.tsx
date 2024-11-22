@@ -4,21 +4,10 @@ import { useState } from "react";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { useCartContext } from "@/context/cart";
 import { createBook } from "@/services/purchase";
-
-interface BookTicket {
-  flightCode: string;
-  passengerDni: string;
-  username: string;
-  purchaseId: number;
-  seatNumber: number;
-  price: number;
-  creationDate: Date;
-  checkIn?: Date;
-  numSuitcase: number;
-}
+import { IBookTicket } from "@/app/schemas/tickets";
 
 function ConfirmPage() {
-  const [bookTickets, setBookTickets] = useState<BookTicket[]>([]);
+  const [bookTickets, setBookTickets] = useState<IBookTicket[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { state, dispatch } = useCartContext();

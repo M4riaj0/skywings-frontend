@@ -1,11 +1,57 @@
 "use client";
 
 import { useCartContext } from "@/context/cart";
-import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Delete, Flight } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createBook } from "@/services/purchase";
 
 const CartPage = () => {
   const { state, dispatch } = useCartContext();
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  async function handleTicketsCreation() {
+    const res = await createBook(state.cart);
+    console.log(res);
+    if (res?.statusCode == 400 || res?.statusCode == 500) {
+      console.error("Error creating tickets:", res);
+      setError(
+        `Error la generación de la compra.\n Por favor, inténtelo de nuevo.\n ${res?.message}`
+      );
+      return;
+    } else if (res?.message) {
+      setError(res.message);
+      return;
+    }
+    localStorage.setItem("tickets", JSON.stringify(res.tickets));
+    dispatch({ type: "CLEAR_CART" });
+  }
+
+  const handlePaymentRoute = () => {
+    const valid = state.cart.every((item) =>
+      item.tickets.every((ticket) => ticket.passenger?.dni !== "")
+    );
+    if (valid) {
+      handleTicketsCreation();
+      router.push("cart/purchase");
+    } else {
+      alert(
+        "Por favor, ingrese los datos de todos los pasajeros\nSerá redirigido automáticamente al formulario de pasajeros"
+      );
+      router.push("/book?step=2");
+    }
+  };
+
   return (
     <Box className="m-6">
       <Typography variant="h5">Carrito de compras</Typography>
@@ -14,12 +60,12 @@ const CartPage = () => {
         {state.cart.reduce((acc, item) => acc + item.tickets.length, 0)}
       </p>
       <Divider />
-      <Box component={"ul"} className="my-4">
+      <Box component={"ul"} className="my-6">
         {state.cart.map((item) => (
           <Box
             component={"li"}
             key={item.flight.code}
-            className="flex flex-col sm:flex-row justify-between items-center border rounded-lg shadow-md p-4 my-2"
+            className="flex flex-col sm:flex-row justify-between items-center border-2 rounded-lg shadow-md p-4 my-2"
           >
             <Typography className="text-center">
               {item.flight.code}
@@ -50,6 +96,24 @@ const CartPage = () => {
             </Tooltip>
           </Box>
         ))}
+      </Box>
+      <Box className="mt-16 flex justify-between">
+        {error && (
+          <Alert severity="error" className="my-3">
+            {error.split(".").map((err, i) => (
+              <Typography key={i}>{err}</Typography>
+            ))}
+          </Alert>
+        )}
+        <Button
+          variant="outlined"
+          onClick={() => dispatch({ type: "CLEAR_CART" })}
+        >
+          Limpiar carrito
+        </Button>
+        <Button variant="contained" onClick={() => handlePaymentRoute()}>
+          Proceder al pago
+        </Button>
       </Box>
     </Box>
   );

@@ -48,6 +48,10 @@ const BookPage = () => {
   const { state } = useCartContext();
 
   useEffect(() => {
+    if (searchParams.get("step") === "2") {
+      setStep(2);
+      return;
+    }
     const loadFlights = async () => {
       const allFlights = await getAvaliableFlights();
       const filteredFlights = filterFlights(allFlights, searchParams);
