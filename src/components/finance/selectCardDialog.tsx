@@ -10,6 +10,8 @@ import {
     Typography,
     CircularProgress,
     Box,
+    TextField,
+    SelectChangeEvent,
 } from "@mui/material";
 import { getCards } from "@/services/cards";
 import NoItemsAvailable from "@/components/noItems";
@@ -33,6 +35,7 @@ interface SelectCardDialogProps {
 const SelectCardDialog: React.FC<SelectCardDialogProps> = ({ open, onClose, onConfirm }) => {
     const [cards, setCards] = useState<Card[]>([]);
     const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+    const [cvv, setCvv] = useState<string>(""); // Almacenar el CVV ingresado
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
@@ -58,10 +61,19 @@ const SelectCardDialog: React.FC<SelectCardDialogProps> = ({ open, onClose, onCo
     }, [open]);
 
     const handleConfirm = () => {
-        if (selectedCard) {
-            onConfirm({ cardNumber: selectedCard.number, cvv: selectedCard.cvv });
+        if (selectedCard && cvv) {
+            // Confirmar con la tarjeta seleccionada y el CVV ingresado
+            onConfirm({ cardNumber: selectedCard.number, cvv });
         }
     };
+
+    const handleCardChange = (e: SelectChangeEvent<string>) => {
+        const card = cards.find((card) => card.number === e.target.value);
+        setSelectedCard(card || null);
+        setCvv(""); // Limpiar el CVV cuando se cambie la tarjeta
+    };
+
+    const isCvvValid = (cvv: string) => /^\d{3,4}$/.test(cvv); // Validar el formato del CVV
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -88,11 +100,7 @@ const SelectCardDialog: React.FC<SelectCardDialogProps> = ({ open, onClose, onCo
                         </Typography>
                         <Select
                             value={selectedCard?.number || ""}
-                            onChange={(e) =>
-                                setSelectedCard(
-                                    cards.find((card) => card.number === e.target.value) || null
-                                )
-                            }
+                            onChange={handleCardChange}
                             fullWidth
                             variant="outlined"
                             sx={{
@@ -150,6 +158,20 @@ const SelectCardDialog: React.FC<SelectCardDialogProps> = ({ open, onClose, onCo
                                 </MenuItem>
                             ))}
                         </Select>
+
+                        {selectedCard && (
+                            <TextField
+                                label="CVV"
+                                type="password"
+                                variant="outlined"
+                                value={cvv}
+                                onChange={(e) => setCvv(e.target.value)}
+                                fullWidth
+                                sx={{ marginBottom: 2 }}
+                                helperText="Introduce el código CVV de la tarjeta"
+                                error={!!cvv && !isCvvValid(cvv)}
+                            />
+                        )}
                     </>
                 )}
             </DialogContent>
@@ -170,7 +192,7 @@ const SelectCardDialog: React.FC<SelectCardDialogProps> = ({ open, onClose, onCo
                 <Button
                     onClick={handleConfirm}
                     color="primary"
-                    disabled={!selectedCard}
+                    disabled={!selectedCard || !isCvvValid(cvv)}
                     sx={{
                         width: "40%",
                         backgroundColor: "#1976d2",

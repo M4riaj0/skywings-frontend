@@ -115,12 +115,12 @@ export default function ReservationsTicketsPage() {
                 setSnackBarMessage("Tiquete comprado correctamente.");
                 setSnackBarSeverity("success");
             } else {
-                setSnackBarMessage(response.message || "Error al realizar la compra.");
+                setSnackBarMessage(response.message || "No se pudo realizar la compra.");
                 setSnackBarSeverity("error");
             }
         } catch (err) {
-            console.error("Error al comprar el tiquete:", err);
-            setSnackBarMessage("Error al realizar la compra.");
+            console.error("No se pudo comprar el tiquete:", err);
+            setSnackBarMessage("No se pudo realizar la compra.");
             setSnackBarSeverity("error");
         } finally {
             setSnackBarOpen(true); 
