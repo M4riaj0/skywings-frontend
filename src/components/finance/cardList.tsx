@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import Card from "./card";
+import { ICard } from "@/schemas/cards";
 
 interface CardListProps {
-  cards: {  propietary: string; number: string; cvv: string; balance: number; type: string; expirationDate: string; erased?: boolean }[];
-  onEditCard: (card: any) => void;
-  onDeleteCard: (card: any) => void;
+  cards: ICard[];
+  onEditCard: (card: ICard) => void;
+  onDeleteCard: (card: ICard) => void;
 }
 
 const CardList: React.FC<CardListProps> = ({ cards, onEditCard, onDeleteCard }) => {

@@ -1,4 +1,4 @@
-import {RegisterData, LoginData} from '@/app/schemas/users'
+import {RegisterData, LoginData} from '@/schemas/users'
 import { getAllUsers } from './admins';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;

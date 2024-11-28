@@ -12,7 +12,6 @@ import {
 import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
 import FlightClassIcon from "@mui/icons-material/FlightClass";
 import LuggageIcon from "@mui/icons-material/Luggage";
-import HailIcon from "@mui/icons-material/Hail";
 import BadgeIcon from "@mui/icons-material/Badge";
 
 interface TicketCardProps {
@@ -32,7 +31,6 @@ interface TicketCardProps {
 const TicketCard: React.FC<TicketCardProps> = ({
   flightCode,
   passengerDni,
-  username,
   seatNumber,
   price,
   creationDate,

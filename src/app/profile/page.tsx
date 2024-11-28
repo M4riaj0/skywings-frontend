@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { Stack, Typography } from "@mui/material";
 import MultiStepForm from "@/components/forms/mutliStepFrom";
 import { getUser } from '@/services/profile'
+import { RegisterData } from "@/schemas/users";
 
 const Profile = () => {
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState<RegisterData | null>(null);
   const getUserData = async () => {
     const data = await getUser();
     setUserData(data);

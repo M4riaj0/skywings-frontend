@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface NoItemsAvailableProps {
   message: string;
@@ -7,14 +8,14 @@ interface NoItemsAvailableProps {
 const NoItemsAvailable: React.FC<NoItemsAvailableProps> = ({ message }) => {
   return (
     <div className="flex flex-col items-center justify-center space-y-4 p-6">
-      <img
-        src="/images/no_items.png" 
+      <Image
+        src="/images/no_items.png"
         alt="No items available"
-        className="w-40 h-40 object-contain"
+        width={160}
+        height={160}
+        className="object-contain"
       />
-      <p className="text-gray-700 text-center text-lg font-medium">
-        {message}
-      </p>
+      <p className="text-gray-700 text-center text-lg font-medium">{message}</p>
     </div>
   );
 };

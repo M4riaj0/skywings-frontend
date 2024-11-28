@@ -10,7 +10,7 @@ import {
   deleteFlight,
 } from "@/services/flights";
 import AddIcon from "@mui/icons-material/Add";
-import { FlightFormUpdate } from "@/app/schemas/flightFormSchema";
+import { FlightFormUpdate } from "@/schemas/flightFormSchema";
 import NoItemsAvailable from "@/components/noItems";
 
 export const dynamic = "force-dynamic";

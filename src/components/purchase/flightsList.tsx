@@ -4,7 +4,7 @@ import {
   AccordionSummary,
   Typography,
 } from "@mui/material";
-import { FlightData } from "@/app/schemas/flightFormSchema";
+import { FlightData } from "@/schemas/flightFormSchema";
 import { formatDateAndTime } from "@/services/cities";
 import ClassCard from "./classCard";
 

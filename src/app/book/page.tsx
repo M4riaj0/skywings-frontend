@@ -9,10 +9,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getAvaliableFlights } from "@/services/flights";
-import { FlightData } from "../schemas/flightFormSchema";
+import { FlightData } from "../../schemas/flightFormSchema";
 import FlightsList from "@/components/purchase/flightsList";
 import PassengerData from "@/components/purchase/passengerData";
 import PurchaseSummary from "@/components/purchase/summary";
@@ -35,8 +35,9 @@ const filterFlights = (
   });
 };
 
-const BookPage = () => {
+export default function BookPage() {
   const [flights, setFlights] = useState<FlightData[]>([]);
+  const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const [returnOptions, setReturnOptions] = useState<FlightData[]>([]);
   const [enableReturn, setEnableReturn] = useState(false);
@@ -48,14 +49,16 @@ const BookPage = () => {
   const { state } = useCartContext();
 
   useEffect(() => {
-    if (searchParams.get("step") === "2") {
-      setStep(2);
-      return;
-    }
     const loadFlights = async () => {
+      if (searchParams.get("step") === "2") {
+        setStep(2);
+        setLoading(false);
+        return;
+      }
       const allFlights = await getAvaliableFlights();
       const filteredFlights = filterFlights(allFlights, searchParams);
       setFlights(filteredFlights);
+      setLoading(false);
     };
 
     loadFlights();
@@ -95,6 +98,8 @@ const BookPage = () => {
     setReturnOptions(filteredReturnFlights);
   };
 
+  if (loading) return <div>Cargando...</div>;
+
   return (
     <>
       {stepError && (
@@ -104,76 +109,78 @@ const BookPage = () => {
       )}
       {step === 1 && (
         <>
-          <section>
-            <Typography variant="h3" className="my-3">
-              Vuelos disponibles
-            </Typography>
-            <Divider />
-            <Box className="my-4 flex justify-evenly items-center">
-              <TextField
-                label="Origen"
-                variant="outlined"
-                value={searchParams.get("departure")}
-                disabled
-                className="mx-3"
-              />
-              <TextField
-                label="Destino"
-                variant="outlined"
-                value={searchParams.get("arrival")}
-                disabled
-                className="mx-3"
-              />
-              <TextField
-                label="Fecha"
-                variant="outlined"
-                value={searchParams.get("departureDate")?.split("T")[0]}
-                disabled
-                className="mx-3"
-              />
-              <TextField
-                label="Fecha de regreso"
-                variant="outlined"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                slotProps={{
-                  htmlInput: {
-                    min: new Date().toISOString().split("T")[0],
-                    max: new Date(
-                      new Date().setDate(new Date().getDate() + 365)
-                    )
-                      .toISOString()
-                      .split("T")[0],
-                  },
-                }}
-                value={returnDate?.split("T")[0] || ""}
-                disabled={!enableReturn}
-                className="mx-3 w-[20%]"
-                onChange={(e) => {
-                  setReturnDate(e.target.value);
-                  handleReturn();
-                }}
-              />
-              <Box className="flex flex-col items-center mx-3">
-                <Typography>Vuelta</Typography>
-                <Switch
-                  checked={enableReturn}
-                  onChange={(e) => setEnableReturn(e.target.checked)}
-                  color="primary"
-                />
-              </Box>
-            </Box>
-          </section>
-          <FlightsList type="Ida" flights={flights} />
-          {enableReturn && (
-            <>
-              <Typography variant="h4" className="my-3">
-                Vuelos de regreso
+          <Suspense fallback={<div>Cargando...</div>}>
+            <section>
+              <Typography variant="h3" className="my-3">
+                Vuelos disponibles
               </Typography>
-              <Divider className="mb-5" />
-              <FlightsList type="Vuelta" flights={returnOptions} />
-            </>
-          )}
+              <Divider />
+              <Box className="my-4 flex justify-evenly items-center">
+                <TextField
+                  label="Origen"
+                  variant="outlined"
+                  value={searchParams.get("departure")}
+                  disabled
+                  className="mx-3"
+                />
+                <TextField
+                  label="Destino"
+                  variant="outlined"
+                  value={searchParams.get("arrival")}
+                  disabled
+                  className="mx-3"
+                />
+                <TextField
+                  label="Fecha"
+                  variant="outlined"
+                  value={searchParams.get("departureDate")?.split("T")[0]}
+                  disabled
+                  className="mx-3"
+                />
+                <TextField
+                  label="Fecha de regreso"
+                  variant="outlined"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  slotProps={{
+                    htmlInput: {
+                      min: new Date().toISOString().split("T")[0],
+                      max: new Date(
+                        new Date().setDate(new Date().getDate() + 365)
+                      )
+                        .toISOString()
+                        .split("T")[0],
+                    },
+                  }}
+                  value={returnDate?.split("T")[0] || ""}
+                  disabled={!enableReturn}
+                  className="mx-3 w-[20%]"
+                  onChange={(e) => {
+                    setReturnDate(e.target.value);
+                    handleReturn();
+                  }}
+                />
+                <Box className="flex flex-col items-center mx-3">
+                  <Typography>Vuelta</Typography>
+                  <Switch
+                    checked={enableReturn}
+                    onChange={(e) => setEnableReturn(e.target.checked)}
+                    color="primary"
+                  />
+                </Box>
+              </Box>
+            </section>
+            <FlightsList type="Ida" flights={flights} />
+            {enableReturn && (
+              <>
+                <Typography variant="h4" className="my-3">
+                  Vuelos de regreso
+                </Typography>
+                <Divider className="mb-5" />
+                <FlightsList type="Vuelta" flights={returnOptions} />
+              </>
+            )}
+          </Suspense>
         </>
       )}
       {step === 2 && (
@@ -223,6 +230,4 @@ const BookPage = () => {
       </Box>
     </>
   );
-};
-
-export default BookPage;
+}

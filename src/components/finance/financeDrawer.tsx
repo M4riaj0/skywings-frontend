@@ -6,16 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CardList from "./cardList";
 import AddCardDialog from "./addCardDialog";
 import { getCards, addCard, updateCard, deleteCard } from "@/services/cards";
-
-interface CardType {
-  propietary: string;
-  number: string;
-  cvv: string;
-  balance: number;
-  type: "debit" | "credit";
-  expirationDate: string;
-  erased?: boolean;
-}
+import { ICard } from "@/schemas/cards";
 
 interface CardManagerProps {
   drawerOpen: boolean;
@@ -24,8 +15,8 @@ interface CardManagerProps {
 
 const CardManager: React.FC<CardManagerProps> = ({ drawerOpen, toggleDrawer }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
-  const [cards, setCards] = useState<CardType[]>([]);
+  const [selectedCard, setSelectedCard] = useState<ICard | null>(null);
+  const [cards, setCards] = useState<ICard[]>([]);
   const [editingCard, setEditingCard] = useState(false);
 
   const fetchCards = async () => {
@@ -56,7 +47,7 @@ const CardManager: React.FC<CardManagerProps> = ({ drawerOpen, toggleDrawer }) =
     setDialogOpen(true);
   };
 
-  const handleEditCard = (card: CardType) => {
+  const handleEditCard = (card: ICard) => {
     setSelectedCard(card);
     setEditingCard(true);
     setDialogOpen(true);
@@ -68,7 +59,7 @@ const CardManager: React.FC<CardManagerProps> = ({ drawerOpen, toggleDrawer }) =
     setDialogOpen(false);
   };
 
-  const handleDialogSubmit = async (data: CardType) => {
+  const handleDialogSubmit = async (data: ICard) => {
     if (editingCard) {
       const { number, balance } = data;
       await updateCard({ number, balance });
@@ -102,7 +93,7 @@ const CardManager: React.FC<CardManagerProps> = ({ drawerOpen, toggleDrawer }) =
             <CardList
               cards={cards}
               onEditCard={handleEditCard}
-              onDeleteCard={async (card: CardType) => {
+              onDeleteCard={async (card: ICard) => {
                 try {
                   await deleteCard(card.number);
                   fetchCards();

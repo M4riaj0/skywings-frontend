@@ -1,10 +1,10 @@
-export interface Card {
+export interface ICard {
+    propietary: string;
     number: string;
     cvv: string;
-    expirationDate: string;
-    propietary: string;
     balance: number;
-    type: string;
+    type: "debit" | "credit";
+    expirationDate: string;
 }
 
 export interface changeBalance {

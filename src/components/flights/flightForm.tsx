@@ -6,12 +6,12 @@ import { useForm, Controller } from "react-hook-form";
 import {
   flightFormSchema,
   ReceivingData,
-} from "@/app/schemas/flightFormSchema";
+} from "@/schemas/flightFormSchema";
 import type {
   FlightForm,
   CitiesSchema,
   FlightData,
-} from "@/app/schemas/flightFormSchema";
+} from "@/schemas/flightFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   TextField,

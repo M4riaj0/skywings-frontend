@@ -1,4 +1,4 @@
-import { Card, changeBalance } from "@/app/schemas/cards";
+import { ICard, changeBalance } from "@/schemas/cards";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -30,7 +30,7 @@ export const getCards = async () => {
   }
 };
 
-  export const addCard = async (newCard: Card) => {
+  export const addCard = async (newCard: ICard) => {
     try {
       const res = await fetch(`${BACKEND_URL}/financial/create`, {
         method: "POST",

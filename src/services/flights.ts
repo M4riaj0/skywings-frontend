@@ -1,4 +1,4 @@
-import { FlightForm, FlightFormToSend, FlightFormUpdate } from "@/app/schemas/flightFormSchema";
+import { FlightForm, FlightFormToSend, FlightFormUpdate } from "@/schemas/flightFormSchema";
 
 const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 

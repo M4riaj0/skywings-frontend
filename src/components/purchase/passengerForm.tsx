@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { TextField, Typography, Button, Card, CardContent, Grid } from "@mui/material";
-import { IPassenger, ITicket } from "@/app/schemas/cartSchemas";
+import { IPassenger, ITicket } from "@/schemas/cartSchemas";
 
 const passengerSchema = z.object({
   dni: z

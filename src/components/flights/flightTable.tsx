@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { Delete, Edit } from '@mui/icons-material';
-import { FlightData, FlightFormUpdate } from '@/app/schemas/flightFormSchema';
+import { FlightData, FlightFormUpdate } from '@/schemas/flightFormSchema';
 import FlightDetailsDialog from '@/components/flights/flightDetailsDialog';
 import FlightEditForm from './flightEditForm';
 

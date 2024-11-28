@@ -15,7 +15,7 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { useEffect } from "react";
-import { FlightData, FlightSeatData } from "@/app/schemas/flightFormSchema";
+import { FlightData, FlightSeatData } from "@/schemas/flightFormSchema";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { formatDateAndTime } from "@/services/cities";
 import { getFlightSeats } from "@/services/flights";

@@ -1,5 +1,5 @@
 import { useCartContext } from "@/context/cart";
-import { ICartItem } from "@/app/schemas/cartSchemas";
+import { ICartItem } from "@/schemas/cartSchemas";
 import { Box, Card, CardContent, Typography, Divider } from "@mui/material";
 import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
 

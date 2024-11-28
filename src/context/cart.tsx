@@ -1,6 +1,6 @@
 "use client";
 
-import { ICartItem, ITicket } from "@/app/schemas/cartSchemas";
+import { ICartItem, ITicket } from "@/schemas/cartSchemas";
 import { useReducer, createContext, useContext } from "react";
 
 const CartContext = createContext<

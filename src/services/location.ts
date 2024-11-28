@@ -1,3 +1,5 @@
+import { ICountry, IState, ICity } from "@/schemas/ilocation";
+
 export const fetchToken = async (): Promise<string | null> => {
   const requestOptions = {
     method: "GET",
@@ -21,16 +23,16 @@ export const fetchToken = async (): Promise<string | null> => {
   }
 };
 
-export const fetchCountries = async (token: string | null): Promise<any[]> => {
+export const fetchCountries = async (token: string | null): Promise<ICountry[]> => {
   if (!token) return [];
   const url = "https://www.universal-tutorial.com/api/countries";
-  return fetchLocationData(url, token);
+  return fetchLocationData<ICountry>(url, token);
 };
 
 export const fetchStates = async (
   country: string,
   token: string | null
-): Promise<any[]> => {
+): Promise<IState[]> => {
   if (!token) return [];
   const url = `https://www.universal-tutorial.com/api/states/${country}`;
   return fetchLocationData(url, token);
@@ -39,16 +41,16 @@ export const fetchStates = async (
 export const fetchCities = async (
   state: string,
   token: string | null
-): Promise<any[]> => {
+): Promise<ICity[]> => {
   if (!token) return [];
   const url = `https://www.universal-tutorial.com/api/cities/${state}`;
   return fetchLocationData(url, token);
 };
 
-export const fetchLocationData = async (
+export const fetchLocationData = async <T>(
   url: string,
   token: string | null
-): Promise<any[]> => {
+): Promise<T[]> => {
   if (!token) return [];
   const requestOptions = {
     method: "GET",

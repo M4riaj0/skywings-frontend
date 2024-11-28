@@ -6,7 +6,7 @@ import {
   Divider,
 } from "@mui/material";
 import FlightIcon from "@mui/icons-material/Flight";
-import { FlightData } from "@/app/schemas/flightFormSchema";
+import { FlightData } from "@/schemas/flightFormSchema";
 import { formatDateAndTime } from "@/services/cities";
 import { useRouter } from "next/navigation";
 

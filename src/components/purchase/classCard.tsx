@@ -12,7 +12,7 @@ import {
 import FlightClassIcon from "@mui/icons-material/FlightClass";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import PaidIcon from "@mui/icons-material/Paid";
-import { FlightData } from "@/app/schemas/flightFormSchema";
+import { FlightData } from "@/schemas/flightFormSchema";
 import { useCartContext } from "@/context/cart";
 import { useState } from "react";
 

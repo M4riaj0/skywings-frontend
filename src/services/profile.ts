@@ -1,4 +1,4 @@
-import { RegisterData, ChangePassword } from "@/app/schemas/users";
+import { RegisterData, ChangePassword } from "@/schemas/users";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 

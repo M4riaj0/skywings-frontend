@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FligthCard from "./card4Flights";
-import { FlightData } from "@/app/schemas/flightFormSchema";
+import { FlightData } from "@/schemas/flightFormSchema";
 
 interface SearchGridProps {
   data: FlightData[];

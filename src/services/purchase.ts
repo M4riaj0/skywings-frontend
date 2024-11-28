@@ -1,5 +1,5 @@
-import { buyTickets, ICartItem, ITicket } from "@/app/schemas/cartSchemas";
-import { IPurchase } from "@/app/schemas/tickets";
+import { buyTickets, ICartItem, ITicket } from "@/schemas/cartSchemas";
+import { IPurchase } from "@/schemas/tickets";
 
 const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 

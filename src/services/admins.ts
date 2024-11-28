@@ -1,4 +1,4 @@
-import {Admin} from '@/app/schemas/users'
+import {Admin} from '@/schemas/users'
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 

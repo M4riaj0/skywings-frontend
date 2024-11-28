@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { useCartContext } from "@/context/cart";
 import { createBook } from "@/services/purchase";
-import { IBookTicket } from "@/app/schemas/tickets";
+import { IBookTicket } from "@/schemas/tickets";
 import { useRouter } from "next/navigation";
 import FlightIcon from "@mui/icons-material/Flight";
 import FlightClassIcon from "@mui/icons-material/FlightClass";

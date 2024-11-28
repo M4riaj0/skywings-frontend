@@ -11,7 +11,7 @@ import {
   CircularProgress,
   useTheme,
 } from "@mui/material";
-import { IBookTicket } from "@/app/schemas/tickets";
+import { IBookTicket } from "@/schemas/tickets";
 import { useRouter } from "next/navigation";
 import { createPurchase } from "@/services/purchase";
 import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";

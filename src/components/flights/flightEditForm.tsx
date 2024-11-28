@@ -11,8 +11,8 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { FlightData } from "@/app/schemas/flightFormSchema";
-import { flightUpdateSchema } from "@/app/schemas/flightFormSchema";
+import { FlightData } from "@/schemas/flightFormSchema";
+import { flightUpdateSchema } from "@/schemas/flightFormSchema";
 
 interface FlightEditFormProps {
   open: boolean;

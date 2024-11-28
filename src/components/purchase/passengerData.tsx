@@ -3,7 +3,7 @@ import { useCartContext } from "@/context/cart";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { FlightTakeoff, FlightLand } from "@mui/icons-material";  // Importar los iconos adecuados
 import PassengerForm from "@/components/purchase/passengerForm";
-import { IPassenger, ITicket } from "@/app/schemas/cartSchemas";
+import { IPassenger, ITicket } from "@/schemas/cartSchemas";
 
 interface PassengerDataProps {
   enableReturn: boolean;

@@ -13,6 +13,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { checkUserAvailability, handleRegister } from "@/services/auth";
 import {
   fetchToken,
@@ -24,13 +25,15 @@ import Stepper from "@/components/stepper";
 import { updateUser } from "@/services/profile";
 import UploadFiles from "../uploadFiles/uploadFiles";
 import { MdEdit } from "react-icons/md";
+import { RegisterData } from "@/schemas/users";
+import { ICountry, IState, ICity } from "@/schemas/ilocation";
 
-interface Country {
-  country_name: string;
-  country_short_name: string;
+interface MultiStepFormProps {
+  steps: string[];
+  user?: RegisterData | null;
 }
 
-const MultiStepForm = ({ steps, user }) => {
+const MultiStepForm = ({ steps, user }: MultiStepFormProps) => {
   const router = useRouter();
   const [step, setStep] = useState(0);
 
@@ -179,11 +182,11 @@ const MultiStepForm = ({ steps, user }) => {
   });
 
   const [token, setToken] = useState<string | null>(null);
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [addressStates, setAddressStates] = useState<State[]>([]);
-  const [addressCities, setAddressCities] = useState<City[]>([]);
-  const [birthplaceStates, setBirthplaceStates] = useState<State[]>([]);
-  const [birthplaceCities, setBirthplaceCities] = useState<City[]>([]);
+  const [countries, setCountries] = useState<ICountry[]>([]);
+  const [addressStates, setAddressStates] = useState<IState[]>([]);
+  const [addressCities, setAddressCities] = useState<ICity[]>([]);
+  const [birthplaceStates, setBirthplaceStates] = useState<IState[]>([]);
+  const [birthplaceCities, setBirthplaceCities] = useState<ICity[]>([]);
   // const [user_image, setuser_image] = useState('');
   const [isEditingFoto, setIsEditingFoto] = useState(true);
 
@@ -359,17 +362,19 @@ const MultiStepForm = ({ steps, user }) => {
             <>
               <div className="flex flex-col items-center mb-5">
                 <div className="relative w-24 h-24">
-                  {getValues().user_image.length > 0 ? (
-                    <img
+                    {getValues().user_image.length > 0 ? (
+                    <Image
                       src={getValues().user_image}
                       alt="Foto de perfil"
                       className="w-full h-full rounded-full object-contain bg-gray-300 flex justify-center items-center"
+                      width={96}
+                      height={96}
                     />
-                  ) : (
+                    ) : (
                     <div className="w-full h-full rounded-full flex items-center justify-center bg-gray-300 text-gray-500 text-center p-2">
                       No se ha seleccionado ninguna foto de perfil
                     </div>
-                  )}
+                    )}
                   <button
                     type="button"
                     className="absolute top-1 right-1 bg-indigo-600 border-none rounded-full p-1 cursor-pointer shadow-md transition-colors duration-300 hover:bg-indigo-700"
