@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import SeatMap from "@/components/check-in/seatMap";
+import SeatMap from "@/components/check-in/seatMap"
 import SeatLegend from "@/components/check-in/seatLegend";
 
 type Seat = {
