@@ -26,6 +26,6 @@ export const changeSeat = async (flightCode: string, passengerDNI: string, seatN
     });
     return response.json();
   } catch (error) {
-    throw error
+    return error
   }
 }

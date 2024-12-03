@@ -53,7 +53,7 @@ export default function Login() {
         <Typography variant="h4" component="h1" align="center">
           Inicio de Sesión
         </Typography>
-        {errorMessage && ( // Renderiza el Alert si hay un mensaje de error
+        {errorMessage && (
           <Alert severity="error">{errorMessage}</Alert>
         )}
         <TextField

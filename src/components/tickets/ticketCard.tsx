@@ -26,6 +26,7 @@ interface TicketCardProps {
   erased?: boolean;
   onCancel?: () => void; // Función opcional para cancelar el tiquete
   onBuy?: () => void;
+  onCheckin?: () => void;
 }
 
 const TicketCard: React.FC<TicketCardProps> = ({
@@ -37,8 +38,9 @@ const TicketCard: React.FC<TicketCardProps> = ({
   checkIn,
   numSuitcase,
   erased,
-  onCancel, // Recibimos la función de cancelación como prop
+  onCancel,
   onBuy,
+  onCheckin,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -165,6 +167,21 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 </Button>
             </Box>
           )}  
+
+          {onCheckin && !erased && !checkIn &&(
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                <Button
+                  variant="contained"
+                  className="bg-green-500 text-white hover:bg-green-700 transition duration-200"
+                  onClick={() => {
+                  onCheckin();
+                  // setExpanded(false);
+                  }}
+                  >
+                  Hacer check-in
+                </Button>
+            </Box>
+            )} 
         </CardContent>
       </Collapse>
 

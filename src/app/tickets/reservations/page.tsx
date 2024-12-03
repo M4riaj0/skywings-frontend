@@ -66,8 +66,8 @@ export default function ReservationsTicketsPage() {
     }, []);
 
     const handleBuyTicket = (ticket: Ticket) => {
-        setSelectedTicket(ticket); // Establece el tiquete seleccionado
-        setDialogOpen(true); // Abre el diálogo
+        setSelectedTicket(ticket); 
+        setDialogOpen(true); 
     };
     
     const handleCancelTicket = async (flightCode: string, passengerDni: string): Promise<void> => {

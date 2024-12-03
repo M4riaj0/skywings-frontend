@@ -70,7 +70,7 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: initialData || {
-      propietary: "", // Valor predeterminado vacío
+      propietary: "", 
       number: "",
       cvv: "",
       balance: 0,
@@ -84,35 +84,30 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
     console.log("useEffect ejecutado");
 
     if (initialData) {
-      // Si hay initialData (estás editando), reseteamos con esos datos
       reset(initialData);
     } else {
-      // Si no hay initialData, obtenemos el DNI del token
       const token = localStorage.getItem("token");
-      console.log("Token del localStorage:", token);
 
       if (token) {
         try {
-          // Decodificamos el token y extraemos el DNI
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          console.log("Token decodificado:", decodedToken);
           setDniFromToken(decodedToken.dni || "");
         } catch (error) {
           console.error("Error decoding token:", error);
         }
       }
     }
-  }, [initialData, reset]);
+  }, [initialData, reset, open]);
 
   useEffect(() => {
     if (!initialData) {
       reset({
-        propietary: dniFromToken, // Asignamos el DNI obtenido desde el token
-        number: "", // Campo vacío para el número de tarjeta
-        cvv: "",    // Campo vacío para el CVV
-        balance: 0, // Balance predeterminado
-        type: "debit", // Tipo de tarjeta predeterminado
-        expirationDate: "", // Fecha de expiración vacía
+        propietary: dniFromToken, 
+        number: "", 
+        cvv: "", 
+        balance: 0,
+        type: "debit", 
+        expirationDate: "",
       });
     }
   }, [dniFromToken, initialData, reset]);
@@ -215,7 +210,7 @@ const AddCardDialog: React.FC<AddCardDialogProps> = ({
                 <TextField
                   {...field}
                   label="Fecha de Expiración"
-                  type="month" // Cambiamos el tipo de entrada a 'month'
+                  type="month"
                   fullWidth
                   required
                   error={!!errors.expirationDate}

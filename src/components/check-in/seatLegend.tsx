@@ -21,6 +21,9 @@ const SeatLegend = () => {
         </IconButton>
       }
       sx={{
+        position: "fixed",
+        right: 4,
+        top: "200px",
         border: "1px solid #90caf9",
         borderRadius: "8px",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",

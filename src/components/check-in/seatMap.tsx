@@ -41,8 +41,8 @@ const SeatMap = ({ seats, onSeatChange, selectedSeat }: SeatMapProps) => {
   const economySeats = seats.filter((seat) => seat.class === "economy");
 
   const groupSeatsByRow = (seatGroup: Seat[]) =>
-    Array.from({ length: Math.ceil(seatGroup.length / 6) }, (_, i) =>
-      seatGroup.slice(i * 6, (i + 1) * 6)
+    Array.from({ length: Math.ceil(seatGroup.length / 4) }, (_, i) =>
+      seatGroup.slice(i * 5, (i + 1) * 5)
     );
 
   return (
@@ -54,11 +54,11 @@ const SeatMap = ({ seats, onSeatChange, selectedSeat }: SeatMapProps) => {
           {groupSeatsByRow(firstClassSeats).map((row, idx) => (
             <div key={idx} className="flex items-center gap-2 sm:gap-1 md:gap-2 justify-center">
               <div className="grid grid-cols-3 gap-2 sm:gap-1 md:gap-2">
-                {row.slice(0, 3).map((seat) => renderSeat(seat))}
+                {row.slice(0, 2).map((seat) => renderSeat(seat))}
               </div>
               <div className="w-6 sm:w-2 md:w-6" />
               <div className="grid grid-cols-3 gap-2 sm:gap-1 md:gap-2">
-                {row.slice(3).map((seat) => renderSeat(seat))}
+                {row.slice(2).map((seat) => renderSeat(seat))}
               </div>
             </div>
           ))}
@@ -72,11 +72,11 @@ const SeatMap = ({ seats, onSeatChange, selectedSeat }: SeatMapProps) => {
           {groupSeatsByRow(economySeats).map((row, idx) => (
             <div key={idx} className="flex items-center gap-2 sm:gap-1 md:gap-2 justify-center">
               <div className="grid grid-cols-3 gap-2 sm:gap-1 md:gap-2">
-                {row.slice(0, 3).map((seat) => renderSeat(seat))}
+                {row.slice(0, 2).map((seat) => renderSeat(seat))}
               </div>
               <div className="w-6 sm:w-2 md:w-6" />
               <div className="grid grid-cols-3 gap-2 sm:gap-1 md:gap-2">
-                {row.slice(3).map((seat) => renderSeat(seat))}
+                {row.slice(2).map((seat) => renderSeat(seat))}
               </div>
             </div>
           ))}
