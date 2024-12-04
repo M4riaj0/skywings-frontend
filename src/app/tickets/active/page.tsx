@@ -102,19 +102,21 @@ export default function ActiveTicketsPage() {
 
         try {
             const response = await checkin(flightCode, passengerDni);
+            console.log("response active::", response)
 
-            if (response.success) {
+            if (response.ok) {
                 setSnackBarMessage("Check-in realizado correctamente.");
                 setSnackBarSeverity("success");
 
-                // Recargar los datos desde el servidor
                 const updatedData = await getActiveTickets();
                 setTickets(updatedData.data || []);
             } else {
-                setSnackBarMessage(response.message || "Error al realizar el check-in.");
+                console.log("error:")
+                setSnackBarMessage("Error al realizar el check-in.");
                 setSnackBarSeverity("error");
             }
         } catch (err) {
+            console.log("response cattch::", err)
             console.error("Error al realizar el check-in:", err);
             setSnackBarMessage("Error al realizar el check-in.");
             setSnackBarSeverity("error");
