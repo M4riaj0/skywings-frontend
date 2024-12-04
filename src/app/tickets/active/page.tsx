@@ -98,7 +98,7 @@ export default function ActiveTicketsPage() {
 
     const confirmCheckIn = async () => {
         if (!currentCheckIn) return;
-        const { flightCode, passengerDni, seatNumber } = currentCheckIn;
+        const { flightCode, passengerDni } = currentCheckIn;
 
         try {
             const response = await checkin(flightCode, passengerDni);
