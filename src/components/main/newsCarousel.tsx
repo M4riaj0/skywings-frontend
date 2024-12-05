@@ -59,17 +59,19 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
       <section id="news" className="mb-6">
         <h2 className="text-3xl my-3 font-bold text-center">Noticias</h2>
         <div className="news-carousel flex justify-evenly items-center">
-          <button
-            type="button"
-            className="z-30 h-full pl-5 cursor-pointer group focus:outline-none"
-            onClick={() =>
-              setCurrentIndex(
-                (currentIndex - 1 + newsItems.length) % newsItems.length
-              )
-            }
-          >
-            <ArrowCircleLeftRounded style={{ fontSize: "2rem" }} />
-          </button>
+          {newsItems.length > 3 && (
+            <button
+              type="button"
+              className="z-30 h-full pl-5 cursor-pointer group focus:outline-none"
+              onClick={() =>
+                setCurrentIndex(
+                  (currentIndex - 1 + newsItems.length) % newsItems.length
+                )
+              }
+            >
+              <ArrowCircleLeftRounded style={{ fontSize: "2rem" }} />
+            </button>
+          )}
           <div className="news-item">
             <Card4News
               {...newsItems[currentIndex]}
@@ -92,15 +94,17 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
               />
             </div>
           )}
-          <button
-            type="button"
-            className="z-30 h-full pr-5 cursor-pointer group focus:outline-none"
-            onClick={() =>
-              setCurrentIndex((currentIndex + 1) % newsItems.length)
-            }
-          >
-            <ArrowCircleRightRounded style={{ fontSize: "2rem" }} />
-          </button>
+          {newsItems.length > 3 && (
+            <button
+              type="button"
+              className="z-30 h-full pr-5 cursor-pointer group focus:outline-none"
+              onClick={() =>
+                setCurrentIndex((currentIndex + 1) % newsItems.length)
+              }
+            >
+              <ArrowCircleRightRounded style={{ fontSize: "2rem" }} />
+            </button>
+          )}
         </div>
       </section>
     );
