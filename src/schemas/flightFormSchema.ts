@@ -130,7 +130,13 @@ export interface FlightFormToSend {
   lastUpdateDate: Date;
 }
 
-export interface FlightFormUpdate extends Partial<FlightFormToSend> {}
+// export interface FlightFormUpdate extends Partial<FlightData> {}
+export interface FlightFormUpdate {
+  flightCode: string;
+  priceFirstClass: number;
+  priceEconomyClass: number;
+}
+
 
 interface City {
   city: string;

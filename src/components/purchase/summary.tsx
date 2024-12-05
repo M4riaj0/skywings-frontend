@@ -8,49 +8,41 @@ const PurchaseSummary = () => {
   const items = state.cart as ICartItem[];
 
   return (
-    <Box className="purchase-summary" sx={{ padding: 2 }}>
+    <Box className="purchase-summary p-2 sm:p-4 mx-auto max-w-4xl">
       {items.length === 0 ? (
-        <Typography variant="h6" sx={{ textAlign: "center", marginTop: 4 }}>
+        <Typography variant="h6" className="text-center mt-4">
           No hay tiquetes en el carrito.
         </Typography>
       ) : (
         items.map((item) => (
           <Card
             key={item.flight.code}
-            className="border rounded-lg shadow-md my-4"
-            sx={{ position: "relative", overflow: "hidden" }}
+            className="border rounded-lg shadow-md relative overflow-hidden mb-4"
           >
-            <CardContent sx={{ padding: 3 }}>
-              <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box display="flex" alignItems="center">
+            <CardContent className="p-3">
+              <Box className="flex flex-col sm:flex-row items-center justify-between">
+                <Box className="flex items-center mb-4 sm:mb-0">
                   <AirplaneTicketIcon className="text-blue-500" fontSize="large" />
                   <Typography
                     variant="h6"
-                    sx={{ marginLeft: 2, fontWeight: "bold", fontSize: "1.5rem" }}
+                    className="ml-2 font-bold text-lg sm:text-xl"
                   >
                     Vuelo {item.flight.code}
                   </Typography>
                 </Box>
 
                 <Box
-                  sx={{
-                    backgroundColor: "#e0e0e0",
-                    padding: "8px 16px",
-                    borderRadius: "8px",
-                    textAlign: "center",
-                  }}
+                  className="bg-gray-200 p-2 sm:p-4 rounded-lg text-center"
                 >
                   <Typography
                     variant="body2"
-                    className="text-gray-500"
-                    sx={{ fontSize: "0.9rem" }}
+                    className="text-gray-500 text-sm sm:text-base"
                   >
                     Precio Total
                   </Typography>
                   <Typography
                     variant="h6"
-                    className="font-bold text-gray-800"
-                    sx={{ fontSize: "1.4rem" }}
+                    className="font-bold text-gray-800 text-lg sm:text-xl"
                   >
                     {item.tickets
                       .reduce((total, ticket) => total + ticket.price, 0)
@@ -63,7 +55,7 @@ const PurchaseSummary = () => {
               <Typography
                 variant="body2"
                 color="textSecondary"
-                sx={{ marginTop: 2, fontSize: "1rem" }}
+                className="mt-2 text-sm sm:text-base"
               >
                 {item.flight.departure} → {item.flight.arrival}
               </Typography>
@@ -71,41 +63,36 @@ const PurchaseSummary = () => {
               <Typography
                 variant="body2"
                 color="textSecondary"
-                sx={{ marginTop: 1, fontSize: "1rem" }}
+                className="mt-1 text-sm sm:text-base"
               >
                 Total de tiquetes: {item.tickets.length}
               </Typography>
 
-              <Divider sx={{ marginY: 2 }} />
+              <Divider className="my-2" />
 
               <Typography
                 variant="body2"
-                sx={{ fontWeight: "bold", marginBottom: 1, fontSize: "1rem" }}
+                className="font-bold mb-1 text-sm sm:text-base"
               >
                 Detalles de pasajeros:
               </Typography>
 
-              <Box component="ul" sx={{ listStyle: "none", padding: 0 }}>
+              <Box component="ul" className="list-none p-0">
                 {item.tickets.map((ticket, index) => (
                   <Box
                     component="li"
                     key={index}
-                    sx={{
-                      background: "#f9f9f9",
-                      borderRadius: "8px",
-                      padding: 2,
-                      marginBottom: 1,
-                    }}
+                    className="bg-gray-100 rounded-lg p-2 mb-1"
                   >
                     <Typography
                       variant="body2"
-                      sx={{ fontSize: "0.9rem", fontWeight: "medium" }}
+                      className="text-sm sm:text-base font-medium"
                     >
                       Pasajero: {ticket.passenger?.name1}
                     </Typography>
                     <Typography
                       variant="body2"
-                      sx={{ fontSize: "0.9rem", color: "gray" }}
+                      className="text-sm sm:text-base text-gray-500"
                     >
                       Correo: {ticket.passenger?.email}
                     </Typography>

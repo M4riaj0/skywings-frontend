@@ -35,10 +35,10 @@ const Card: React.FC<CardProps> = ({ cardData, onEditCard, onDeleteCard }) => {
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg shadow-md relative text-gray-800 w-full md:w-72 h-40">
-      <div className="absolute right-2 bottom-9 w-12 h-12 bg-blue-800 rounded-full opacity-50"></div>
-      <div className="absolute right-8 bottom-9 w-12 h-12 bg-blue-600 rounded-full opacity-50"></div>
+      <div className="absolute right-2 bottom-9 w-8 h-8 md:w-12 md:h-12 bg-blue-800 rounded-full opacity-50"></div>
+      <div className="absolute right-8 bottom-9 w-8 h-8 md:w-12 md:h-12 bg-blue-600 rounded-full opacity-50"></div>
 
-      <div className="absolute left-4 bottom-10 w-8 h-5 bg-yellow-400 rounded-sm"></div>
+      <div className="absolute left-4 bottom-10 w-6 h-4 md:w-8 md:h-5 bg-yellow-400 rounded-sm"></div>
 
       <Typography variant="body2" className="font-semibold mt-4">
         Tarjeta {type === "debit" ? "Débito" : "Crédito"}

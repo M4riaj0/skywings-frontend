@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 interface EditFlightDialogProps {
   open: boolean;
   onClose: () => void;
-  onEditFlight: (newFlight: { code: string; priceFirstClass: number; priceEconomyClass: number }) => void;
+  onEditFlight: (newFlight: { flightCode: string; priceFirstClass: number; priceEconomyClass: number }) => void;
 }
 
 export default function EditFlightDialog({ open, onClose, onEditFlight }: EditFlightDialogProps) {
@@ -15,15 +15,19 @@ export default function EditFlightDialog({ open, onClose, onEditFlight }: EditFl
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
-      code: "",
+      flightCode: "",
       priceFirstClass: 0,
       priceEconomyClass: 0
     },
     resolver: zodResolver(schema)
   });
 
-  const onSubmit = (data: { code: string; priceFirstClass: number; priceEconomyClass: number  }) => {
-    onEditFlight(data);
+  const onSubmit = (data: { flightCode: string; priceFirstClass: number; priceEconomyClass: number  }) => {
+    onEditFlight({
+      flightCode: data.flightCode,
+      priceFirstClass: data.priceFirstClass,
+      priceEconomyClass: data.priceEconomyClass
+    });
     onClose();
     reset();
   };
@@ -39,7 +43,7 @@ export default function EditFlightDialog({ open, onClose, onEditFlight }: EditFl
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
-            name="code"
+            name="flightCode"
             control={control}
             rules={{ required: "Este campo es obligatorio" }}
             render={({ field }) => (
@@ -48,8 +52,8 @@ export default function EditFlightDialog({ open, onClose, onEditFlight }: EditFl
                 label="Nombre de Usuario"
                 fullWidth
                 margin="dense"
-                error={!!errors.code}
-                helperText={errors.code ? errors.code.message : ""}
+                error={!!errors.flightCode}
+                helperText={errors.flightCode ? errors.flightCode.message : ""}
               />
             )}
           />

@@ -18,6 +18,7 @@ interface FlightEditFormProps {
   open: boolean;
   flight: FlightData;
   onSave: (updatedFlight: {
+    flightCode: string;
     priceEconomyClass: number;
     priceFirstClass: number;
   }) => void;
@@ -53,14 +54,17 @@ const FlightEditForm: React.FC<FlightEditFormProps> = ({
     });
   };
 
-  const handleSave = () => {
+  const handleSave = (fligthCode: string) => {
     if (previusPrices[0] === values.priceEconomyClass && previusPrices[1] === values.priceFirstClass){
       alert("Error al modificar el vuelo\nLos datos ingresados corresponden a los datos actuales")
     } else {
       const { success, data, error } = flightUpdateSchema.safeParse({...values});
+      console.log("data:::", data);
+      console.log("fligthcode:::", fligthCode);
       if (success) {
         setErrors({});
         onSave({
+          flightCode: fligthCode,
           priceEconomyClass: data.priceEconomyClass,
           priceFirstClass: data.priceFirstClass,
         });
@@ -165,7 +169,7 @@ const FlightEditForm: React.FC<FlightEditFormProps> = ({
         <Button onClick={onClose} color="error" variant="outlined">
           Cancelar
         </Button>
-        <Button onClick={handleSave} color="primary" variant="contained">
+        <Button onClick={() => handleSave(flight.code)} color="primary" variant="contained">
           Guardar
         </Button>
       </DialogActions>

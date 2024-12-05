@@ -109,12 +109,16 @@ export const createFlight = async (flightData: FlightForm) => {
 }
 
 export const updateFlight = async (flightData: FlightFormUpdate) => {
+  console.log("flightData service", flightData);
   const token = localStorage.getItem("token");
+  console.log("token", token);
   let username;
   if (token) {
     const payload = JSON.parse(atob(token.split('.')[1]));
     username = payload.username;
+    console.log("payload", payload);
   }
+  // const { lastUpdateDate, ...dataToSend } = flightData;
   try {
     const response = await fetch(`${backend_url}/flights/update`, {
       method: "PATCH",
@@ -122,7 +126,7 @@ export const updateFlight = async (flightData: FlightFormUpdate) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ updater: username, ...flightData}),
+      body: JSON.stringify({ updater: username, ...flightData }),
     });
 
     return response.json();
