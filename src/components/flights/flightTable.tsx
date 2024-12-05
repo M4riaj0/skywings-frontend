@@ -40,9 +40,9 @@ const FlightTable: React.FC<FlightTableProps> = ({ flights, onDeleteFlight, onSa
   const handleSave = (updatedFlight: { priceEconomyClass: number; priceFirstClass: number }) => {
     if (selectedFlight) {
       onSaveFlight && onSaveFlight({
+        flightCode: selectedFlight.code,
         priceEconomyClass: updatedFlight.priceEconomyClass,
         priceFirstClass: updatedFlight.priceFirstClass,
-        lastUpdateDate: new Date(),
       });
       handleCloseEditDialog();
     }

@@ -31,8 +31,6 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(2);
 
-  
-
   useEffect(() => {
     if (!newsItems) return;
 
@@ -75,21 +73,25 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
           <div className="news-item">
             <Card4News
               {...newsItems[currentIndex]}
-              image={imageList[currentIndex % imageList.length]}
+              image={imageList[currentIndex % newsItems.length]}
             />
           </div>
-          <div className="news-item hidden md:block">
-            <Card4News
-              {...newsItems[(currentIndex + 1) % newsItems.length]}
-              image={imageList[(currentIndex + 1) % imageList.length]}
-            />
-          </div>
-          <div className="news-item hidden lg:block">
-            <Card4News
-              {...newsItems[(currentIndex + 2) % newsItems.length]}
-              image={imageList[(currentIndex + 2) % imageList.length]}
-            />
-          </div>
+          {newsItems.length > 1 && (
+            <div className="news-item hidden md:block">
+              <Card4News
+                {...newsItems[(currentIndex + 1) % newsItems.length]}
+                image={imageList[(currentIndex + 1) % newsItems.length]}
+              />
+            </div>
+          )}
+          {newsItems.length > 2 && (
+            <div className="news-item hidden lg:block">
+              <Card4News
+                {...newsItems[(currentIndex + 2) % newsItems.length]}
+                image={imageList[(currentIndex + 2) % newsItems.length]}
+              />
+            </div>
+          )}
           <button
             type="button"
             className="z-30 h-full pr-5 cursor-pointer group focus:outline-none"
