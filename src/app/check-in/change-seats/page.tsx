@@ -114,7 +114,7 @@ const ChangeSeatsContent = ({ searchParams }: { searchParams: URLSearchParams })
         setSnackBarOpen(true);
         setTimeout(() => {
           setSnackBarOpen(false);
-          router.push(`/tickets/active`);
+          router.push(`/`);
         }, 3000);
       }
     } else {
