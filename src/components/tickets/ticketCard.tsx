@@ -8,6 +8,8 @@ import {
   Collapse,
   Box,
   Button,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
 import FlightClassIcon from "@mui/icons-material/FlightClass";
@@ -43,6 +45,8 @@ const TicketCard: React.FC<TicketCardProps> = ({
   onCheckin,
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -57,6 +61,9 @@ const TicketCard: React.FC<TicketCardProps> = ({
           backgroundImage: `url(/images/background.png)`,
           opacity: 0.2,
           display: expanded ? "block" : "none",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: isSmallScreen ? "center right 40%" : "center",
         }}
       ></div>
 
@@ -108,13 +115,6 @@ const TicketCard: React.FC<TicketCardProps> = ({
             </Typography>
           </Box>
 
-          {/* <Box className="flex items-center space-x-3">
-            <HailIcon className="text-4xl text-blue-600" />
-            <Typography variant="body1" className="font-medium text-gray-700">
-              Pasajero: {username}
-            </Typography>
-          </Box> */}
-
           <Box className="flex items-center space-x-3">
             <BadgeIcon className="text-4xl text-blue-600" />
             <Typography variant="body1" className="font-medium text-gray-700">
@@ -140,48 +140,48 @@ const TicketCard: React.FC<TicketCardProps> = ({
 
           {onCancel && !erased && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
+              <Button
                 variant="contained"
                 className="bg-white text-red-500 hover:bg-red-500 hover:text-white transition duration-200"
                 onClick={() => {
                   onCancel();
                   setExpanded(false);
                 }}
-                >
+              >
                 Cancelar Tiquete
-                </Button>
+              </Button>
             </Box>
           )}
 
           {onBuy && !erased && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
+              <Button
                 variant="contained"
                 className="bg-blue-500 text-white hover:bg-blue-700 transition duration-200"
                 onClick={() => {
                   onBuy();
                   setExpanded(false);
                 }}
-                >
+              >
                 Comprar Tiquete
-                </Button>
+              </Button>
             </Box>
-          )}  
+          )}
 
-          {onCheckin && !erased && !checkIn &&(
+          {onCheckin && !erased && !checkIn && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
-                  variant="contained"
-                  className="bg-green-500 text-white hover:bg-green-700 transition duration-200"
-                  onClick={() => {
+              <Button
+                variant="contained"
+                className="bg-green-500 text-white hover:bg-green-700 transition duration-200"
+                onClick={() => {
                   onCheckin();
                   // setExpanded(false);
-                  }}
-                  >
-                  Hacer check-in
-                </Button>
+                }}
+              >
+                Hacer check-in
+              </Button>
             </Box>
-            )} 
+          )}
         </CardContent>
       </Collapse>
 

@@ -45,7 +45,7 @@ const FlightsList: React.FC<FlightsListProps> = ({type, flights }) => {
                   }
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails className="grid grid-cols-2 gap-10">
+              <AccordionDetails className="grid grid-cols-1 gap-10 sm:grid-cols-2">
                 <ClassCard
                   flight={flight}
                   type={type}

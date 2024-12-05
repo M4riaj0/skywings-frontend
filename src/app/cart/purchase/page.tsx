@@ -161,7 +161,7 @@ const PurchasePage: React.FC = () => {
       </Box>
 
       {/* Botón de pago */}
-      <Box display="flex" justifyContent="flex-end" padding="20px">
+      <Box className="flex justify-end items-center p-5">
         <Button
           variant="contained"
           color="primary"
