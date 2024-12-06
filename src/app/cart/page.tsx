@@ -23,7 +23,7 @@ const CartPage = () => {
   const router = useRouter();
 
   async function handleTicketsCreation() {
-    const res: { statusCode?: number; message?: string; [key: string]: any } = await createBook(state.cart);
+    const res: { statusCode?: number; message?: string; data?: any } = await createBook(state.cart);
     console.log(res);
     if (res?.statusCode == 400 || res?.statusCode == 500) {
       console.error("Error creating tickets:", res);
