@@ -10,6 +10,7 @@ import {
   CardContent,
   CircularProgress,
   useTheme,
+  Grid,
 } from "@mui/material";
 import { IBookTicket } from "@/schemas/tickets";
 import { useRouter } from "next/navigation";
@@ -89,76 +90,76 @@ const PurchasePage: React.FC = () => {
         </Box>
       )}
 
-      <Box display="flex" justifyContent="space-between" padding="20px">
-        <Box
-          flex={1}
-          sx={{
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 2,
-            boxShadow: 2,
-            padding: 3,
-            marginRight: 2,
-          }}
-        >
-          <Typography variant="h4">Resumen de compra</Typography>
-          <Divider sx={{ my: 2 }} />
+      <Grid container justifyContent="center" padding="20px">
+        <Grid item xs={12} sm={10} md={8} lg={6}>
+          <Box
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+              borderRadius: 2,
+              boxShadow: 2,
+              padding: 3,
+            }}
+          >
+            <Typography variant="h4">Resumen de compra</Typography>
+            <Divider sx={{ my: 2 }} />
 
-          {/* Mostrar el indicador de carga */}
-          {isLoading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-              <CircularProgress />
-            </Box>
-          ) : tickets.length > 0 ? (
-            <Box>
-              {tickets.map((ticket, index) => (
-                <Card key={index} sx={{ marginBottom: 2, borderRadius: 2 }}>
-                  <CardContent
+            {/* Mostrar el indicador de carga */}
+            {isLoading ? (
+              <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+                <CircularProgress />
+              </Box>
+            ) : tickets.length > 0 ? (
+              <Box>
+                {tickets.map((ticket, index) => (
+                  <Card key={index} sx={{ marginBottom: 2, borderRadius: 2 }}>
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        justifyContent: { xs: "center", sm: "space-between" },
+                        flexDirection: { xs: "column", sm: "row" },
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <AirplaneTicketIcon sx={{ marginRight: 2, fontSize: "2rem" }} />
+                        <Typography sx={{ fontWeight: "bold", marginRight: 2 }}>
+                          {ticket.flightCode}
+                        </Typography>
+                      </Box>
+
+                      <Box className="flex items-center justify-center bg-gray-200 text-center px-6 rounded-lg">
+                        <div>
+                          <Typography variant="body2" className="text-gray-500 text-sm">
+                            Precio
+                          </Typography>
+                          <Typography variant="h6" className="font-bold text-gray-800">
+                            {ticket.price.toLocaleString()} COP
+                          </Typography>
+                        </div>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+                <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                  <Typography
                     sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
+                      padding: 1,
+                      fontWeight: "bold",
+                      flexGrow: 1,
                     }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <AirplaneTicketIcon sx={{ marginRight: 2, fontSize: "2rem" }} />
-                      <Typography sx={{ fontWeight: "bold", marginRight: 2 }}>
-                        {ticket.flightCode}
-                      </Typography>
-                    </Box>
-
-                    <Box className="flex items-center justify-center bg-gray-200 text-center px-6 rounded-lg">
-                      <div>
-                        <Typography variant="body2" className="text-gray-500 text-sm">
-                          Precio
-                        </Typography>
-                        <Typography variant="h6" className="font-bold text-gray-800">
-                          {ticket.price.toLocaleString()} COP
-                        </Typography>
-                      </div>
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
-              <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-                <Typography
-                  sx={{
-                    padding: 1,
-                    fontWeight: "bold",
-                    flexGrow: 1,
-                  }}
-                >
-                  Total
-                </Typography>
-                <Typography variant="h6" className="font-bold text-gray-800 align-right">
-                  {tickets.reduce((acc, ticket) => acc + ticket.price, 0)} COP
-                </Typography>
+                    Total
+                  </Typography>
+                  <Typography variant="h6" className="font-bold text-gray-800 align-right">
+                    {tickets.reduce((acc, ticket) => acc + ticket.price, 0)} COP
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          ) : (
-            <Typography>No hay tickets disponibles en tu carrito.</Typography>
-          )}
-        </Box>
-      </Box>
+            ) : (
+              <Typography>No hay tickets disponibles en tu carrito.</Typography>
+            )}
+          </Box>
+        </Grid>
+      </Grid>
 
       {/* Botón de pago */}
       <Box className="flex justify-end items-center p-5">

@@ -58,7 +58,7 @@ const CartPage = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+    <Box display="flex" justifyContent="center" alignItems="flex-start" minHeight="100vh" pt={4}>
       <Box className="m-6 sm:m-4" maxWidth="800px" width="100%">
         <Typography variant="h4" className="font-bold mb-1 text-center sm:text-left">Carrito de compras</Typography>
         <Box className="my-4">
@@ -108,7 +108,7 @@ const CartPage = () => {
           </>
         )}
         </Box>
-        <Box className="mt-4 flex flex-col sm:flex-row justify-between items-center">
+        <Box className="mt-4 flex flex-col sm:flex-row justify-end items-center">
         {error && (
           <Typography color="error" className="my-3 text-center sm:text-left">
           {error.split("\n").map((err, i) => (
