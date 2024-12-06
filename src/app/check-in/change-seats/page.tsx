@@ -5,7 +5,6 @@ import SeatLegend from "@/components/check-in/seatLegend";
 import { useRouter, useSearchParams } from "next/navigation";
 import { changeSeat, checkin } from "@/services/checkin";
 import { Alert, Snackbar } from "@mui/material";
-import { set } from "zod";
 
 type Seat = {
   id: number;
