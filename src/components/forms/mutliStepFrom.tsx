@@ -284,7 +284,7 @@ const MultiStepForm = ({ steps, user }: MultiStepFormProps) => {
         });
       }
     }
-  }, [user, setValue, token]);
+  }, [user, setValue, token, handleLocationChange]);
 
   const nextStep = async () => {
     const validateStep = await trigger();

@@ -63,7 +63,6 @@ export const createBook = async (cart: ICartItem[]) => {
       body: JSON.stringify(data),
     });
     
-    console.log(response);
     return response.json();
   } catch (error) {
     console.error("Error creating book:", error);

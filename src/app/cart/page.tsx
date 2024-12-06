@@ -25,8 +25,8 @@ const CartPage = () => {
   const isSmallScreen = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
 
   async function handleTicketsCreation() {
-    const res = await createBook(state.cart);
-    console.log(res);
+    const res: { statusCode?: number; message?: string } = await createBook(state.cart);
+    console.log("res handleTicket::", res);
     if (res?.statusCode == 400 || res?.statusCode == 500) {
       console.error("Error creating tickets:", res);
       setError(

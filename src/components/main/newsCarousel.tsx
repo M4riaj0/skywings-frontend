@@ -30,23 +30,20 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
   interval = 20000,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(2);
-
-  
+  const [imageLength, setImageLength] = useState(0);
 
   useEffect(() => {
     if (!newsItems) return;
-
-    const assignImage = () => {
-      newsItems.map((item, index) => {
-        item.image = imageList[index % imageList.length];
-      });
-    };
 
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % newsItems.length);
     }, interval);
 
-    assignImage();
+    if (newsItems.length < imageList.length)
+      setImageLength(newsItems.length);
+    else
+      setImageLength(imageList.length);
+
     return () => clearInterval(timer);
   }, [newsItems, interval]);
 
@@ -61,44 +58,52 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
       <section id="news" className="mb-6">
         <h2 className="text-3xl my-3 font-bold text-center">Noticias</h2>
         <div className="news-carousel flex justify-evenly items-center">
-          <button
-            type="button"
-            className="z-30 h-full pl-5 cursor-pointer group focus:outline-none"
-            onClick={() =>
-              setCurrentIndex(
-                (currentIndex - 1 + newsItems.length) % newsItems.length
-              )
-            }
-          >
-            <ArrowCircleLeftRounded style={{ fontSize: "2rem" }} />
-          </button>
+          {newsItems.length > 3 && (
+            <button
+              type="button"
+              className="z-30 h-full pl-5 cursor-pointer group focus:outline-none"
+              onClick={() =>
+                setCurrentIndex(
+                  (currentIndex - 1 + newsItems.length) % newsItems.length
+                )
+              }
+            >
+              <ArrowCircleLeftRounded style={{ fontSize: "2rem" }} />
+            </button>
+          )}
           <div className="news-item">
             <Card4News
               {...newsItems[currentIndex]}
-              image={imageList[currentIndex % imageList.length]}
+              image={imageList[currentIndex % imageLength]}
             />
           </div>
-          <div className="news-item hidden md:block">
-            <Card4News
-              {...newsItems[(currentIndex + 1) % newsItems.length]}
-              image={imageList[(currentIndex + 1) % imageList.length]}
-            />
-          </div>
-          <div className="news-item hidden lg:block">
-            <Card4News
-              {...newsItems[(currentIndex + 2) % newsItems.length]}
-              image={imageList[(currentIndex + 2) % imageList.length]}
-            />
-          </div>
-          <button
-            type="button"
-            className="z-30 h-full pr-5 cursor-pointer group focus:outline-none"
-            onClick={() =>
-              setCurrentIndex((currentIndex + 1) % newsItems.length)
-            }
-          >
-            <ArrowCircleRightRounded style={{ fontSize: "2rem" }} />
-          </button>
+          {newsItems.length > 1 && (
+            <div className="news-item hidden md:block">
+              <Card4News
+                {...newsItems[(currentIndex + 1) % newsItems.length]}
+                image={imageList[(currentIndex + 1) % imageLength]}
+              />
+            </div>
+          )}
+          {newsItems.length > 2 && (
+            <div className="news-item hidden lg:block">
+              <Card4News
+                {...newsItems[(currentIndex + 2) % newsItems.length]}
+                image={imageList[(currentIndex + 2) % imageLength]}
+              />
+            </div>
+          )}
+          {newsItems.length > 3 && (
+            <button
+              type="button"
+              className="z-30 h-full pr-5 cursor-pointer group focus:outline-none"
+              onClick={() =>
+                setCurrentIndex((currentIndex + 1) % newsItems.length)
+              }
+            >
+              <ArrowCircleRightRounded style={{ fontSize: "2rem" }} />
+            </button>
+          )}
         </div>
       </section>
     );

@@ -63,45 +63,45 @@ const TicketCard: React.FC<TicketCardProps> = ({
           display: expanded ? "block" : "none",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          backgroundPosition: isSmallScreen ? "center right 40%" : "center",
+          backgroundPosition: isSmallScreen ? "center right 38%" : "center",
         }}
       ></div>
 
       <CardActionArea
-        className="flex items-center p-4 pl-8 pr-8 cursor-pointer"
+        className={`flex ${isSmallScreen ? "flex-col items-center" : "items-center"} p-4 pl-8 pr-8 cursor-pointer ${isSmallScreen ? "px-4" : ""}`}
         onClick={handleExpandClick}
       >
-        <AirplaneTicketIcon className={`text-5xl ${erased ? "text-red-500" : "text-gray-500"} mr-4`} />
+        <AirplaneTicketIcon className={`text-5xl ${erased ? "text-red-500" : "text-gray-500"} ${isSmallScreen ? "mb-2" : "mr-4"} ${isSmallScreen ? "mx-2" : ""}`} />
 
-        <CardContent className="flex-1">
+        <CardContent className={`flex-1 ${isSmallScreen ? "text-center" : ""}`}>
           {erased && (
-            <Typography variant="h6" className="font-bold text-red-500 mb-1">
-              Cancelado
-            </Typography>
+        <Typography variant="h6" className="font-bold text-red-500 mb-1">
+          Cancelado
+        </Typography>
           )}
 
           <Typography
-            variant="h6"
-            className={`font-bold ${erased ? "text-red-500" : "text-gray-800"} mb-1`}
+        variant="h6"
+        className={`font-bold ${erased ? "text-red-500" : "text-gray-800"} mb-1`}
           >
-            Código de vuelo: {flightCode}
+        Código de vuelo: {flightCode}
           </Typography>
 
           {!erased && (
-            <Typography variant="body2" className="text-gray-500 mt-2">
-              Fecha de compra: {new Date(creationDate).toLocaleDateString()}
-            </Typography>
+        <Typography variant="body2" className="text-gray-500 mt-2">
+          Fecha de compra: {new Date(creationDate).toLocaleDateString()}
+        </Typography>
           )}
         </CardContent>
 
-        <CardContent className="flex items-center justify-center bg-gray-200 text-center px-6 rounded-lg">
+        <CardContent className={`flex items-center justify-center bg-gray-200 text-center px-6 rounded-lg ${isSmallScreen ? "mt-2" : ""}`}>
           <div>
-            <Typography variant="body2" className="text-gray-500 text-sm">
-              Precio
-            </Typography>
-            <Typography variant="h6" className="font-bold text-gray-800">
-              {price.toLocaleString()} COP
-            </Typography>
+        <Typography variant="body2" className="text-gray-500 text-sm">
+          Precio
+        </Typography>
+        <Typography variant="h6" className="font-bold text-gray-800">
+          {price.toLocaleString()} COP
+        </Typography>
           </div>
         </CardContent>
       </CardActionArea>
@@ -138,7 +138,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
             </Typography>
           </Box>
 
-          {onCancel && !erased && (
+          {onCancel && !erased && !checkIn && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
                 variant="contained"
