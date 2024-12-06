@@ -22,7 +22,7 @@ const CartPage = () => {
   const { state, dispatch } = useCartContext();
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const isSmallScreen = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
+  const isSmallScreen = useMediaQuery((theme: import('@mui/material').Theme) => theme.breakpoints.down('sm'));
 
   async function handleTicketsCreation() {
     const res: { statusCode?: number; message?: string } = await createBook(state.cart);
