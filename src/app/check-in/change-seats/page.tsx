@@ -5,6 +5,7 @@ import SeatLegend from "@/components/check-in/seatLegend";
 import { useRouter, useSearchParams } from "next/navigation";
 import { changeSeat, checkin } from "@/services/checkin";
 import { Alert, Snackbar } from "@mui/material";
+import { set } from "zod";
 
 type Seat = {
   id: number;
@@ -102,28 +103,30 @@ const ChangeSeatsContent = ({ searchParams }: { searchParams: URLSearchParams })
   const confirmSeat = async () => {
     if (selectedSeat) {
       try {
-        await changeSeat(flightData.flightCode, flightData.passengerDni, selectedSeat.toString());
+        const res1 = await changeSeat(flightData.flightCode, flightData.passengerDni, selectedSeat.toString());
+        console.log(res1);
+        if (!res1.ok) {
+          setSnackBarMessage("Hubo un error al confirmar el asiento."+res1.message);
+          setSnackBarSeverity("error");
+          setSnackBarOpen(true);
+          return;
+        }
         await checkin(flightData.flightCode, flightData.passengerDni);
         setSnackBarMessage(`Check in realizado con exito!`);
         setSnackBarSeverity("success");
-      } catch (error) {
-        console.error("Error al confirmar el asiento:", error);
-        setSnackBarMessage("Hubo un error. Por favor, intenta más tarde.");
-        setSnackBarSeverity("error");
-      } finally {
-        setSnackBarOpen(true);
         setTimeout(() => {
           setSnackBarOpen(false);
           router.push(`/`);
-        }, 3000);
+        }, 4000);
+      } catch (error) {
+        console.error("Error al confirmar el asiento:", error);
+        setSnackBarMessage("Hubo un error desconocido. Por favor, intenta más tarde.");
+        setSnackBarSeverity("error");
       }
     } else {
       setSnackBarMessage("Por favor, selecciona un asiento primero.");
       setSnackBarSeverity("warning");
       setSnackBarOpen(true);
-      setTimeout(() => {
-        setSnackBarOpen(false);
-      }, 3000);
     }
   };
 
@@ -158,7 +161,7 @@ const ChangeSeatsContent = ({ searchParams }: { searchParams: URLSearchParams })
       </button>
       <Snackbar
         open={snackBarOpen}
-        autoHideDuration={3000}
+        autoHideDuration={5000}
         onClose={() => setSnackBarOpen(false)}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >

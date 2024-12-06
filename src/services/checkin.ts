@@ -32,8 +32,7 @@ export const checkin = async (flightCode: string, passengerDni: string) => {
     if (response.ok) {
       return response;
     } else {
-      const text = await response.text();
-      throw new Error(text);
+      return response.json();
     }
   } catch (error) {
     throw error;
@@ -53,8 +52,7 @@ export const changeSeat = async (flightCode: string, passengerDni: string, seatN
     if (response.ok) {
       return response;
     } else {
-      const text = await response.text();
-      throw new Error(text);
+      return response.json();
     }
   } catch (error) {
     return error

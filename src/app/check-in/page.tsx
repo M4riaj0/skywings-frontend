@@ -71,7 +71,8 @@ export default function CheckIn() {
         setSnackBarMessage("Check-in realizado correctamente.");
         setSnackBarSeverity("success");
       } else {
-        setSnackBarMessage("Error al realizar el check-in.");
+        console.log(response);
+        setSnackBarMessage(`Error al realizar el check-in. ${response.message}`);
         setSnackBarSeverity("error");
       }
     } catch (err) {

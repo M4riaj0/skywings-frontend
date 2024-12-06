@@ -30,21 +30,20 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
   interval = 20000,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(2);
+  const [imageLength, setImageLength] = useState(0);
 
   useEffect(() => {
     if (!newsItems) return;
-
-    const assignImage = () => {
-      newsItems.map((item, index) => {
-        item.image = imageList[index % imageList.length];
-      });
-    };
 
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % newsItems.length);
     }, interval);
 
-    assignImage();
+    if (newsItems.length < imageList.length)
+      setImageLength(newsItems.length);
+    else
+      setImageLength(imageList.length);
+
     return () => clearInterval(timer);
   }, [newsItems, interval]);
 
@@ -75,14 +74,14 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
           <div className="news-item">
             <Card4News
               {...newsItems[currentIndex]}
-              image={imageList[currentIndex % newsItems.length]}
+              image={imageList[currentIndex % imageLength]}
             />
           </div>
           {newsItems.length > 1 && (
             <div className="news-item hidden md:block">
               <Card4News
                 {...newsItems[(currentIndex + 1) % newsItems.length]}
-                image={imageList[(currentIndex + 1) % newsItems.length]}
+                image={imageList[(currentIndex + 1) % imageLength]}
               />
             </div>
           )}
@@ -90,7 +89,7 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({
             <div className="news-item hidden lg:block">
               <Card4News
                 {...newsItems[(currentIndex + 2) % newsItems.length]}
-                image={imageList[(currentIndex + 2) % newsItems.length]}
+                image={imageList[(currentIndex + 2) % imageLength]}
               />
             </div>
           )}
