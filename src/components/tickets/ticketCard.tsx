@@ -138,7 +138,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
             </Typography>
           </Box>
 
-          {onCancel && !erased && (
+          {onCancel && !erased && !checkIn && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
                 variant="contained"
