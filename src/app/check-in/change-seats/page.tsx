@@ -113,6 +113,7 @@ const ChangeSeatsContent = ({ searchParams }: { searchParams: URLSearchParams })
         await checkin(flightData.flightCode, flightData.passengerDni);
         setSnackBarMessage(`Check in realizado con exito!`);
         setSnackBarSeverity("success");
+        setSnackBarOpen(true);
         setTimeout(() => {
           setSnackBarOpen(false);
           router.push(`/`);
